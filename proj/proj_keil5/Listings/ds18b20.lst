@@ -1,0 +1,175 @@
+C51 COMPILER V9.60.7.0   DS18B20                                                           11/28/2023 16:34:13 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DS18B20
+OBJECT MODULE PLACED IN .\Objects\ds18b20.obj
+COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\ds18b20.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include;..\src) DEB
+                    -UG OBJECTEXTEND PRINT(.\Listings\ds18b20.lst) OBJECT(.\Objects\ds18b20.obj)
+
+line level    source
+
+   1          #include "ds18b20.h"
+   2          
+   3          extern void _nop_(void);
+   4          
+   5          /*
+   6          void DS18B20_Delay10us(uchar t) // 延迟t * 10us
+   7          {
+   8                  if (t == 1) return;
+   9                  t -= 2;
+  10                  _nop_();
+  11                  while (t--) { }
+  12          }*/
+  13          // 6MHz 延迟t * 10us
+  14          
+  15          // 12MHz 延迟t * 10us
+  16          void DS18B20_Delay10us(unsigned char t)
+  17          {
+  18   1              unsigned char i;
+  19   1              // _nop_();
+  20   1              if (!--t) return;
+  21   1              do 
+  22   1              {       _nop_();
+  23   2                      i = 3;
+  24   2                      do { } while (--i);
+  25   2              } while (--t);
+  26   1      }
+  27          
+  28          // -------------------------------------
+  29          
+  30          bit DS18B20_InitCheck(void)
+  31          {
+  32   1              bit x = 0;
+  33   1              DQ = 1;         // 复位DQ
+  34   1              DQ = 0; 
+  35   1          DS18B20_Delay10us(60); // 拉低 480~960us
+  36   1          DQ = 1;
+  37   1          DS18B20_Delay10us(12); // 等待 15~60us 240us之内
+  38   1              x = DQ;         // 总线60~240us低电平
+  39   1              DQ = 1;         // 释放总线
+  40   1              DS18B20_Delay10us(24);
+  41   1              return x;
+  42   1      }
+  43          
+  44          void  DS18B20_WriteByte(uchar dat)
+  45          {
+  46   1              unsigned char i = 8;
+  47   1              do // 串行写8位数据，先写低位后写高位
+  48   1              {       DQ = 0;
+  49   2                      DS18B20_Delay10us(1);
+  50   2              DQ = dat & 0x01;                // 写"1" 在15μs内拉低
+  51   2              DS18B20_Delay10us(6);   // 写"0" 拉低60μs
+  52   2              DQ = 1;
+  53   2              dat >>= 1;
+  54   2              } while (--i);
+C51 COMPILER V9.60.7.0   DS18B20                                                           11/28/2023 16:34:13 PAGE 2   
+
+  55   1      }
+  56          
+  57          unsigned char DS18B20_ReadByte(void)
+  58          {
+  59   1              unsigned char i = 8, dat = 0;
+  60   1              do // 串行读8位数据，先读低位后读高位
+  61   1              {       DQ = 0;                                 // 拉低
+  62   2              DS18B20_Delay10us(1);
+  63   2              DQ = 1;                                 // 15μs内拉高释放总线
+  64   2              dat >>= 1;
+  65   2              if (DQ) dat |= 0x80;
+  66   2              DS18B20_Delay10us(4);
+  67   2              } while (--i);
+  68   1          return dat;
+  69   1      }
+  70          
+  71          // -------------------------------------
+  72          
+  73          void DS18B20_Convert() //温度转换
+  74          {
+  75   1              if (DS18B20_InitCheck()) return;
+  76   1              DS18B20_WriteByte(0xcc);
+  77   1              DS18B20_WriteByte(0x44);
+  78   1      }
+  79          
+  80          int DS18B20_ReadTemp() //温度读取
+  81          {
+  82   1              unsigned char low = 0, high = 0;
+  83   1              int temp = 0;
+  84   1              if (DS18B20_InitCheck()) return 0;
+  85   1              DS18B20_WriteByte(0xcc);
+  86   1              DS18B20_WriteByte(0xbe);
+  87   1              low  = DS18B20_ReadByte();
+  88   1              high = DS18B20_ReadByte();
+  89   1              temp = (high << 8) | low;
+  90   1              return temp;
+  91   1      }
+  92          
+  93          // -------------------------------------
+  94          
+  95          void DS18B20_Set(unsigned char temp_low, unsigned char temp_high, unsigned char accuracy)
+  96          {
+  97   1              if(DS18B20_InitCheck()) return;
+  98   1              DS18B20_WriteByte(0xcc);
+  99   1              DS18B20_WriteByte(0x4e);        //写暂存器指令4E  
+ 100   1              DS18B20_WriteByte(temp_high);           //写高速缓存器TH高温限值 temp_high 度
+ 101   1              DS18B20_WriteByte(temp_low);            //写高速缓存器TL低温限值 temp_low  度
+ 102   1              DS18B20_WriteByte(accuracy);            //精度设置 
+ 103   1      }
+ 104          
+ 105          void DS18B20_Get(unsigned char* temp_low, unsigned char* temp_high)
+ 106          {
+ 107   1              if(DS18B20_InitCheck()) return;
+ 108   1              DS18B20_WriteByte(0xcc);
+ 109   1              DS18B20_WriteByte(0xbe);
+ 110   1              DS18B20_ReadByte();
+ 111   1              DS18B20_ReadByte();
+ 112   1              *temp_high = DS18B20_ReadByte();
+ 113   1              *temp_low  = DS18B20_ReadByte();
+ 114   1      }       
+ 115          
+ 116          void DS18B20_Save()
+C51 COMPILER V9.60.7.0   DS18B20                                                           11/28/2023 16:34:13 PAGE 3   
+
+ 117          {
+ 118   1              if(DS18B20_InitCheck()) return;
+ 119   1              DS18B20_WriteByte(0xcc);
+ 120   1              DS18B20_WriteByte(0x48);
+ 121   1              DQ = 1;
+ 122   1              DS18B20_Delay10us(200);
+ 123   1              DS18B20_Delay10us(200);
+ 124   1              DS18B20_Delay10us(200);
+ 125   1              DS18B20_Delay10us(200);
+ 126   1              DS18B20_Delay10us(200);
+ 127   1      }
+ 128          
+ 129          void DS18B20_Update()
+ 130          {
+ 131   1              uchar dat;
+ 132   1              if(DS18B20_InitCheck()) return;
+ 133   1              DS18B20_WriteByte(0xcc);
+ 134   1              DS18B20_WriteByte(0xb8);
+ 135   1              dat = DS18B20_ReadByte();
+ 136   1              while (!(dat|0)) { }
+ 137   1      }
+ 138          
+ 139          void DS18B20_CheckAlarm()
+ 140          {
+ 141   1              uchar dat;
+ 142   1              if(DS18B20_InitCheck()) return;
+ 143   1              DS18B20_WriteByte(0xec);
+ 144   1              DS18B20_WriteByte(0xec);
+ 145   1              dat = DS18B20_ReadByte();
+ 146   1              while (!(dat|0)) { }
+ 147   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    327    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

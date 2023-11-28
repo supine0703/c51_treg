@@ -1,0 +1,41 @@
+C51 COMPILER V9.60.7.0   __CONFIG__                                                        11/28/2023 16:34:13 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE __CONFIG__
+OBJECT MODULE PLACED IN .\Objects\__config__.obj
+COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\__config__.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include;..\src) 
+                    -DEBUG OBJECTEXTEND PRINT(.\Listings\__config__.lst) OBJECT(.\Objects\__config__.obj)
+
+line level    source
+
+   1          /**
+   2           * 作者：李宗霖 日期：2023/11/16
+   3           * CSDN昵称：Leisure_水中鱼
+   4           * CSDN: https://blog.csdn.net/Supine_0?type=blog
+   5           */
+   6          
+   7          #include "__config__.h"
+   8          #include <intrins.h>
+   9          
+  10          void Delay(uint t)      // 延迟函数 tms
+  11          {
+  12   1              uint i, j;
+  13   1              for (i = 0; i < t; i++)
+  14   1                      for (j = 0; j < 114; j++) { }
+  15   1      }
+  16          
+  17          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     32    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

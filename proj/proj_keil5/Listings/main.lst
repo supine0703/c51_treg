@@ -1,0 +1,223 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              11/28/2023 16:34:13 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include;..\src) DEBUG 
+                    -OBJECTEXTEND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "ultimste.h"
+   2          
+   3          #define WELCOME "Welcome to AAUCS"
+   4          #define GROUP   "NO.01"
+   5          #define GROUP_RIGHT 5
+   6          #define GROUP_LEFT  6
+   7          
+   8          #define THIGH "H:"
+   9          #define TLOW  "L:"
+  10          #define TEMP  "T:"
+  11          #define FAN   "FAN:"
+  12          
+  13          uchar fanGear[]    = "0";
+  14          uchar tempLow[]    = "   ";
+  15          uchar tempHigh[]   = "   ";
+  16          uchar temperture[] = "     ";
+  17          
+  18          
+  19          uint count = 0;
+  20          
+  21          void LCD1602Action(void);
+  22          void ShowTemp(uint t);
+  23          void ShowTemper(uint t);
+  24          
+  25          void timer0() interrupt 1
+  26          {
+  27   1              ++count;
+  28   1      }
+  29          
+  30          
+  31          void main(void)
+  32          {
+  33   1              //uchar key, sure = 0, enter = 0; // 一些标志
+  34   1              //DS_Retemp();
+  35   1              uchar i, t=3;
+  36   1              while (--t)
+  37   1              {
+  38   2                      for (i = 4; i; i--);
+  39   2              }
+  40   1              DS18B20_Convert();
+  41   1              
+  42   1              TMOD = 0x02;
+  43   1              TH0 = 0x00;
+  44   1              TL0 = 0x00;
+  45   1              EA = 1;
+  46   1              ET0 = 1;
+  47   1              TR0 = 1;
+  48   1              
+  49   1              LCD1602Action();        // lcd1602 初始化（开机）
+  50   1              Delay(1);
+  51   1              //DS18B20_Save();
+  52   1              while (1)
+  53   1              {
+  54   2                      ShowTemper(0);
+C51 COMPILER V9.60.7.0   MAIN                                                              11/28/2023 16:34:13 PAGE 2   
+
+  55   2                      //ShowTemp(0);  // 显示温度
+  56   2                      Delay(1);
+  57   2              } 
+  58   1              
+  59   1              /*
+  60   1              LCD_SetCursorFirstLine(7);
+  61   1              LCD_ShowString("a:", 100);
+  62   1              LCD_WriteData('0');
+  63   1              // LCD_ShowString(number, 0);
+  64   1              LCD_CursorShiftLeft();
+  65   1              LCD_CursorFlicher(); // 打开光标闪烁
+  66   1              while (1)
+  67   1              {
+  68   1                      key = P3 >> 4;
+  69   1                      switch (key)
+  70   1                      {
+  71   1                              case 0x0e:                              // s4
+  72   1                                      Delay(10);                      // 去抖
+  73   1                                      if (!enter && key == P3 >> 4)
+  74   1                                      {       // 锁定当前数字 关闭光标闪烁
+  75   1                                              enter = 1;
+  76   1                                              sure = 1;
+  77   1                                              LCD_CursorOFF();
+  78   1                                      }
+  79   1                                      break;
+  80   1                              case 0x0d:                              // s3
+  81   1                                      Delay(10);
+  82   1                                      if (!enter && !sure && key == P3 >> 4)
+  83   1                                      {       // 数字0-9循环减1
+  84   1                                              enter = 1;
+  85   1                                              num = LCD_ReadData();
+  86   1                                              LCD_CursorShiftLeft();
+  87   1                                              num += num == 48 ? 9 : -1;
+  88   1                                              LCD_WriteData(num);
+  89   1                                              // number[0] += number[0] == 48 ? 9 : -1;
+  90   1                                              //LCD_ShowString(number, 0);
+  91   1                                              LCD_CursorShiftLeft();
+  92   1                                      }
+  93   1                                      break;
+  94   1                              case 0x0b:                              // s2
+  95   1                                      Delay(10);
+  96   1                                      if (!enter && !sure && key == P3 >> 4)
+  97   1                                      {       // 数字0-9循环加1
+  98   1                                              enter = 1;
+  99   1                                              num = LCD_ReadData();
+ 100   1                                              LCD_CursorShiftLeft();
+ 101   1                                              num += num == 57 ? -9 : 1;
+ 102   1                                              LCD_WriteData(num);
+ 103   1                                              //number[0] += number[0] == 57 ? -9 : 1;
+ 104   1                                              //LCD_ShowString(number, 0);
+ 105   1                                              LCD_CursorShiftLeft();
+ 106   1                                      }
+ 107   1                                      break;
+ 108   1                              case 0x07:                              // s1
+ 109   1                                      Delay(100);
+ 110   1                                      if (!enter && key == P3 >> 4)
+ 111   1                                      {       // 将a的值清零
+ 112   1                                              enter = 1;
+ 113   1                                              sure = 0;
+ 114   1                                              LCD_CursorFlicher();
+ 115   1                                              number[0] = 48;
+ 116   1                                              LCD_ShowString(number, 0);
+C51 COMPILER V9.60.7.0   MAIN                                                              11/28/2023 16:34:13 PAGE 3   
+
+ 117   1                                              LCD_CursorShiftLeft();
+ 118   1                                      }
+ 119   1                                      break;
+ 120   1                              case 0x0F:
+ 121   1                                      // 解除按键锁定 每次按下将按键锁定，防止频繁触发按键效果
+ 122   1                                      enter = 0;
+ 123   1                      }
+ 124   1              }
+ 125   1              */
+ 126   1      }
+ 127          
+ 128          void LCD1602Action(void)
+ 129          {
+ 130   1              uchar signal[] = " C";
+ 131   1              uchar high, low, i;
+ 132   1              signal[0] = 0xdf;
+ 133   1              LCD1602_Initial(); // 初始化
+ 134   1              // 开机界面
+ 135   1              LCD1602_WriteCmd (Move_Cursor_Row1_Col(16)); // 命令8
+ 136   1              //LCD1602_SetCursorFirstLine(16);               // 设置光标在显示屏之外
+ 137   1              LCD1602_ShowString(WELCOME, 0);
+ 138   1              i = 16 + GROUP_LEFT;
+ 139   1              LCD1602_WriteCmd (Move_Cursor_Row2_Col(i)); // 命令8
+ 140   1              //LCD1602_SetCursorSecondLine(16 + GROUP_LEFT);
+ 141   1              LCD1602_WriteCmd (Mode_ScreenRightMove); // 命令3
+ 142   1              //LCD1602_Mode_ScreenRightMove();               // 一边输出第二行子一边移动屏幕
+ 143   1              LCD1602_ShowString(GROUP, 100);
+ 144   1              LCD1602_WriteCmd (Mode_CursorRightMove); // 命令3
+ 145   1              //LCD1602_Mode_CursorRightMove();               // 恢复光标自增
+ 146   1              LCD1602_ScreenShiftRight(16-GROUP_RIGHT, 100);// 字体移动居中
+ 147   1              LCD1602_ScreenFlicker(3, 500);          // 闪烁三次
+ 148   1              LCD1602_ScreenShiftRight(16, 100);
+ 149   1              LCD1602_WriteCmd (Clear_Screen);        // 命令1
+ 150   1              Delay(100);
+ 151   1              
+ 152   1              //DS18B20_Set(0x4b, 0x40, 0x8f);
+ 153   1              //DS18B20_Update();
+ 154   1              DS18B20_Get(&high, &low);
+ 155   1              
+ 156   1              // 初始化显示
+ 157   1              LCD1602_WriteCmd (Show_CursorOn); // 命令4
+ 158   1              //LCD1602_CursorON();                                   // 设置光标
+ 159   1              LCD1602_ShowString(THIGH, 100);
+ 160   1              NumberToString(high, tempHigh, 3, 0);
+ 161   1              LCD1602_ShowString(tempHigh, 100);
+ 162   1              LCD1602_ShowString(signal, 100);
+ 163   1              LCD1602_ShowString("  ", 100);
+ 164   1              LCD1602_ShowString(TLOW, 100);
+ 165   1              NumberToString(low, tempLow, 3, 0);
+ 166   1              LCD1602_ShowString(tempLow, 100);
+ 167   1              LCD1602_ShowString(signal, 100);
+ 168   1              LCD1602_WriteCmd (Move_Cursor_Row2_Col(0)); // 命令8
+ 169   1              //LCD1602_SetCursorSecondLine(0);       
+ 170   1              LCD1602_ShowString(TEMP, 100);
+ 171   1              ShowTemper(100);
+ 172   1              LCD1602_ShowString(signal, 100);
+ 173   1              LCD1602_ShowString("  ", 100);
+ 174   1              LCD1602_ShowString(FAN, 100);
+ 175   1              LCD1602_ShowString(fanGear, 100);
+ 176   1              LCD1602_WriteCmd (Show_CursorOff); // 命令4
+ 177   1              //LCD1602_CursorOFF();
+ 178   1      }
+C51 COMPILER V9.60.7.0   MAIN                                                              11/28/2023 16:34:13 PAGE 4   
+
+ 179          
+ 180          //#include <stdio.h>
+ 181          void ShowTemper(uint t)
+ 182          {
+ 183   1              int temp;
+ 184   1              while (count < 2700) { } // 27 * 256 = 6912 (7500us)
+ 185   1              LCD1602_WriteCmd (Move_Cursor_Row2_Col(2)); // 命令8
+ 186   1              //LCD1602_SetCursorSecondLine(2);
+ 187   1              temp = DS18B20_ReadTemp();
+ 188   1              DS18B20_Convert();
+ 189   1              count = 0;
+ 190   1              //sprintf(main2, "%.1f", temper * 0.0625);
+ 191   1              NumberToString(temp * 0.0625, temperture, 5, 1);
+ 192   1              LCD1602_ShowString(temperture, t);
+ 193   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    521    ----
+   CONSTANT SIZE    =     43    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     18      11
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,90 @@
+C51 COMPILER V9.60.7.0   LCD1602                                                           11/28/2023 16:34:13 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD1602
+OBJECT MODULE PLACED IN .\Objects\lcd1602.obj
+COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\lcd1602.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include;..\src) DEB
+                    -UG OBJECTEXTEND PRINT(.\Listings\lcd1602.lst) OBJECT(.\Objects\lcd1602.obj)
+
+line level    source
+
+   1          #include "lcd1602.h"
+   2          
+   3          // #define WAIT 1 // 12MHz 72能正常运行 400可以让33MHz正常运行
+   4          
+   5          // -------------------------------------
+   6          
+   7          void LCD1602_CheckBusy(void)
+   8          {
+   9   1              unsigned char busy;
+  10   1              LCD1602_DATA = 0xff;
+  11   1              do
+  12   1              {       busy = 0xff;
+  13   2                      LCD1602_EN = 0;
+  14   2                      LCD1602_RS = 0;
+  15   2                      LCD1602_RW = 1;
+  16   2                      LCD1602_EN = 1;
+  17   2                      busy = LCD1602_DATA;
+  18   2              } while (busy & 0x80);
+  19   1              LCD1602_EN = 0;
+  20   1      }
+  21          
+  22          void LCD1602_Write(bit rs, unsigned char byte);
+  23          
+  24          void LCD1602_WriteCmd(uchar cmd)
+  25          { if (!cmd) return; LCD1602_Write(0, cmd); }
+  26          
+  27          void LCD1602_WriteData(unsigned char dat)
+  28          { LCD1602_Write(1, dat); }
+  29          
+  30          #ifndef LCD1602_NOREADDATA
+              unsigned char LCD1602_ReadData(void)
+              {
+                      unsigned char dat;
+                      LCD1602_CheckBusy();
+                      LCD1602_DATA = 0xff;
+                      LCD1602_RW   = 1;
+                      LCD1602_RS   = 1;
+                      LCD1602_EN   = 1;
+                      dat = LCD1602_DATA;
+                      LCD1602_EN   = 0;
+                      return dat;
+              }
+              #endif
+  44          
+  45          // -------------------------------------
+  46          
+  47          extern void _nop_(void);
+  48          
+  49          //void LCD1602_Wait(unsigned int t)
+  50          //{ do { } while (t--); }
+  51          
+  52          void LCD1602_Write(bit rs, unsigned char byte)
+  53          {
+  54   1              LCD1602_CheckBusy();
+C51 COMPILER V9.60.7.0   LCD1602                                                           11/28/2023 16:34:13 PAGE 2   
+
+  55   1              LCD1602_RW   = 0;
+  56   1              LCD1602_RS   = rs;      // 0 写命令  1 写数据
+  57   1              LCD1602_DATA = byte;
+  58   1              LCD1602_EN   = 1;       // LCD1602_EN: 0 -> 1
+  59   1              _nop_();
+  60   1              LCD1602_EN   = 0;
+  61   1              //LCD1602_Wait(WAIT);
+  62   1      }
+  63          
+  64          // -------------------------------------
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     56    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
