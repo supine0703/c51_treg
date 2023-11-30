@@ -30,7 +30,7 @@ void LCD1602_WriteCmd(uchar cmd)
 void LCD1602_WriteData(unsigned char dat)
 { LCD1602_Write(1, dat); }
 
-#ifndef LCD1602_NOREADDATA
+#ifndef LCD1602_NO_READDATA
 unsigned char LCD1602_ReadData(void)
 {
 	unsigned char dat;

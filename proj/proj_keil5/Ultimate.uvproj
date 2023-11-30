@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>Target 1</TargetName>
+      <TargetName>Target_1</TargetName>
       <ToolsetNumber>0x0</ToolsetNumber>
       <ToolsetName>MCS-51</ToolsetName>
       <uAC6>0</uAC6>
@@ -46,7 +46,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>Ultimste</OutputName>
+          <OutputName>Ultimate</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -177,7 +177,7 @@
           </Flash1>
           <bUseTDR>0</bUseTDR>
           <Flash2></Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -233,7 +233,7 @@
               <RCB>
                 <Type>0</Type>
                 <StartAddress>0x0</StartAddress>
-                <Size>0xffff</Size>
+                <Size>0x10000</Size>
               </RCB>
               <RXB>
                 <Type>0</Type>
@@ -324,7 +324,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\include;..\src</IncludePath>
+              <IncludePath>..\include</IncludePath>
             </VariousControls>
           </C51>
           <Ax51>
@@ -407,9 +407,14 @@
               <FilePath>..\include\lcd1602.h</FilePath>
             </File>
             <File>
-              <FileName>ultimste.h</FileName>
+              <FileName>ultimate.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\include\ultimste.h</FilePath>
+              <FilePath>..\include\ultimate.h</FilePath>
+            </File>
+            <File>
+              <FileName>utility.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\utility.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -432,9 +437,19 @@
               <FilePath>..\src\lcd1602.c</FilePath>
             </File>
             <File>
-              <FileName>ultimste.c</FileName>
+              <FileName>ultimate.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\ultimste.c</FilePath>
+              <FilePath>..\src\ultimate.c</FilePath>
+            </File>
+            <File>
+              <FileName>utility.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\utility.c</FilePath>
+            </File>
+            <File>
+              <FileName>global.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\global.c</FilePath>
             </File>
           </Files>
         </Group>

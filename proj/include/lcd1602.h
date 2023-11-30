@@ -1,6 +1,6 @@
 /**
  * 作者：李宗霖 日期：2023/11/16
- * CSDN昵称：Leisure_水中鱼
+ * CSDN 昵称：Leisure_水中鱼
  * CSDN: https://blog.csdn.net/Supine_0?type=blog
  * ----------------------------------------------
  * - 此头文件对文件：'__config__.h' 强依赖
@@ -37,12 +37,11 @@
 // -------------------------------------
 
 // 定义LCD1602基本操作函数
-void LCD1602_CheckBusy(void);				// 检查忙标志位 含命令9
-void LCD1602_WriteCmd(unsigned char cmd);	// 写入命令 命令1-8
-void LCD1602_WriteData(unsigned char dat);	// 写入数据 命令10
-#ifndef LCD1602_NOREADDATA 
-unsigned char LCD1602_ReadData(void);		// 读数据 命令11
-#endif // 读数据用的很少，定义宏 LCD1602_NOREADDATA 可以不编译 LCD1602_ReadData(void)
+extern void LCD1602_CheckBusy(void);				// 检查忙标志位 含命令9
+extern void LCD1602_WriteCmd(unsigned char cmd);	// 写入命令 命令1-8
+extern void LCD1602_WriteData(unsigned char dat);	// 写入数据 命令10
+extern unsigned char LCD1602_ReadData(void);		// 读数据 命令11
+// 读数据用的很少，定义宏 LCD1602_NO_READDATA 可以不编译 LCD1602_ReadData(void)
 
 // ------------- 命令封装 --------------
 
@@ -62,7 +61,7 @@ unsigned char LCD1602_ReadData(void);		// 读数据 命令11
 #define Show_ScreenOff 			0x08 // 屏幕关闭   0x08-0x0b
 #define Show_CursorOff 			0x0c // 亮屏无光标 0x0c 0x0d
 #define Show_CursorOn 			0x0e // 亮屏有光标
-#define Show_CursorFlicher 		0x0f // 亮屏光标闪烁
+#define Show_CursorFlicker 		0x0f // 亮屏光标闪烁
 
 // 命令5：光标/屏幕 左/右移
 #define Shift_CursorLeft 		0x10 // 光标左移 0x10-0x13
@@ -81,12 +80,19 @@ unsigned char LCD1602_ReadData(void);		// 读数据 命令11
 #define Set_8bit_2line_5x10 	0x3c // 0x3c-0x3f
 
 // 命令7：设置字库地址 0x40-0x5f
-#define Move_CGROM_ADDRESS(X)   (0x00<=(X) && (X)<=0x1f) ? 0x40|(X) : 0x00
+#define Move_CGROM_ADDRESS(X)   ((0x00<=(X) && (X)<=0x1f) ? 0x40|(X) : 0x00)
 
 // 命令8：设置光标位置 0x80-0xa7 0xc0-0xe7
-#define Move_Cursor_Row1_Col(X) (0x00<=(X) && (X)<=0x27) ? 0x80|(X) : 0x00
-#define Move_Cursor_Row2_Col(X) (0x00<=(X) && (X)<=0x27) ? 0xc0|(X) : 0x00
+// #define Move_Cursor_Row1_Col(X) ((0x00<=(X) && (X)<=0x27) ? 0x80|(X) : 0x00)
+// #define Move_Cursor_Row2_Col(X) ((0x00<=(X) && (X)<=0x27) ? 0xc0|(X) : 0x00)
+
+#define Move_Cursor_Row1_Col(X) (0x80|(X))
+#define Move_Cursor_Row2_Col(X) (0xc0|(X))
 
 // -------------------------------------
+
+/**
+ * 值得注意的是 屏幕不会真的移动，屏幕移动是靠 DDRAM 整体的循环移动呈现的
+ */
 
 #endif

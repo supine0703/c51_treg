@@ -1,193 +1,181 @@
-#include "ultimste.h"
+#include "ultimate.h"
 
-#define WELCOME "Welcome to AAUCS"
-#define GROUP   "NO.01"
-#define GROUP_RIGHT 5
-#define GROUP_LEFT  6
+uint count;
 
-#define THIGH "H:"
-#define TLOW  "L:"
-#define TEMP  "T:"
-#define FAN   "FAN:"
+extern bit setting;
+extern bit simulate;
 
-uchar fanGear[]    = "0";
-uchar tempLow[]    = "   ";
-uchar tempHigh[]   = "   ";
-uchar temperture[] = "     ";
+extern uchar str5[];
+extern float temp;
+extern uint SHOW_WAIT;
 
+extern char upperLimit;
+extern char lowerLimit;
 
-uint count = 0;
+extern float highest;
+extern float lowest;
 
-void LCD1602Action(void);
-void ShowTemp(uint t);
-void ShowTemper(uint t);
+extern uchar page;
+extern bit pageChange;
 
-void timer0() interrupt 1
-{
-	++count;
-}
+extern uchar dsr;
+extern uint ctc[];
 
+extern uchar option;
+extern bit readySetting;
+
+void init_data(void);
+void init_program(void);
 
 void main(void)
 {
-	//uchar key, sure = 0, enter = 0; // 一些标志
-	//DS_Retemp();
-	uchar i, t=3;
-	while (--t)
-	{
-		for (i = 4; i; i--);
-	}
-	DS18B20_Convert();
-	
-	TMOD = 0x02;
-	TH0 = 0x00;
-	TL0 = 0x00;
-	EA = 1;
-	ET0 = 1;
-	TR0 = 1;
-	
-	LCD1602Action();	// lcd1602 初始化（开机）
-	Delay(1);
-	//DS18B20_Save();
-	while (1)
-	{
-		ShowTemper(0);
-		//ShowTemp(0);	// 显示温度
-		Delay(1);
-	} 
-	
-	/*
-	LCD_SetCursorFirstLine(7);
-	LCD_ShowString("a:", 100);
-	LCD_WriteData('0');
-	// LCD_ShowString(number, 0);
-	LCD_CursorShiftLeft();
-	LCD_CursorFlicher(); // 打开光标闪烁
-	while (1)
-	{
-		key = P3 >> 4;
-		switch (key)
-		{
-			case 0x0e: 				// s4
-				Delay(10);			// 去抖
-				if (!enter && key == P3 >> 4)
-				{	// 锁定当前数字 关闭光标闪烁
-					enter = 1;
-					sure = 1;
-					LCD_CursorOFF();
-				}
-				break;
-			case 0x0d: 				// s3
-				Delay(10);
-				if (!enter && !sure && key == P3 >> 4)
-				{	// 数字0-9循环减1
-					enter = 1;
-					num = LCD_ReadData();
-					LCD_CursorShiftLeft();
-					num += num == 48 ? 9 : -1;
-					LCD_WriteData(num);
-					// number[0] += number[0] == 48 ? 9 : -1;
-					//LCD_ShowString(number, 0);
-					LCD_CursorShiftLeft();
-				}
-				break;
-			case 0x0b: 				// s2
-				Delay(10);
-				if (!enter && !sure && key == P3 >> 4)
-				{	// 数字0-9循环加1
-					enter = 1;
-					num = LCD_ReadData();
-					LCD_CursorShiftLeft();
-					num += num == 57 ? -9 : 1;
-					LCD_WriteData(num);
-					//number[0] += number[0] == 57 ? -9 : 1;
-					//LCD_ShowString(number, 0);
-					LCD_CursorShiftLeft();
-				}
-				break;
-			case 0x07: 				// s1
-				Delay(100);
-				if (!enter && key == P3 >> 4)
-				{	// 将a的值清零
-					enter = 1;
-					sure = 0;
-					LCD_CursorFlicher();
-					number[0] = 48;
-					LCD_ShowString(number, 0);
-					LCD_CursorShiftLeft();
-				}
-				break;
-			case 0x0F:
-				// 解除按键锁定 每次按下将按键锁定，防止频繁触发按键效果
-				enter = 0;
-		}
-	}
-	*/
+    init_data();
+    init_program();
+
+    while (1)
+    {
+        if (setting)
+        {
+            if (readySetting)
+            {
+                readySetting = 0;
+                Settings(0);
+            }
+            KeysSystem_2();
+            continue;
+        }
+        if (pageChange)
+        {
+            switch (page)
+            {
+            case 0x7f: // 首页
+                ViewPage_1();
+                break;
+            case 0xbf: // 统计1
+                ViewPage_2();
+                break;
+            case 0xdf: // 统计2
+                ViewPage_3();
+                break;
+            case 0xef: // 设置查询
+                ViewPage_4();
+                break;
+            }
+            pageChange = 0;
+        }
+        switch (page)
+        {
+        case 0x7f: // 首页
+            LCD1602_WriteCmd(Move_Cursor_Row2_Col(2));
+            FloatToString(temp, str5, 5, 1);
+            LCD1602_ShowString(str5);
+            break;
+        case 0xbf: // 统计1
+            LCD1602_WriteCmd(Move_Cursor_Row1_Col(9));
+            FloatToString(highest, str5, 5, 1);
+            LCD1602_ShowString(str5);
+            LCD1602_WriteCmd(Move_Cursor_Row2_Col(9));
+            FloatToString(lowest, str5, 5, 1);
+            LCD1602_ShowString(str5);
+            break;
+        case 0xdf: // 统计2
+                   // ViewPage_3();
+        case 0xef: // 设置查询
+            break;
+        }
+        KeysSystem_1();
+    }
 }
 
-void LCD1602Action(void)
+void int_T0() interrupt 1
 {
-	uchar signal[] = " C";
-	uchar high, low, i;
-	signal[0] = 0xdf;
-	LCD1602_Initial(); // 初始化
-	// 开机界面
-	LCD1602_WriteCmd (Move_Cursor_Row1_Col(16)); // 命令8
-	//LCD1602_SetCursorFirstLine(16);		// 设置光标在显示屏之外
-	LCD1602_ShowString(WELCOME, 0);
-	i = 16 + GROUP_LEFT;
-	LCD1602_WriteCmd (Move_Cursor_Row2_Col(i)); // 命令8
-	//LCD1602_SetCursorSecondLine(16 + GROUP_LEFT);
-	LCD1602_WriteCmd (Mode_ScreenRightMove); // 命令3
-	//LCD1602_Mode_ScreenRightMove();		// 一边输出第二行子一边移动屏幕
-	LCD1602_ShowString(GROUP, 100);
-	LCD1602_WriteCmd (Mode_CursorRightMove); // 命令3
-	//LCD1602_Mode_CursorRightMove();		// 恢复光标自增
-	LCD1602_ScreenShiftRight(16-GROUP_RIGHT, 100);// 字体移动居中
-	LCD1602_ScreenFlicker(3, 500);		// 闪烁三次
-	LCD1602_ScreenShiftRight(16, 100);
-	LCD1602_WriteCmd (Clear_Screen); 	// 命令1
-	Delay(100);
-	
-	//DS18B20_Set(0x4b, 0x40, 0x8f);
-	//DS18B20_Update();
-	DS18B20_Get(&high, &low);
-	
-	// 初始化显示
-	LCD1602_WriteCmd (Show_CursorOn); // 命令4
-	//LCD1602_CursorON();					// 设置光标
-	LCD1602_ShowString(THIGH, 100);
-	NumberToString(high, tempHigh, 3, 0);
-	LCD1602_ShowString(tempHigh, 100);
-	LCD1602_ShowString(signal, 100);
-	LCD1602_ShowString("  ", 100);
-	LCD1602_ShowString(TLOW, 100);
-	NumberToString(low, tempLow, 3, 0);
-	LCD1602_ShowString(tempLow, 100);
-	LCD1602_ShowString(signal, 100);
-	LCD1602_WriteCmd (Move_Cursor_Row2_Col(0)); // 命令8
-	//LCD1602_SetCursorSecondLine(0);	
-	LCD1602_ShowString(TEMP, 100);
-	ShowTemper(100);
-	LCD1602_ShowString(signal, 100);
-	LCD1602_ShowString("  ", 100);
-	LCD1602_ShowString(FAN, 100);
-	LCD1602_ShowString(fanGear, 100);
-	LCD1602_WriteCmd (Show_CursorOff); // 命令4
-	//LCD1602_CursorOFF();
+    if (++count >= ctc[dsr]) // 2700
+    {
+        count = 0;
+        temp = DS18B20_ReadTemp();
+        temp *= 0.0625;
+        if (temp > highest)
+            highest = temp;
+        if (temp < lowest)
+            lowest = temp;
+        DS18B20_Convert();
+    }
 }
 
-//#include <stdio.h>
-void ShowTemper(uint t)
+void int_X0() interrupt 0
 {
-	int temp;
-	while (count < 2700) { } // 27 * 256 = 6912 (7500us)
-	LCD1602_WriteCmd (Move_Cursor_Row2_Col(2)); // 命令8
-	//LCD1602_SetCursorSecondLine(2);
-	temp = DS18B20_ReadTemp();
-	DS18B20_Convert();
-	count = 0;
-	//sprintf(main2, "%.1f", temper * 0.0625);
-	NumberToString(temp * 0.0625, temperture, 5, 1);
-	LCD1602_ShowString(temperture, t);
+    uchar ky;
+    uchar i = 20;
+    KEYS = 0xff;
+    do
+    {
+        ky = 0x03;
+        ky |= KEYS;
+        if (ky != 0xfb)
+        {
+            Delay1ms(10);
+            ky = 0x03;
+            ky |= KEYS;
+            if (ky != 0xfb)
+                return;
+        }
+        Delay1ms(50);
+    } while (--i);
+    if (setting) // 退出设置
+    {
+        // 将设置的内容进行存储 DS18B20
+        DS18B20_Set(upperLimit, lowerLimit, dsr);
+        DS18B20_Save();
+        // 24lc02
+        TR0 = 1; // 重启定时器开始测温
+        count = 0;
+        DS18B20_Convert();
+        option = 0xff;
+        pageChange = 1;
+    }
+    else // 进入设置
+    {
+        TR0 = 0; // 关闭定时计器T0
+        // 得从主函数中调用 否则可能会发生形参被出错 产生不可预料问题
+        // 可以设定一个标志 让主函数调用一次 readySetting
+        // Settings(0);
+        readySetting = 1;
+    }
+    setting = !setting;
+}
+
+void init_data(void)
+{
+    TMOD = 0x02; // 定时器0 方式2
+    TH0 = 0x00;  // 自动装填
+    TL0 = 0x00;  // 记 256 次
+
+    IT0 = 1; // 下降沿触发
+    IT1 = 1;
+    PX0 = 0; // 低优先级
+    PX1 = 0;
+    PT0 = 1; // 高优先级
+
+    // 从 DS18B20 读取 温度上下限 分辨率
+    DS18B20_Get(&upperLimit, &lowerLimit, &dsr);
+    // 从 at24c02/24lc02 读取 风扇档位步长 开机音乐序号 音量(分为0-7) 3+2+3 =
+    // 1byte
+}
+
+void init_program(void)
+{
+    DS18B20_Convert();
+    LCD1602_Action();                // lcd1602 初始化（开机）
+    EA = 1;                          // 总中断允许打开
+    ET0 = 1;                         // 允许定时器中断
+    TR0 = 1;                         // 开启定时计器T0
+    count = ctc[dsr] - 5;            // 尽快进入中断
+    LCD1602_WriteCmd(Show_CursorOn); // 打开光标
+    SHOW_WAIT = 40;                  // 开机打字机特效
+    ViewPage_1();                    // 显示首页
+    LCD1602_WriteCmd(Show_CursorOff);
+    SHOW_WAIT = 0;
+    EX0 = 1; // 允许外部中断
+
+    // EX1 = 1;
 }

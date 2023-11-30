@@ -1,0 +1,39 @@
+{
+    "configurations": [
+        {
+            "name": "Target_1",
+            "includePath": [
+                "e:\\Project\\.Github\\c51Lib\\proj\\include",
+                "e:\\Keil C51\\C51\\INC",
+                "e:\\Project\\.Github\\c51Lib\\proj\\proj_keil5",
+                "e:\\Project\\.Github\\c51Lib\\proj\\src"
+            ],
+            "defines": [
+                "__C51__",
+                "__VSCODE_C51__",
+                "reentrant=",
+                "compact=",
+                "small=",
+                "large=",
+                "data=",
+                "idata=",
+                "pdata=",
+                "bdata=",
+                "xdata=",
+                "code=",
+                "bit=char",
+                "sbit=char",
+                "sfr=char",
+                "sfr16=int",
+                "sfr32=int",
+                "interrupt=",
+                "using=",
+                "_at_=",
+                "_priority_=",
+                "_task_="
+            ],
+            "intelliSenseMode": "${default}"
+        }
+    ],
+    "version": 4
+}

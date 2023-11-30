@@ -1,8 +1,0 @@
-".\Objects\STARTUP.obj",
-".\Objects\main.obj",
-".\Objects\__config__.obj",
-".\Objects\ds18b20.obj",
-".\Objects\lcd1602.obj",
-".\Objects\ultimste.obj" 
-TO ".\Objects\Ultimste" 
-PRINT(".\Listings\Ultimste.m51") RAMSIZE(256) 

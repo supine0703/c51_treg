@@ -15,7 +15,7 @@
  *   2. out LCD_RS LCD_RW LCD_EN 为了lcd1602定义
  *   3. DQ 为了ds18b20定义
  */
- 
+
 #ifndef __CONFIG___H
 #define __CONFIG___H
 
@@ -31,21 +31,20 @@
 
 #include <reg52.h>
 
-void Delay(uint t);	// 延迟tms
-
 // ------- define for lcd1602 ----------
-
 // #define LCD1602_USE_DEFAULT // 使用默认配置 手动配置后不可再这样做
-#define LCD1602_NOREADDATA	// 不编译LCD1602_ReadData(void)
-#define LCD1602_DATA P0		// 数据 to LCD1602
-sbit LCD1602_RS = P1^0; 	// 寄存器选择
-sbit LCD1602_RW = P1^1; 	// 读/写
-sbit LCD1602_EN = P1^2; 	// 使能
+#define LCD1602_NO_READDATA // 不编译LCD1602_ReadData(void)
+#define LCD1602_DATA P0     // 数据 to LCD1602
+sbit LCD1602_RS = P1^0;   // 寄存器选择
+sbit LCD1602_RW = P1^1;   // 读/写
+sbit LCD1602_EN = P1^2;   // 使能
 
 // ------- define for ds18b20 ----------
 
 sbit DQ = P1^5;
 
 // -------------------------------------
+
+#define KEYS P3
 
 #endif // __CONFIG___H
