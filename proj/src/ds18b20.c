@@ -134,4 +134,34 @@ void DS18B20_Save(void)
         return;
     DS18B20_WriteByte(0xcc);
     DS18B20_WriteByte(0x48);
+    DS18B20_Delay10us(12); // 需要给DS18B20存储的时间
+    // 经测试 最好高于80us 否则可能会造成存入失败或者数据错误
 }
+
+// void DS18B20_Update(void)
+// {
+//     if (DS18B20_InitCheck())
+//         return;
+//     DS18B20_WriteByte(0xcc);
+//     DS18B20_WriteByte(0xb8);
+//     while (!DQ)
+//     {
+//     }
+// }
+
+// char DS18B20_Mode(void)
+// {
+//     char dat;
+//     if (DS18B20_InitCheck())
+//         return -1;
+//     DS18B20_WriteByte(0xcc);
+//     DS18B20_WriteByte(0xb4);
+//     DQ = 0; // 拉低
+//     DS18B20_Delay10us(1);
+//     DQ = 1; // 15μs内拉高释放总线
+//     if (DQ)
+//         dat = 1;
+//     else dat = 0;
+//     DS18B20_Delay10us(5); // 最少60us
+//     return dat;
+// }

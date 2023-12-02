@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 21:33:42 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 23:26:20 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   52   1           * 程序的主循环:
   53   1           * 1. 判断是哪一种模式并执行模式对应的程序
   54   1           * 2. 模式主程序:
-C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 21:33:42 PAGE 2   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 23:26:20 PAGE 2   
 
   55   1           * - 设置模式
   56   1           *
@@ -126,7 +126,7 @@ line level    source
  114   1              if (++dcmCount >= 1440)       // 0.4s
  115   1                  if (dcmCount >= 2520)     // 0.7s
  116   1                      if (dcmCount >= 3600) // 1.0s
-C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 21:33:42 PAGE 3   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 23:26:20 PAGE 3   
 
  117   1                          dcmCount = 0;
  118   1                      else // 0.7s - 1.0s
@@ -190,7 +190,7 @@ line level    source
  174   2              option = 0xff;        // 设置模式 不选择
  175   2              page_change = 1;      // 需要刷新整个视图显示
  176   2          }
-C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 21:33:42 PAGE 4   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 23:26:20 PAGE 4   
 
  177   1          else // 进入设置模式
  178   1          {
@@ -206,158 +206,164 @@ line level    source
  188          
  189          void init_data(void)
  190          {
- 191   1          TMOD = 0x02; // 定时器0 方式2
- 192   1          TH0 = 0x00;  // 自动装填
- 193   1          TL0 = 0x00;  // 记 256 次
- 194   1      
- 195   1          IT0 = 1; // 下降沿触发
- 196   1          PX0 = 0; // 低优先级
- 197   1          PT0 = 1; // 高优先级
- 198   1      
- 199   1          // 从 DS18B20 读取 温度上下限 分辨率
- 200   1          DS18B20_Get(&upperLimit, &lowerLimit, &dsr);
- 201   1          // 从 at24c02/24lc02 读取 风扇档位步长 开机音乐序号 音量(分为0-7) 3+2+3 =
- 202   1          // 1byte
- 203   1      }
- 204          
- 205          void init_program(void)
- 206          {
- 207   1          DS18B20_Convert();                // 开始温度转换
- 208   1          LCD1602_Action();                 // lcd1602 初始化（开机）
- 209   1          UpdateTemperature();              // 更新温度信息
- 210   1          LCD1602_WriteCmd(Show_CursorOn);  // 打开光标
- 211   1          SHOW_WAIT = 40;                   // 开机打字机特效
- 212   1          ShowViewPage_1();                 // 显示首页
- 213   1          LCD1602_WriteCmd(Show_CursorOff); // 关闭光标
- 214   1          SHOW_WAIT = 0;
- 215   1          DS18B20_Convert();    // 开始温度转换
- 216   1          convert_finished = 0; // 打开温度转换定时
- 217   1          EA = 1;               // 总中断允许开启
- 218   1          ET0 = 1;              // 允许定时器中断
- 219   1          TR0 = 1;              // T0 开始工作
- 220   1          EX0 = 1;              // 允许外部中断
- 221   1      }
- 222          
- 223          void UpdateTemperature(void)
- 224          {
- 225   1          uchar i;
- 226   1          EA = 0; // 获取温度转化得关闭中断 否则会破坏 DS18B20 的时序 造成错误
- 227   1          temperature = DS18B20_ReadTemp(); // 获取温度计转换的温度
- 228   1          DS18B20_Convert();
- 229   1          i = 41;
- 230   1          do
- 231   1          {
- 232   2          } while (--i); // 83个机器周期
- 233   1          EA = 1; // 约 5290+83 个机器周期 假设 触发定时中断 21 次 有一些误差 但不多
- 234   1          temperature *= 0.0625; // 转化为可读温度
- 235   1          // 更新温度最大最小值
- 236   1          if (temperature > highest)
- 237   1              highest = temperature;
- 238   1          if (temperature < lowest)
-C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 21:33:42 PAGE 5   
+ 191   1          DCM = 0;     // 初始化电机不工作
+ 192   1          RELAY = 0;   // 初始化继电器断开
+ 193   1          TMOD = 0x02; // 定时器0 方式2
+ 194   1          TH0 = 0x00;  // 自动装填
+ 195   1          TL0 = 0x00;  // 记 256 次
+ 196   1      
+ 197   1          IT0 = 1; // 下降沿触发
+ 198   1          PX0 = 0; // 低优先级
+ 199   1          PT0 = 1; // 高优先级
+ 200   1      
+ 201   1          // 从 DS18B20 读取 温度上下限 分辨率
+ 202   1          // DS18B20_Update();
+ 203   1          DS18B20_Get(&upperLimit, &lowerLimit, &dsr);
+ 204   1          // 从 at24c02/24lc02 读取 风扇档位步长 开机音乐序号 音量(分为0-7) 3+2+3 =
+ 205   1          // 1byte
+ 206   1      }
+ 207          
+ 208          void init_program(void)
+ 209          {
+ 210   1          DS18B20_Convert();                // 开始温度转换
+ 211   1          LCD1602_Action();                 // lcd1602 初始化（开机）
+ 212   1          UpdateTemperature();              // 更新温度信息
+ 213   1          LCD1602_WriteCmd(Show_CursorOn);  // 打开光标
+ 214   1          SHOW_WAIT = 40;                   // 开机打字机特效
+ 215   1          ShowViewPage_1();                 // 显示首页
+ 216   1          LCD1602_WriteCmd(Show_CursorOff); // 关闭光标
+ 217   1          SHOW_WAIT = 0;
+ 218   1          DS18B20_Convert();    // 开始温度转换
+ 219   1          convert_finished = 0; // 打开温度转换定时
+ 220   1          EA = 1;               // 总中断允许开启
+ 221   1          ET0 = 1;              // 允许定时器中断
+ 222   1          TR0 = 1;              // T0 开始工作
+ 223   1          EX0 = 1;              // 允许外部中断
+ 224   1      }
+ 225          
+ 226          void UpdateTemperature(void)
+ 227          {
+ 228   1          uchar i;
+ 229   1          EA = 0; // 获取温度转化得关闭中断 否则会破坏 DS18B20 的时序 造成错误
+ 230   1          temperature = DS18B20_ReadTemp(); // 获取温度计转换的温度
+ 231   1          DS18B20_Convert();
+ 232   1          i = 42;
+ 233   1          do
+ 234   1          {
+ 235   2          } while (--i); // 85个机器周期
+ 236   1          EA = 1; // 约 5290+85 个机器周期 假设 触发定时中断 21 次 可能有一些误差 但非�
+             -�小
+ 237   1          temperature *= 0.0625; // 转化为可读温度
+C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 23:26:20 PAGE 5   
 
- 239   1              lowest = temperature;
- 240   1          // 比较温度是否越界 并采取措施
- 241   1          if (temperature > upperLimit) // 高于温度上限
- 242   1          {
- 243   2              above_upper_limit = 1; // 设置上越界标志位
- 244   2              dc_motor_working = 1;  // 直流电机开始工作
- 245   2              fanGear = (temperature - upperLimit) / fanGearStep + 1;
- 246   2              i = 21;
- 247   2              do
- 248   2              {
- 249   3                  AboveLimitClock(); // 上越界定时
- 250   3              } while (--i);
- 251   2          }
- 252   1          else // 温度正常
- 253   1          {
- 254   2              above_upper_limit = 0; // 上越界标志位清0
- 255   2              dc_motor_working = 0;  // 直流电机停止工作
- 256   2              fanGear = 0;           // 直流电机档位置0
- 257   2          }
- 258   1          if (temperature < lowerLimit) // 低于温度下限
- 259   1          {
- 260   2              below_lower_limit = 1; // 设置下越界标志位
- 261   2              RELAY = 1;             // 闭合继电器
- 262   2              i = 21;
- 263   2              do
- 264   2              {
- 265   3                  BelowLimitClock(); // 下越界定时
- 266   3              } while (--i);
- 267   2          }
- 268   1          else // 温度正常
- 269   1          {
- 270   2              RELAY = 0;             // 断开继电器
- 271   2              below_lower_limit = 0; // 下越界标志位清0
+ 238   1          // 更新温度最大最小值
+ 239   1          if (temperature > highest)
+ 240   1              highest = temperature;
+ 241   1          if (temperature < lowest)
+ 242   1              lowest = temperature;
+ 243   1          // 比较温度是否越界 并采取措施
+ 244   1          if (temperature > upperLimit) // 高于温度上限
+ 245   1          {
+ 246   2              above_upper_limit = 1; // 设置上越界标志位
+ 247   2              dc_motor_working = 1;  // 直流电机开始工作
+ 248   2              fanGear = (temperature - upperLimit) / fanGearStep + 1;
+ 249   2              if (fanGear > 3)
+ 250   2                  fanGear = 3;
+ 251   2              i = 21;
+ 252   2              do
+ 253   2              {
+ 254   3                  AboveLimitClock(); // 上越界定时
+ 255   3              } while (--i);
+ 256   2          }
+ 257   1          else // 温度正常
+ 258   1          {
+ 259   2              above_upper_limit = 0; // 上越界标志位清0
+ 260   2              dc_motor_working = 0;  // 直流电机停止工作
+ 261   2              fanGear = 0;           // 直流电机档位置0
+ 262   2          }
+ 263   1          if (temperature < lowerLimit) // 低于温度下限
+ 264   1          {
+ 265   2              below_lower_limit = 1; // 设置下越界标志位
+ 266   2              RELAY = 1;             // 闭合继电器
+ 267   2              i = 21;
+ 268   2              do
+ 269   2              {
+ 270   3                  BelowLimitClock(); // 下越界定时
+ 271   3              } while (--i);
  272   2          }
- 273   1      }
- 274          
- 275          void UpdateViewPageShow(void)
- 276          {
- 277   1          switch (page) // 判断当前处于哪一个视图
- 278   1          {
- 279   2          case 0x7f: // 主视图 (温度信息查询视图)
- 280   2              if (page_change)
- 281   2              { // 如果视图改变 刷新整个屏幕内容显示
- 282   3                  ShowViewPage_1();
- 283   3                  page_change = 0;
- 284   3              }
- 285   2              // 刷新温度值显示
- 286   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(2));
- 287   2              FloatToString(temperature, numStr, 5, 1);
- 288   2              LCD1602_ShowString(numStr);
- 289   2              // 刷新风扇档位显示
- 290   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
- 291   2              Int8ToString(fanGear, numStr, 1);
- 292   2              LCD1602_ShowString(numStr);
- 293   2              break;
- 294   2          case 0xbf: // 最高/最低温(温度极值)查询视图
- 295   2              if (page_change)
- 296   2              { // 如果视图改变 刷新整个屏幕内容显示
- 297   3                  ShowViewPage_2();
- 298   3                  page_change = 0;
- 299   3              }
- 300   2              // 刷新显示温度的极值
-C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 21:33:42 PAGE 6   
+ 273   1          else // 温度正常
+ 274   1          {
+ 275   2              RELAY = 0;             // 断开继电器
+ 276   2              below_lower_limit = 0; // 下越界标志位清0
+ 277   2          }
+ 278   1      }
+ 279          
+ 280          void UpdateViewPageShow(void)
+ 281          {
+ 282   1          switch (page) // 判断当前处于哪一个视图
+ 283   1          {
+ 284   2          case 0x7f: // 主视图 (温度信息查询视图)
+ 285   2              if (page_change)
+ 286   2              { // 如果视图改变 刷新整个屏幕内容显示
+ 287   3                  ShowViewPage_1();
+ 288   3                  page_change = 0;
+ 289   3              }
+ 290   2              // 刷新温度值显示
+ 291   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(2));
+ 292   2              FloatToString(temperature, numStr, 5, 1);
+ 293   2              LCD1602_ShowString(numStr);
+ 294   2              // 刷新风扇档位显示
+ 295   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
+ 296   2              Int8ToString(fanGear, numStr, 1);
+ 297   2              LCD1602_ShowString(numStr);
+ 298   2              break;
+ 299   2          case 0xbf: // 最高/最低温(温度极值)查询视图
+C51 COMPILER V9.60.7.0   MAIN                                                              12/02/2023 23:26:20 PAGE 6   
 
- 301   2              LCD1602_WriteCmd(Move_Cursor_Row1_Col(9));
- 302   2              UpdateExtremes(1);
- 303   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(9));
- 304   2              UpdateExtremes(0);
- 305   2              break;
- 306   2          case 0xdf: // 温度越界计时视图
- 307   2              if (page_change)
- 308   2              { // 如果视图改变 刷新整个屏幕内容显示
- 309   3                  ShowViewPage_3();
- 310   3                  page_change = 0;
- 311   3              }
- 312   2              // 如果温度高于上限 刷新显示上越界计时
- 313   2              if (above_upper_limit)
- 314   2              {
- 315   3                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(8));
- 316   3                  UpdateOverLimitTimer(1);
- 317   3              }
- 318   2              // 如果温度低于下限 刷新显示下越界计时
- 319   2              else if (below_lower_limit)
- 320   2              {
- 321   3                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(8));
- 322   3                  UpdateOverLimitTimer(0);
- 323   3              }
- 324   2      
- 325   2          case 0xef: // 设置查询视图
- 326   2              if (page_change)
- 327   2              { // 如果视图改变 刷新整个屏幕内容显示
- 328   3                  ShowViewPage_4();
- 329   3                  page_change = 0;
- 330   3              }
- 331   2              // 没有需要刷新的可变量
- 332   2              break;
- 333   2          }
- 334   1      }
+ 300   2              if (page_change)
+ 301   2              { // 如果视图改变 刷新整个屏幕内容显示
+ 302   3                  ShowViewPage_2();
+ 303   3                  page_change = 0;
+ 304   3              }
+ 305   2              // 刷新显示温度的极值
+ 306   2              LCD1602_WriteCmd(Move_Cursor_Row1_Col(9));
+ 307   2              UpdateExtremes(1);
+ 308   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(9));
+ 309   2              UpdateExtremes(0);
+ 310   2              break;
+ 311   2          case 0xdf: // 温度越界计时视图
+ 312   2              if (page_change)
+ 313   2              { // 如果视图改变 刷新整个屏幕内容显示
+ 314   3                  ShowViewPage_3();
+ 315   3                  page_change = 0;
+ 316   3              }
+ 317   2              // 如果温度高于上限 刷新显示上越界计时
+ 318   2              if (above_upper_limit)
+ 319   2              {
+ 320   3                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(8));
+ 321   3                  UpdateOverLimitTimer(1);
+ 322   3              }
+ 323   2              // 如果温度低于下限 刷新显示下越界计时
+ 324   2              else if (below_lower_limit)
+ 325   2              {
+ 326   3                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(8));
+ 327   3                  UpdateOverLimitTimer(0);
+ 328   3              }
+ 329   2      
+ 330   2          case 0xef: // 设置查询视图
+ 331   2              if (page_change)
+ 332   2              { // 如果视图改变 刷新整个屏幕内容显示
+ 333   3                  ShowViewPage_4();
+ 334   3                  page_change = 0;
+ 335   3              }
+ 336   2              // 没有需要刷新的可变量
+ 337   2              break;
+ 338   2          }
+ 339   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    930    ----
+   CODE SIZE        =    944    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

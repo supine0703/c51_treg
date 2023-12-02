@@ -33,14 +33,14 @@ uchar page = 0x7f;   // 用于视图模式选择不同视图
 uchar option = 0xff; // 用于设置模式选择不同项
 
 // 视图模式 主视图  设置模式 第 1 2 _ _ 项
-char upperLimit = 128;    // 温度上限
+char upperLimit = 127;    // 温度上限
 char lowerLimit = -55;    // 温度下限
 float temperature = 80.5; // 温度
 uchar fanGear = 0;        // 风扇档位
 
 // 视图模式 温度极值查询视图
 float highest = -55; // 开机后最高温
-float lowest = 128;  // 开机后最低温
+float lowest = 127;  // 开机后最低温
 
 // 视图模式 温度过界计时视图
 uchar hus = 0, hms = 0, hs = 0, hm = 0; // 开机后 超过温度上限 时间

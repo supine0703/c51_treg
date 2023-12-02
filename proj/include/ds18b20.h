@@ -26,4 +26,8 @@ extern void DS18B20_Get(
 );
 extern void DS18B20_Save(void);
 
+// extern void DS18B20_Update(void);
+
+// extern char DS18B20_Mode(void);
+
 #endif // DS18B20_H

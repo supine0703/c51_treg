@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   GLOBAL                                                            12/02/2023 21:33:42 PAGE 1   
+C51 COMPILER V9.60.7.0   GLOBAL                                                            12/02/2023 23:26:20 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE GLOBAL
@@ -43,7 +43,7 @@ line level    source
   33          uchar option = 0xff; // 用于设置模式选择不同项
   34          
   35          // 视图模式 主视图  设置模式 第 1 2 _ _ 项
-  36          char upperLimit = 128;    // 温度上限
+  36          char upperLimit = 127;    // 温度上限
   37          char lowerLimit = -55;    // 温度下限
   38          float temperature = 80.5; // 温度
   39          uchar fanGear = 0;        // 风扇档位
@@ -62,7 +62,7 @@ line level    source
   52          // 设置模式 第 3 _ 项 在 11.0592MHz 下 分辨率对应最大转换时间需要 T0 的定时次数
   53          uchar dsr = 0x03; // ds18b20 resolution 温度传感器分辨率
   54          uint code cttcn[] = {337, 675, 1350, 2700}; // convert temperature timer count num
-C51 COMPILER V9.60.7.0   GLOBAL                                                            12/02/2023 21:33:42 PAGE 2   
+C51 COMPILER V9.60.7.0   GLOBAL                                                            12/02/2023 23:26:20 PAGE 2   
 
   55          
   56          // 设置模式 第 5 6 项

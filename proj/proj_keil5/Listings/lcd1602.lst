@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   LCD1602                                                           12/02/2023 21:33:42 PAGE 1   
+C51 COMPILER V9.60.7.0   LCD1602                                                           12/02/2023 23:26:20 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD1602
@@ -62,7 +62,7 @@ line level    source
   51          
   52          //void LCD1602_Wait(unsigned int t)
   53          //{ do { } while (t--); }
-C51 COMPILER V9.60.7.0   LCD1602                                                           12/02/2023 21:33:42 PAGE 2   
+C51 COMPILER V9.60.7.0   LCD1602                                                           12/02/2023 23:26:20 PAGE 2   
 
   54          
   55          void LCD1602_Write(bit rs, unsigned char byte)

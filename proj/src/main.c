@@ -188,6 +188,8 @@ void int_X0() interrupt 0
 
 void init_data(void)
 {
+    DCM = 0;     // 初始化电机不工作
+    RELAY = 0;   // 初始化继电器断开
     TMOD = 0x02; // 定时器0 方式2
     TH0 = 0x00;  // 自动装填
     TL0 = 0x00;  // 记 256 次
@@ -197,6 +199,7 @@ void init_data(void)
     PT0 = 1; // 高优先级
 
     // 从 DS18B20 读取 温度上下限 分辨率
+    // DS18B20_Update();
     DS18B20_Get(&upperLimit, &lowerLimit, &dsr);
     // 从 at24c02/24lc02 读取 风扇档位步长 开机音乐序号 音量(分为0-7) 3+2+3 =
     // 1byte
@@ -226,11 +229,11 @@ void UpdateTemperature(void)
     EA = 0; // 获取温度转化得关闭中断 否则会破坏 DS18B20 的时序 造成错误
     temperature = DS18B20_ReadTemp(); // 获取温度计转换的温度
     DS18B20_Convert();
-    i = 41;
+    i = 42;
     do
     {
-    } while (--i); // 83个机器周期
-    EA = 1; // 约 5290+83 个机器周期 假设 触发定时中断 21 次 有一些误差 但不多
+    } while (--i); // 85个机器周期
+    EA = 1; // 约 5290+85 个机器周期 假设 触发定时中断 21 次 可能有一些误差 但非常小
     temperature *= 0.0625; // 转化为可读温度
     // 更新温度最大最小值
     if (temperature > highest)
@@ -243,6 +246,8 @@ void UpdateTemperature(void)
         above_upper_limit = 1; // 设置上越界标志位
         dc_motor_working = 1;  // 直流电机开始工作
         fanGear = (temperature - upperLimit) / fanGearStep + 1;
+        if (fanGear > 3)
+            fanGear = 3;
         i = 21;
         do
         {

@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 21:33:42 PAGE 1   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 23:26:20 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE ULTIMATE
@@ -62,12 +62,12 @@ line level    source
   52   1          LCD1602_WriteCmd(Mode_CursorRightMove); // 命令3
   53   1          LCD1602_WriteCmd(Clear_Screen);         // 命令1
   54   1      
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 21:33:42 PAGE 2   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 23:26:20 PAGE 2   
 
   55   1          // 开机界面
   56   1          LCD1602_WriteCmd(Move_Cursor_Row1_Col(16)); // 命令8 设置光标在显示屏之外
   57   1          LCD1602_ShowString(WELCOME);
-  58   1          SHOW_WAIT = 100;
+  58   1          SHOW_WAIT = 200;
   59   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(16)); // 命令8
   60   1          LCD1602_WriteCmd(Mode_ScreenRightMove);     // 命令3
   61   1          LCD1602_ShowString(_GROUP_); // 一边输出第二行 一边移动屏幕
@@ -126,7 +126,7 @@ line level    source
  114   1          UpdateExtremes(0);
  115   1      }
  116          
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 21:33:42 PAGE 3   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 23:26:20 PAGE 3   
 
  117          void ShowViewPage_3(void)
  118          {
@@ -190,7 +190,7 @@ line level    source
  176   3                  Int8ToString(lowerLimit, numStr, 3);
  177   3                  LCD1602_ShowString(numStr);
  178   3                  LCD1602_ShowString(DC);
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 21:33:42 PAGE 4   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 23:26:20 PAGE 4   
 
  179   3                  break;
  180   3              case 1:
@@ -254,7 +254,7 @@ line level    source
  237   3                  LCD1602_WriteCmd((option ? 0xc0 : 0x80) | 10);
  238   3                  if (flag)
  239   3                      LCD1602_ShowString("   ");
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 21:33:42 PAGE 5   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 23:26:20 PAGE 5   
 
  240   3                  else
  241   3                  {
@@ -318,7 +318,7 @@ line level    source
  299   4                      j = option == 4 ? ringtone : (option == 3 ? fanGearStep : dsr);
  300   4                      LCD1602_WriteCmd(Shift_CursorLeft);
  301   4                      LCD1602_WriteData(j + '0');
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 21:33:42 PAGE 6   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 23:26:20 PAGE 6   
 
  302   4                      return;
  303   4                  case -1:
@@ -382,7 +382,7 @@ line level    source
  361   1          {
  362   2          case 0x7f: // P37
  363   2          case 0xbf: // P36
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 21:33:42 PAGE 7   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 23:26:20 PAGE 7   
 
  364   2          case 0xdf: // P35
  365   2          case 0xef: // P34
@@ -446,7 +446,7 @@ line level    source
  423   3                      return key == 0xbf ? 1 : -1;
  424   3                  if (changeCount == 0xff)
  425   3                      changeCount = 0x5f;
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 21:33:42 PAGE 8   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 23:26:20 PAGE 8   
 
  426   3                  return 0;
  427   3              }
@@ -510,7 +510,7 @@ line level    source
  485   3                  {
  486   4                      ls = 0;
  487   4                      if (++lm == 60)
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 21:33:42 PAGE 9   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/02/2023 23:26:20 PAGE 9   
 
  488   4                      {
  489   5                          lm = 0;
