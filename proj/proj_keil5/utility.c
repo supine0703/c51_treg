@@ -1,13 +1,31 @@
 #define uchar unsigned char
-#define uint  unsigned int
+#define uint unsigned int
 
-// @param num: 数字  str: 存储地址  length: 数据可存储大小  decimal: 小数位数
+/**
+ * 不加入结束符就可以插入别的字符串中间
+ * 但是对于单独开空间存储的来说 要么不同长度各自开空间 要么手动加结束符
+ * 所以出于妥协 添加一个宏来作为编译的这一份代码是否需要自动加入结束符
+*/
+#define _ADD_END_
+
+/**
+ * @param num 需要转换的数字
+ * @param str 存储字符串的首地址
+ * @param length 转换后数字可以存放的空间长度
+ * @param decimal 小数占多少位
+ */
+
 void FloatToString(float num, uchar* str, uchar length, uchar decimal)
 {
     char i, mid;
     uint intn, decn;
-    float dec, std = 0.4;
+    float dec, std;
 
+#ifdef _ADD_END_
+    str[length] = 0; // 字符串结束标志位
+#endif
+
+    std = 0.4;
     // 确定小数点的位置
     if (decimal != 0)
     {
@@ -68,7 +86,13 @@ void FloatToString(float num, uchar* str, uchar length, uchar decimal)
 
 void Int8ToString(char num, uchar* str, uchar length)
 {
-    bit neg = num < 0;
+    bit neg;
+
+#ifdef _ADD_END_
+    str[length] = 0; // 字符串结束标志位
+#endif
+
+    neg = num < 0;
     if (!length)
         return;
     if (neg)

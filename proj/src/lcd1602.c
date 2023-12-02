@@ -24,7 +24,7 @@ void LCD1602_CheckBusy(void)
 
 void LCD1602_Write(bit rs, unsigned char byte);
 
-void LCD1602_WriteCmd(uchar cmd)
+void LCD1602_WriteCmd(unsigned char cmd)
 { if (!cmd) return; LCD1602_Write(0, cmd); }
 
 void LCD1602_WriteData(unsigned char dat)

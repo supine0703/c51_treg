@@ -35,16 +35,18 @@
 // #define LCD1602_USE_DEFAULT // 使用默认配置 手动配置后不可再这样做
 #define LCD1602_NO_READDATA // 不编译LCD1602_ReadData(void)
 #define LCD1602_DATA P0     // 数据 to LCD1602
-sbit LCD1602_RS = P1^0;   // 寄存器选择
-sbit LCD1602_RW = P1^1;   // 读/写
-sbit LCD1602_EN = P1^2;   // 使能
+sbit LCD1602_RS = P1 ^ 0;   // 寄存器选择
+sbit LCD1602_RW = P1 ^ 1;   // 读/写
+sbit LCD1602_EN = P1 ^ 2;   // 使能
 
 // ------- define for ds18b20 ----------
 
-sbit DQ = P1^5;
+sbit DQ = P1 ^ 5;
 
 // -------------------------------------
 
-#define KEYS P3
+#define KEYS P3      // 按键
+sbit RELAY = P2 ^ 3; // 继电器
+sbit DCM = P2 ^ 7;   // 直流电机
 
 #endif // __CONFIG___H

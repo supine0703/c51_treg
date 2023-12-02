@@ -4,44 +4,18 @@
 #define _GROUP_ "      NO.13     "
 #define SETTING_NUM 6
 
-extern uchar DC[];
-
-extern uchar str1[];
-extern uchar str2[];
-extern uchar str3[];
-extern uchar str5[];
-
-// 第一页变量
-extern char upperLimit;
-extern char lowerLimit;
-extern float temp;
-extern char fanGear;
-extern uchar fanGearStep;
-
-// 第二页变量
-extern float highest;
-extern float lowest;
-
-// 第三页变量
-
-extern uchar hms, hs, hm; // 开机后 超过温度上限 时间
-extern uchar lms, ls, lm; // 开机后 低于温度下限 时间
-
 extern uint SHOW_WAIT;
-
-extern uchar key, pressKey;
-extern uchar page;
-extern bit pageChange;
-
-extern uchar dsr;
-
-extern uchar ringtone;
-
-extern uchar volume;
-
-extern uchar option;
-
-extern changeCount;
+extern bit page_change;
+extern char upperLimit, lowerLimit;
+extern float temperature;
+extern float highest, lowest;
+extern uchar fanGear, fanGearStep;
+extern uchar hus, hms, hs, hm; // 开机后 超过温度上限 时间
+extern uchar lus, lms, ls, lm; // 开机后 低于温度下限 时间
+extern uchar key, pressKey, page, option;
+extern uchar dsr, ringtone, volume, changeCount;
+extern uchar code DC[];
+extern uchar numStr[];
 
 extern _nop_(void);
 
@@ -69,15 +43,6 @@ void LCD1602_ShowString(uchar* s)
     }
 }
 
-void LCD1602_ScreenShiftRight(uchar num)
-{
-    while (num--)
-    {
-        LCD1602_WriteCmd(Shift_ScreenRight); // 命令5
-        Delay1ms(SHOW_WAIT);
-    }
-}
-
 void LCD1602_Action(void)
 {
     uchar i;
@@ -87,115 +52,107 @@ void LCD1602_Action(void)
     LCD1602_WriteCmd(Mode_CursorRightMove); // 命令3
     LCD1602_WriteCmd(Clear_Screen);         // 命令1
 
-    // // 开机界面
-    // LCD1602_WriteCmd(Move_Cursor_Row1_Col(16)); // 命令8 设置光标在显示屏之外
-    // LCD1602_ShowString(WELCOME);
-    // SHOW_WAIT = 100;
-    // LCD1602_WriteCmd(Move_Cursor_Row2_Col(16)); // 命令8
-    // LCD1602_WriteCmd(Mode_ScreenRightMove);     // 命令3
-    // LCD1602_ShowString(_GROUP_); // 一边输出第二行 一边移动屏幕
-    // LCD1602_WriteCmd(Mode_CursorRightMove); // 命令3  恢复光标自增
+    // 开机界面
+    LCD1602_WriteCmd(Move_Cursor_Row1_Col(16)); // 命令8 设置光标在显示屏之外
+    LCD1602_ShowString(WELCOME);
+    SHOW_WAIT = 100;
+    LCD1602_WriteCmd(Move_Cursor_Row2_Col(16)); // 命令8
+    LCD1602_WriteCmd(Mode_ScreenRightMove);     // 命令3
+    LCD1602_ShowString(_GROUP_); // 一边输出第二行 一边移动屏幕
+    LCD1602_WriteCmd(Mode_CursorRightMove); // 命令3  恢复光标自增
 
-    // i = 3;
-    // do // 闪烁三次
-    // {
-    //     LCD1602_WriteCmd(Show_ScreenOff); // 命令4
-    //     Delay1ms(SHOW_WAIT * 2);
-    //     LCD1602_WriteCmd(Show_CursorOff); // 命令4
-    //     Delay1ms(SHOW_WAIT * 2);
-    // } while (--i);
-
-    // LCD1602_ScreenShiftRight(16);   // 字体移出屏幕
+    i = 3;
+    do // 闪烁三次
+    {
+        LCD1602_WriteCmd(Show_ScreenOff); // 命令4
+        Delay1ms(SHOW_WAIT * 2);
+        LCD1602_WriteCmd(Show_CursorOff); // 命令4
+        Delay1ms(SHOW_WAIT * 2);
+    } while (--i);
+    i = 16;
+    do
+    {
+        LCD1602_WriteCmd(Shift_ScreenRight); // 命令5
+        Delay1ms(SHOW_WAIT);
+    } while (--i);                  // 字体移出屏幕
     LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
     SHOW_WAIT = 0;
 } // LCD1602 Action
 
-void ViewPage_1(void)
+void ShowViewPage_1(void)
 {
     // 第一行 温度上限 温度下限
     LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
     LCD1602_ShowString("H:");
-    Int8ToString(upperLimit, str3, 3);
-    LCD1602_ShowString(str3);
+    Int8ToString(upperLimit, numStr, 3);
+    LCD1602_ShowString(numStr);
     LCD1602_ShowString(DC);
     LCD1602_ShowString("  L:");
-    Int8ToString(lowerLimit, str3, 3);
-    LCD1602_ShowString(str3);
+    Int8ToString(lowerLimit, numStr, 3);
+    LCD1602_ShowString(numStr);
     LCD1602_ShowString(DC);
     // 第二行 温度 风扇档位
     LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
     LCD1602_ShowString("T:");
-    FloatToString(temp, str5, 5, 1);
-    LCD1602_ShowString(str5);
+    FloatToString(temperature, numStr, 5, 1);
+    LCD1602_ShowString(numStr);
     LCD1602_ShowString(DC);
     LCD1602_ShowString("  FAN:");
-    Int8ToString(fanGear, str1, 1);
-    LCD1602_ShowString(str1);
+    Int8ToString(fanGear, numStr, 1);
+    LCD1602_ShowString(numStr);
 }
 
-void ViewPage_2(void)
+void ShowViewPage_2(void)
 {
     // 第一行 自开机后的最高温
     LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
     LCD1602_ShowString("Highest: ");
-    FloatToString(highest, str5, 5, 1);
-    LCD1602_ShowString(str5);
-    LCD1602_ShowString(DC);
+    UpdateExtremes(1);
     // 第二行 自开机后的最低温
     LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
     LCD1602_ShowString("Lowest:  ");
-    FloatToString(lowest, str5, 5, 1);
-    LCD1602_ShowString(str5);
-    LCD1602_ShowString(DC);
+    UpdateExtremes(0);
 }
 
-void ViewPage_3(void)
+void ShowViewPage_3(void)
 {
+    void UpdateOverLimitTimer(bit which);
     // 第一行 超过温度上限时长
     LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
-    LCD1602_ShowString("H Time: ");
-    Int8ToString(hm, str2, 2);
-    LCD1602_ShowString(str2);
-    LCD1602_ShowString("m");
-    Int8ToString(hs, str2, 2);
-    LCD1602_ShowString(str2);
-    LCD1602_ShowString(".");
-    Int8ToString(hms, str1, 1);
-    LCD1602_ShowString(str1);
-    LCD1602_ShowString("s");
+    LCD1602_ShowString("Above H:");
+    UpdateOverLimitTimer(1);
     // 第二行 低于温度下限时长
     LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
-    LCD1602_ShowString("L Time: ");
-    Int8ToString(lm, str2, 2);
-    LCD1602_ShowString(str2);
-    LCD1602_ShowString("m");
-    Int8ToString(ls, str2, 2);
-    LCD1602_ShowString(str2);
-    LCD1602_ShowString(".");
-    Int8ToString(lms, str1, 1);
-    LCD1602_ShowString(str1);
-    LCD1602_ShowString("s");
+    LCD1602_ShowString("Below L:");
+    UpdateOverLimitTimer(0);
 }
 
-void ViewPage_4(void)
+void ShowViewPage_4(void)
 {
+    char KeysSystem_3(void);
+    uchar i;
     LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
-    // // 第一行 温感分辨率 风扇档位步长 开机音乐
-    // LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
-    // LCD1602_ShowString("R:");
-    // LCD1602_ShowString();
-    // LCD1602_ShowString("  FG:");
-    // LCD1602_ShowString();
-    // LCD1602_ShowString(DC);
+    // 第一行 温感分辨率 风扇档位步长 (开机音乐?)
+    LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
+    LCD1602_ShowString("TR: ");
+    LCD1602_WriteData('0' + dsr);
+    LCD1602_ShowString("   FGS: ");
+    LCD1602_WriteData('0' + fanGearStep);
+    LCD1602_ShowString(DC);
     // LCD1602_ShowString("  M:");
     // LCD1602_ShowString();
-    // // 第二行 音量
-    // LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
-    // LCD1602_ShowString("Volume: ");
-    // LCD1602_ShowString();
+    // 第二行 音量
+    LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
+    LCD1602_ShowString("Volume: ");
+    i = 0;
+    while (i < volume)
+    {
+        LCD1602_WriteData(0xff);
+        ++i;
+    }
 }
 
-void Settings(uchar opt)
+void ShowSettings(uchar opt)
 {
     char i;
     uchar sgl[2][2] = {{0x7e, 0x7f}, {' ', ' '}};
@@ -210,14 +167,14 @@ void Settings(uchar opt)
             // 0 温度上限
             LCD1602_WriteCmd(Move_Cursor_Row1_Col(1));
             LCD1602_ShowString("H Limit: ");
-            Int8ToString(upperLimit, str3, 3);
-            LCD1602_ShowString(str3);
+            Int8ToString(upperLimit, numStr, 3);
+            LCD1602_ShowString(numStr);
             LCD1602_ShowString(DC);
             // 1 温度下限
             LCD1602_WriteCmd(Move_Cursor_Row2_Col(1));
             LCD1602_ShowString("L Limit: ");
-            Int8ToString(lowerLimit, str3, 3);
-            LCD1602_ShowString(str3);
+            Int8ToString(lowerLimit, numStr, 3);
+            LCD1602_ShowString(numStr);
             LCD1602_ShowString(DC);
             break;
         case 1:
@@ -260,22 +217,6 @@ void Settings(uchar opt)
     option = opt;
 }
 
-// void SettingChoose(bit row)
-// {
-//     uchar s[2][2] = {{0x7e, 0x7f}, {' ', ' '}};
-//     LCD1602_WriteCmd(Move_Cursor_Row1_Col(0));
-//     LCD1602_WriteData(s[row][0]);
-//     LCD1602_WriteCmd(Move_Cursor_Row1_Col(15));
-//     LCD1602_WriteData(s[row][1]);
-//     row = !row;
-//     LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
-//     LCD1602_WriteData(s[row][0]);
-//     LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
-//     LCD1602_WriteData(s[row][1]);
-// }
-
-char KeysSystem_3(void);
-
 void ChangeSetting(void)
 {
     char i, j;
@@ -298,8 +239,8 @@ void ChangeSetting(void)
                 LCD1602_ShowString("   ");
             else
             {
-                Int8ToString(i, str3, 3);
-                LCD1602_ShowString(str3);
+                Int8ToString(i, numStr, 3);
+                LCD1602_ShowString(numStr);
             }
             switch (KeysSystem_3())
             {
@@ -310,8 +251,8 @@ void ChangeSetting(void)
                     upperLimit = i;
             case -2: // 可能会因为时序造成空白 所以要
                 LCD1602_WriteCmd((option ? 0xc0 : 0x80) | 10);
-                Int8ToString(option ? lowerLimit : upperLimit, str3, 3);
-                LCD1602_ShowString(str3); // 刷新一下数据
+                Int8ToString(option ? lowerLimit : upperLimit, numStr, 3);
+                LCD1602_ShowString(numStr); // 刷新一下数据
                 return;
             case -1:
                 if (i > -55 && ((i > lowerLimit + 1) || option))
@@ -364,7 +305,7 @@ void ChangeSetting(void)
                     --i;
                 break;
             case 1:
-                if (i < 3 + option == 3 ? 4 : 0)
+                if (i < 3 + (option == 3 ? 4 : 0))
                     ++i;
                 break;
             }
@@ -403,7 +344,7 @@ void KeysSystem_1(void)
     case 0xff: // 松开 上升沿触发
         if (pressKey == 0xff || CheckKeysInvalid())
             return;
-        pageChange = 1;
+        page_change = 1;
         page = pressKey;
     default:
         pressKey = 0xff;
@@ -453,7 +394,7 @@ void KeysSystem_2(void)
         case 0xef: // P34 首条
             opt = 0;
         }
-        Settings(opt);
+        ShowSettings(opt);
     default:
         pressKey = 0xff;
     }
@@ -478,7 +419,7 @@ char KeysSystem_3(void)
                 ++changeCount;
                 return key == 0xbf ? 1 : -1;
             }
-            if (++changeCount - 80 > 0 && !(changeCount & 0x0f))
+            if ((++changeCount > 80) && !(changeCount & 0x0f))
             {
                 return key == 0xbf ? 1 : -1;
             }
@@ -502,12 +443,6 @@ char KeysSystem_3(void)
         case 0x7f: // P37 取消
             pressKey = 0xff;
             return -2;
-        // case 0xbf: // P36 增加
-        //     pressKey = 0xff;
-        //     return 1;
-        // case 0xdf: // P35 减少
-        //     pressKey = 0xff;
-        //     return -1;
         case 0xef: // P34 确定
             pressKey = 0xff;
             return 2;
@@ -518,23 +453,73 @@ char KeysSystem_3(void)
     return 0;
 }
 
-// void Clock(void)
-// {
-//     uchar us, ms, s, m;
-//     if (++us == 180)
-//     {
-//         us = 0;
-//         if (++ms == 20)
-//         {
-//             ms = 0;
-//             if (++s == 60)
-//             {
-//                 s = 0;
-//                 if (++m == 60)
-//                 {
-//                     m = 0;
-//                 }
-//             }
-//         }
-//     }
-// }
+void AboveLimitClock(void)
+{
+    if (++hus == 180)
+    {
+        hus = 0;
+        if (++hms == 20)
+        {
+            hms = 0;
+            if (++hs == 60)
+            {
+                hs = 0;
+                if (++hm == 60)
+                {
+                    hm = 0;
+                }
+            }
+        }
+    }
+}
+
+void BelowLimitClock(void)
+{
+    if (++lus == 180)
+    {
+        lus = 0;
+        if (++lms == 20)
+        {
+            lms = 0;
+            if (++ls == 60)
+            {
+                ls = 0;
+                if (++lm == 60)
+                {
+                    lm = 0;
+                }
+            }
+        }
+    }
+}
+
+void UpdateOverLimitTimer(bit which) // 1: Above  0: Below
+{
+    if (which)
+    {
+        Int8ToString(hm, numStr, 2);
+        Int8ToString(hs, numStr + 3, 2);
+    }
+    else
+    {
+        Int8ToString(lm, numStr, 2);
+        Int8ToString(ls, numStr + 3, 2);
+    }
+    LCD1602_ShowString(numStr);
+    LCD1602_ShowString("m");
+    LCD1602_ShowString(numStr + 3);
+    LCD1602_ShowString(".");
+    if (which)
+        Int8ToString(hms >> 1, numStr, 1);
+    else
+        Int8ToString(lms >> 1, numStr, 1);
+    LCD1602_ShowString(numStr);
+    LCD1602_ShowString("s");
+}
+
+void UpdateExtremes(bit which) // 1: Highest  0: Lowest
+{
+    FloatToString(which ? highest : lowest, numStr, 5, 1);
+    LCD1602_ShowString(numStr);
+    LCD1602_ShowString(DC);
+}

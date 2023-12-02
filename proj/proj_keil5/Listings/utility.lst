@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   UTILITY                                                           12/01/2023 01:42:17 PAGE 1   
+C51 COMPILER V9.60.7.0   UTILITY                                                           12/02/2023 08:26:10 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE UTILITY
@@ -9,110 +9,136 @@ COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE utility.c OPTIMIZE(8,SPEED) BRO
 line level    source
 
    1          #define uchar unsigned char
-   2          #define uint  unsigned int
+   2          #define uint unsigned int
    3          
-   4          // @param num: 数字  str: 存储地址  length: 数据可存储大小  decimal: 小数位数
-   5          void FloatToString(float num, uchar* str, uchar length, uchar decimal)
-   6          {
-   7   1          char i, mid;
-   8   1          uint intn, decn;
-   9   1          float dec, std = 0.4;
-  10   1      
-  11   1          // 确定小数点的位置
-  12   1          if (decimal != 0)
-  13   1          {
-  14   2              if (decimal + (num < 0) + 1 > length)
-  15   2              {
-  16   3                  mid = num < 0;
-  17   3                  decimal = length - 1 - (num < 0);
-  18   3              }
-  19   2              else
-  20   2                  mid = length - decimal - 1;
-  21   2              str[mid] = '.';
-  22   2          }
-  23   1          else
-  24   1              mid = length;
-  25   1      
-  26   1          // 五舍六入
-  27   1          i = decimal;
-  28   1          while (i--)
-  29   1              std *= 0.1;
-  30   1      
-  31   1          // 分离整数和小数部分
-  32   1          if (num < 0)
-  33   1          {
-  34   2              num -= std;
-  35   2              intn = -(int)num;
-  36   2              dec = (int)num - num;
-  37   2          }
-  38   1          else
-  39   1          {
-  40   2              num += std;
-  41   2              intn = (int)num;
-  42   2              dec = num - intn;
-  43   2          }
-  44   1      
-  45   1          // 处理小数部分
-  46   1          for (i = mid + 1; i < length; ++i)
-  47   1          {
-  48   2              dec *= 10;
-  49   2              decn = (uchar)dec;
-  50   2              str[i] = decn + '0';
-  51   2              dec -= decn;
-  52   2          }
-  53   1          // 处理整数部分
-  54   1          for (i = mid - 1; i > 0; --i)
-C51 COMPILER V9.60.7.0   UTILITY                                                           12/01/2023 01:42:17 PAGE 2   
+   4          /**
+   5           * 不加入结束符就可以插入别的字符串中间
+   6           * 但是对于单独开空间存储的来说 要么不同长度各自开空间 要么手动加结束符
+   7           * 所以出于妥协 添加一个宏来作为编译的这一份代码是否需要自动加入结束符
+   8          */
+   9          #define _ADD_END_
+  10          
+  11          /**
+  12           * @param num 需要转换的数字
+  13           * @param str 存储字符串的首地址
+  14           * @param length 转换后数字可以存放的空间长度
+  15           * @param decimal 小数占多少位
+  16           */
+  17          
+  18          void FloatToString(float num, uchar* str, uchar length, uchar decimal)
+  19          {
+  20   1          char i, mid;
+  21   1          uint intn, decn;
+  22   1          float dec, std;
+  23   1      
+  24   1      #ifdef _ADD_END_
+  25   1          str[length] = 0; // 字符串结束标志位
+  26   1      #endif
+  27   1      
+  28   1          std = 0.4;
+  29   1          // 确定小数点的位置
+  30   1          if (decimal != 0)
+  31   1          {
+  32   2              if (decimal + (num < 0) + 1 > length)
+  33   2              {
+  34   3                  mid = num < 0;
+  35   3                  decimal = length - 1 - (num < 0);
+  36   3              }
+  37   2              else
+  38   2                  mid = length - decimal - 1;
+  39   2              str[mid] = '.';
+  40   2          }
+  41   1          else
+  42   1              mid = length;
+  43   1      
+  44   1          // 五舍六入
+  45   1          i = decimal;
+  46   1          while (i--)
+  47   1              std *= 0.1;
+  48   1      
+  49   1          // 分离整数和小数部分
+  50   1          if (num < 0)
+  51   1          {
+  52   2              num -= std;
+  53   2              intn = -(int)num;
+  54   2              dec = (int)num - num;
+C51 COMPILER V9.60.7.0   UTILITY                                                           12/02/2023 08:26:10 PAGE 2   
 
-  55   1          {
-  56   2              str[i] = intn % 10 + '0';
-  57   2              intn /= 10;
-  58   2              if (intn == 0)
-  59   2              {
-  60   3                  --i;
-  61   3                  break;
-  62   3              }
-  63   2          }
-  64   1          str[i] = num < 0 ? '-' : (intn == 0 && mid != 1 ? ' ' : intn % 10 + '0');
-  65   1          while (i-- > 0)
-  66   1              str[i] = ' ';
-  67   1      }
-  68          
-  69          void Int8ToString(char num, uchar* str, uchar length)
-  70          {
-  71   1          bit neg = num < 0;
-  72   1          if (!length)
-  73   1              return;
-  74   1          if (neg)
-  75   1          {
-  76   2              if (!--length)
-  77   2                  return;
-  78   2              ++str;
-  79   2              num = ~num;
-  80   2              ++num;
+  55   2          }
+  56   1          else
+  57   1          {
+  58   2              num += std;
+  59   2              intn = (int)num;
+  60   2              dec = num - intn;
+  61   2          }
+  62   1      
+  63   1          // 处理小数部分
+  64   1          for (i = mid + 1; i < length; ++i)
+  65   1          {
+  66   2              dec *= 10;
+  67   2              decn = (uchar)dec;
+  68   2              str[i] = decn + '0';
+  69   2              dec -= decn;
+  70   2          }
+  71   1          // 处理整数部分
+  72   1          for (i = mid - 1; i > 0; --i)
+  73   1          {
+  74   2              str[i] = intn % 10 + '0';
+  75   2              intn /= 10;
+  76   2              if (intn == 0)
+  77   2              {
+  78   3                  --i;
+  79   3                  break;
+  80   3              }
   81   2          }
-  82   1          str[--length] = num % 10 + '0';
-  83   1          while (length)
-  84   1          {
-  85   2              num /= 10;
-  86   2              if (!num)
-  87   2                  break;
-  88   2              str[--length] = num % 10 + '0';
-  89   2          }
-  90   1          if (neg)
-  91   1          {
-  92   2              --str;
-  93   2              if (!length)
-  94   2                  *str = '-';
-  95   2              str[length] = '-';
-  96   2          }
-  97   1          while (length)
-  98   1              str[--length] = ' ';
-  99   1      }
+  82   1          str[i] = num < 0 ? '-' : (intn == 0 && mid != 1 ? ' ' : intn % 10 + '0');
+  83   1          while (i-- > 0)
+  84   1              str[i] = ' ';
+  85   1      }
+  86          
+  87          void Int8ToString(char num, uchar* str, uchar length)
+  88          {
+  89   1          bit neg;
+  90   1      
+  91   1      #ifdef _ADD_END_
+  92   1          str[length] = 0; // 字符串结束标志位
+  93   1      #endif
+  94   1      
+  95   1          neg = num < 0;
+  96   1          if (!length)
+  97   1              return;
+  98   1          if (neg)
+  99   1          {
+ 100   2              if (!--length)
+ 101   2                  return;
+ 102   2              ++str;
+ 103   2              num = ~num;
+ 104   2              ++num;
+ 105   2          }
+ 106   1          str[--length] = num % 10 + '0';
+ 107   1          while (length)
+ 108   1          {
+ 109   2              num /= 10;
+ 110   2              if (!num)
+ 111   2                  break;
+ 112   2              str[--length] = num % 10 + '0';
+ 113   2          }
+ 114   1          if (neg)
+ 115   1          {
+ 116   2              --str;
+C51 COMPILER V9.60.7.0   UTILITY                                                           12/02/2023 08:26:10 PAGE 3   
+
+ 117   2              if (!length)
+ 118   2                  *str = '-';
+ 119   2              str[length] = '-';
+ 120   2          }
+ 121   1          while (length)
+ 122   1              str[--length] = ' ';
+ 123   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    841    ----
+   CODE SIZE        =    861    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

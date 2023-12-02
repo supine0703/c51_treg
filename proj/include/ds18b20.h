@@ -7,10 +7,6 @@
 
 #include "__config__.h"
 
-#ifndef uchar
-#define uchar unsigned char
-#endif
-
 extern char DS18B20_InitCheck(void);
 extern void DS18B20_WriteByte(unsigned char dat);
 extern unsigned char DS18B20_ReadByte(void);
@@ -29,6 +25,5 @@ extern void DS18B20_Get(
     unsigned char* resolution
 );
 extern void DS18B20_Save(void);
-extern void DS18B20_Update(void);
 
 #endif // DS18B20_H
