@@ -83,7 +83,7 @@ void main(void)
                 convert_finished = 0;
             }
             UpdateViewPageShow(); // 刷新视图显示
-            KeysSystem_1(); // 第一套按键事件响应系统
+            KeysSystem_1();       // 第一套按键事件响应系统
         }
     }
 }
@@ -115,14 +115,14 @@ void int_T0() interrupt 1
             if (dcmCount >= 2520)     // 0.7s
                 if (dcmCount >= 3600) // 1.0s
                     dcmCount = 0;
-                else
-                    DCM = fanGear < 0x03;
-            else
-                DCM = fanGear < 0x02;
-        else
-            DCM = fanGear < 0x01;
+                else // 0.7s - 1.0s
+                    DCM = fanGear >= 0x03;
+            else // 0.4s - 0.7s
+                DCM = fanGear >= 0x02;
+        else // 0.0s - 0.4s
+            DCM = fanGear >= 0x01;
     else
-        DCM = 1;
+        DCM = 0;
     // 过界定时 需要 32个机器周期
     if (above_upper_limit)
         AboveLimitClock();
@@ -138,8 +138,9 @@ void int_T0() interrupt 1
  *     设置模式下会关闭定时器 因为没有继续定时的必要
  * 思路:
  *     外部中断通过软件延迟 每0.05s判断一次是否仍然处于 按下且仅按下 INT0 状态
- *     当按下持续时间超过给定阈值将会 切换设置/视图模式 并执行必要的 初始化/收尾 工作
-*/
+ *     当按下持续时间超过给定阈值将会 切换设置/视图模式 并执行必要的 初始化/收尾
+ * 工作
+ */
 void int_X0() interrupt 0
 {
     uchar ky; // 临时用来接收按键操作
@@ -175,8 +176,9 @@ void int_X0() interrupt 0
     }
     else // 进入设置模式
     {
-        DCM = 1; // 关闭直流电机
-        TR0 = 0; // 关闭定时计器T0
+        RELAY = 0; // 断开继电器
+        DCM = 0;   // 关闭直流电机
+        TR0 = 0;   // 关闭定时计器T0
         // 得从主函数中调用 否则可能会发生形参被出错 产生不可预料问题
         // 可以设定一个标志 让主函数调用一次 ready_settings
         ready_settings = 1; // 进入设置模式 刷新设置模式显示
@@ -256,7 +258,7 @@ void UpdateTemperature(void)
     if (temperature < lowerLimit) // 低于温度下限
     {
         below_lower_limit = 1; // 设置下越界标志位
-        RELAY = 0;             // 闭合继电器
+        RELAY = 1;             // 闭合继电器
         i = 21;
         do
         {
@@ -265,7 +267,7 @@ void UpdateTemperature(void)
     }
     else // 温度正常
     {
-        RELAY = 1;             // 断开继电器
+        RELAY = 0;             // 断开继电器
         below_lower_limit = 0; // 下越界标志位清0
     }
 }

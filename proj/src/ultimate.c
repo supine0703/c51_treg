@@ -55,7 +55,7 @@ void LCD1602_Action(void)
     // 开机界面
     LCD1602_WriteCmd(Move_Cursor_Row1_Col(16)); // 命令8 设置光标在显示屏之外
     LCD1602_ShowString(WELCOME);
-    SHOW_WAIT = 100;
+    SHOW_WAIT = 200;
     LCD1602_WriteCmd(Move_Cursor_Row2_Col(16)); // 命令8
     LCD1602_WriteCmd(Mode_ScreenRightMove);     // 命令3
     LCD1602_ShowString(_GROUP_); // 一边输出第二行 一边移动屏幕
@@ -419,10 +419,10 @@ char KeysSystem_3(void)
                 ++changeCount;
                 return key == 0xbf ? 1 : -1;
             }
-            if ((++changeCount > 80) && !(changeCount & 0x0f))
-            {
+            if ((++changeCount >= 0x60) && !(changeCount & 0x0f))
                 return key == 0xbf ? 1 : -1;
-            }
+            if (changeCount == 0xff)
+                changeCount = 0x5f;
             return 0;
         }
         else

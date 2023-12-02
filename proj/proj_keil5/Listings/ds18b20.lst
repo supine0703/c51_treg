@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   DS18B20                                                           12/02/2023 08:26:10 PAGE 1   
+C51 COMPILER V9.60.7.0   DS18B20                                                           12/02/2023 21:33:42 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DS18B20
@@ -62,7 +62,7 @@ line level    source
   52   1          uchar i = 8;
   53   1          do // 串行写8位数据，先写低位后写高位
   54   1          {
-C51 COMPILER V9.60.7.0   DS18B20                                                           12/02/2023 08:26:10 PAGE 2   
+C51 COMPILER V9.60.7.0   DS18B20                                                           12/02/2023 21:33:42 PAGE 2   
 
   55   2              DQ = 0;
   56   2              DS18B20_Delay10us(1); // 至少间隔1us 低于15us
@@ -126,7 +126,7 @@ line level    source
  114   1          DS18B20_WriteByte((resolution << 5) | 0x1f); // 精度设置
  115   1      }
  116          
-C51 COMPILER V9.60.7.0   DS18B20                                                           12/02/2023 08:26:10 PAGE 3   
+C51 COMPILER V9.60.7.0   DS18B20                                                           12/02/2023 21:33:42 PAGE 3   
 
  117          void DS18B20_Get(uchar* upperLimit, uchar* lowerLimit, uchar* resolution)
  118          {
