@@ -33,9 +33,9 @@ void DS18B20_Delay10us(uchar t)
 
 // -------------------------------------
 
-char DS18B20_InitCheck(void)
+uchar DS18B20_InitCheck(void)
 {
-    char x = 0;
+    uchar x = 0;
     DQ = 1; // 复位DQ
     DQ = 0;
     DS18B20_Delay10us(60); // 拉低 480~960us
@@ -45,21 +45,7 @@ char DS18B20_InitCheck(void)
     DQ = 1;                // 释放总线
     DS18B20_Delay10us(24); // 保证时序完整
     return x;
-} // 约 970
-
-void DS18B20_WriteByte(uchar dat)
-{
-    uchar i = 8;
-    do // 串行写8位数据，先写低位后写高位
-    {
-        DQ = 0;
-        DS18B20_Delay10us(1); // 至少间隔1us 低于15us
-        DQ = dat & 0x01;      // 写"1" 在15μs内拉高
-        DS18B20_Delay10us(5); // 写"0" 拉低60μs 10+50
-        DQ = 1;
-        dat >>= 1;
-    } while (--i);
-} // 约 550 (551)
+} // 约 bit 973 uchar 976
 
 uchar DS18B20_ReadByte(void)
 {
@@ -75,7 +61,21 @@ uchar DS18B20_ReadByte(void)
         DS18B20_Delay10us(5); // 最少60us
     } while (--i);
     return dat;
-} // 约 560 (559)
+} // 约 560 (559) 587
+
+void DS18B20_WriteByte(uchar dat)
+{
+    uchar i = 8;
+    do // 串行写8位数据，先写低位后写高位
+    {
+        DQ = 0;
+        DS18B20_Delay10us(1); // 至少间隔1us 低于15us
+        DQ = dat & 0x01;      // 写"1" 在15μs内拉高
+        DS18B20_Delay10us(5); // 写"0" 拉低60μs 10+50
+        DQ = 1;
+        dat >>= 1;
+    } while (--i);
+} // 约 550 (551) 584
 
 // -------------------------------------
 
@@ -85,7 +85,7 @@ void DS18B20_Convert() // 温度转换
         return;
     DS18B20_WriteByte(0xcc);
     DS18B20_WriteByte(0x44);
-} // 约 2080 (2076)
+} // 约 2080 (2076) 2151
 
 int DS18B20_ReadTemp() // 温度读取
 {
@@ -99,7 +99,7 @@ int DS18B20_ReadTemp() // 温度读取
     high = DS18B20_ReadByte();
     temp = (high << 8) | low;
     return temp;
-} // 约 3210 (3211)
+} // 约 3210 (3211) 3663
 
 // -------------------------------------
 

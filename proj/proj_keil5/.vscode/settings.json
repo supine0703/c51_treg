@@ -8,13 +8,17 @@
         "DDRAM",
         "TMOD",
         "idata",
-        "cttcn"
+        "cttcn",
+        "suba"
     ],
     "files.associations": {
         "ds18b20.h": "c",
         "ultimate.h": "c",
         "utility.h": "c",
         "lcd1602.h": "c",
-        "__config__.h": "c"
+        "__config__.h": "c",
+        "reg52.h": "c",
+        "REG52.H": "cpp",
+        "i2c.h": "c"
     }
 }

@@ -1,10 +1,10 @@
 ".\Objects\STARTUP.obj",
+".\Objects\global.obj",
 ".\Objects\main.obj",
-".\Objects\__config__.obj",
-".\Objects\ds18b20.obj",
-".\Objects\lcd1602.obj",
 ".\Objects\ultimate.obj",
 ".\Objects\utility.obj",
-".\Objects\global.obj" 
+".\Objects\lcd1602.obj",
+".\Objects\ds18b20.obj",
+".\Objects\i2c.obj" 
 TO ".\Objects\Ultimate" 
 PRINT(".\Listings\Ultimate.m51") RAMSIZE(256) 

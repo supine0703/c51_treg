@@ -1,0 +1,192 @@
+C51 COMPILER V9.60.7.0   I2C                                                               12/04/2023 07:06:34 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE I2C
+OBJECT MODULE PLACED IN .\Objects\i2c.obj
+COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\i2c.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include) DEBUG OBJECTEX
+                    -TEND PRINT(.\Listings\i2c.lst) OBJECT(.\Objects\i2c.obj)
+
+line level    source
+
+   1          #include "i2c.h"
+   2          
+   3          extern void _nop_(void);
+   4          
+   5          void I2C_Wait(void) // 4us
+   6          {
+   7   1      }
+   8          
+   9          void I2C_Start(void)
+  10          {
+  11   1          SCL = 1;
+  12   1          SDA = 1;
+  13   1          _nop_();
+  14   1          I2C_Wait(); // 5us
+  15   1          SDA = 0;
+  16   1          _nop_();
+  17   1          I2C_Wait(); // 5us
+  18   1          SCL = 0;
+  19   1      }
+  20          
+  21          void I2C_Stop(void)
+  22          {
+  23   1          SDA = 0;
+  24   1          SCL = 1;
+  25   1          _nop_();
+  26   1          I2C_Wait(); // 5us
+  27   1          SDA = 1;
+  28   1          _nop_();
+  29   1          I2C_Wait(); // 5us
+  30   1      }
+  31          
+  32          bit I2C_CheckAck(void)
+  33          {
+  34   1          bit flg;
+  35   1          SDA = 1;
+  36   1          I2C_Wait();
+  37   1          SCL = 1;
+  38   1          I2C_Wait();
+  39   1          flg = SDA;
+  40   1          SCL = 0;
+  41   1          return !flg;
+  42   1      }
+  43          
+  44          void I2C_Ack(void)
+  45          {
+  46   1          SDA = 0;
+  47   1          I2C_Wait();
+  48   1          SCL = 1;
+  49   1          I2C_Wait();
+  50   1          SCL = 0;
+  51   1          I2C_Wait();
+  52   1          SDA = 1;
+  53   1          _nop_();
+  54   1      }
+C51 COMPILER V9.60.7.0   I2C                                                               12/04/2023 07:06:34 PAGE 2   
+
+  55          
+  56          void I2C_NoAck(void)
+  57          {
+  58   1          SDA = 1;
+  59   1          I2C_Wait();
+  60   1          SCL = 1;
+  61   1          I2C_Wait();
+  62   1          SCL = 0;
+  63   1          I2C_Wait();
+  64   1          SDA = 0;
+  65   1          _nop_();
+  66   1      }
+  67          
+  68          void I2C_SendByte(uchar dat)
+  69          {
+  70   1          uchar i;
+  71   1          SCL = 0;
+  72   1          for (i = 8; i; --i)
+  73   1          {
+  74   2              SDA = (bit)(dat & 0x80);
+  75   2              SCL = 1;
+  76   2              I2C_Wait();
+  77   2              SCL = 0;
+  78   2              dat <<= 1;
+  79   2          }
+  80   1          SDA = 1;
+  81   1      }
+  82          
+  83          uchar I2C_RecByte(void)
+  84          {
+  85   1          uchar i, dat;
+  86   1          SDA = 1;
+  87   1          for (i = 8; i; --i)
+  88   1          {
+  89   2              dat <<= 1;
+  90   2              SCL = 0;
+  91   2              I2C_Wait();
+  92   2              SCL = 1;
+  93   2              I2C_Wait();
+  94   2              dat |= SDA;
+  95   2          }
+  96   1          SCL = 0;
+  97   1          I2C_Wait();
+  98   1          return dat;
+  99   1      }
+ 100          
+ 101          
+ 102          void I2C_Init(void)
+ 103          {
+ 104   1          SCL = 1;
+ 105   1          _nop_();
+ 106   1          SDA = 1;
+ 107   1          _nop_();
+ 108   1          I2C_Wait();
+ 109   1          I2C_Stop();
+ 110   1      }
+ 111          
+ 112          bit I2C_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
+ 113          {
+ 114   1          bit flg;
+ 115   1          uchar i;
+ 116   1          I2C_Start();       // 启动I2C总线
+C51 COMPILER V9.60.7.0   I2C                                                               12/04/2023 07:06:34 PAGE 3   
+
+ 117   1          I2C_SendByte(sla); // 发送器件地址码
+ 118   1          if (flg = I2C_CheckAck())
+ 119   1          {
+ 120   2              I2C_SendByte(suba); // 发送期间单元地址
+ 121   2              if (flg = I2C_CheckAck())
+ 122   2              {
+ 123   3                  for (i = num; i; --i)
+ 124   3                  {
+ 125   4                      I2C_SendByte(*dat);
+ 126   4                      if (!(flg = I2C_CheckAck()))
+ 127   4                          break; // 无应答
+ 128   4                      ++dat;
+ 129   4                  }
+ 130   3              }
+ 131   2          }
+ 132   1          I2C_Stop(); // 发送结束信号
+ 133   1          return flg;
+ 134   1      }
+ 135          
+ 136          bit I2C_ReadData(uchar sla, uchar suba, uchar* dat, uchar num)
+ 137          {
+ 138   1          bit flg;
+ 139   1          uchar i;
+ 140   1          I2C_Start();       // 启动I2C总线
+ 141   1          I2C_SendByte(sla); // 发送器件地址码
+ 142   1          if (flg = I2C_CheckAck())
+ 143   1          {
+ 144   2              I2C_SendByte(suba); // 发送期间单元地址
+ 145   2              if (flg = I2C_CheckAck())
+ 146   2              {
+ 147   3                  I2C_Start();           // 重新启动I2C总线
+ 148   3                  I2C_SendByte(sla + 1); // 发送写器件地址码信号
+ 149   3                  if (flg = I2C_CheckAck())
+ 150   3                  {
+ 151   4                      for (i = num - 1; i; --i)
+ 152   4                      {
+ 153   5                          *dat = I2C_RecByte();
+ 154   5                          I2C_Ack();
+ 155   5                          ++dat;
+ 156   5                      }
+ 157   4                      *dat = I2C_RecByte();
+ 158   4                      I2C_NoAck();
+ 159   4                  }
+ 160   3              }
+ 161   2          }
+ 162   1          I2C_Stop();
+ 163   1          return flg;
+ 164   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    282    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      12
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       3
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

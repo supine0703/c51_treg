@@ -16,6 +16,7 @@ bit convert_finished = 1;  // 温度传感器完成温度转化
 bit dc_motor_working = 0;  // 直流电机需要工作
 bit above_upper_limit = 0; // 温度高于上限阈值
 bit below_lower_limit = 0; // 温度低于下限阈值
+bit save_in_24c02 = 0;     // 在主函数中进行24c02数据的存储(妥协)
 
 // ==================== ===== ====================
 
@@ -51,11 +52,13 @@ uchar fanGearStep = 2; // 风扇/直流电机档位步长
 
 // 设置模式 第 3 _ 项 在 11.0592MHz 下 分辨率对应最大转换时间需要 T0 的定时次数
 uchar dsr = 0x03; // ds18b20 resolution 温度传感器分辨率
-uint code cttcn[] = {337, 675, 1350, 2700}; // convert temperature timer count num
+uint code cttcn[] = {
+    337, 675, 1350, 2700
+}; // convert temperature timer count num
 
 // 设置模式 第 5 6 项
-uchar ringtone = 1; // 铃声序号
-uchar volume = 7;   // 音量大小
+uchar ringtoneNum = 1; // 铃声序号
+uchar volume = 7;      // 音量大小
 
 // ==================== =============== ====================
 
@@ -74,6 +77,8 @@ uint SHOW_WAIT = 0;
 uchar key = 0xf;
 uchar pressKey = 0xff;
 
+// 用与同I2C进行交互的变量
+uchar idata settingsSave = 0x00;
+uchar idata ringtone[127];
+
 // ==================== ===== ====================
-
-

@@ -7,6 +7,7 @@ extern bit convert_finished;
 extern bit dc_motor_working;
 extern bit above_upper_limit;
 extern bit below_lower_limit;
+extern bit save_in_24c02;
 
 extern uint SHOW_WAIT;
 extern uint convertCount, dcmCount;
@@ -14,7 +15,7 @@ extern uint convertCount, dcmCount;
 extern uchar page, option;
 extern uchar hus, hms, hs, hm;
 extern uchar lus, lms, ls, lm;
-extern uchar dsr, fanGear, fanGearStep;
+extern uchar dsr, fanGear, fanGearStep, volume, ringtoneNum;
 extern char upperLimit, lowerLimit;
 
 extern float temperature;
@@ -22,6 +23,8 @@ extern float highest, lowest;
 
 extern uchar numStr[];
 extern code uint cttcn[];
+
+extern uchar idata settingsSave;
 
 void init_data(void);          // 初始化数据
 void init_program(void);       // 初始化程序
@@ -77,6 +80,11 @@ void main(void)
         }
         else // 视图模式
         {
+            if (save_in_24c02)
+            {
+                save_in_24c02 = 0;
+                I2C_WriteData(0xa0, 0x00, &settingsSave, 1);
+            }
             if (convert_finished)
             { // 如果温度转换完成 更新温度信息
                 UpdateTemperature();
@@ -137,8 +145,10 @@ void int_T0() interrupt 1
  *     否则 外部中断会破坏 T0 产生的时序
  *     设置模式下会关闭定时器 因为没有继续定时的必要
  * 思路:
- *     外部中断通过软件延迟 每0.05s判断一次是否仍然处于 按下且仅按下 INT0 状态
- *     当按下持续时间超过给定阈值将会 切换设置/视图模式 并执行必要的 初始化/收尾
+ *     外部中断通过软件延迟 每0.05s判断一次是否仍然处于 按下且仅按下 INT0
+ 状态
+ *     当按下持续时间超过给定阈值将会 切换设置/视图模式 并执行必要的
+ 初始化/收尾
  * 工作
  */
 void int_X0() interrupt 0
@@ -166,6 +176,16 @@ void int_X0() interrupt 0
         DS18B20_Set(upperLimit, lowerLimit, dsr);
         DS18B20_Save();
         // 将设置的内容存储至 24lc02
+        settingsSave = 0xff;
+        settingsSave &= (fanGearStep << 5) | (ringtoneNum << 3) | (volume);
+        /**
+         * @bug 不知道为什么 只要在此放下
+         * I2C_WriteData(0xa0,0x00,&settingsSave,1);
+         * 就会在触发外部中断时导致死循环/崩溃，哪怕 if(0)
+         * 没有调用此函数 仅仅是存在就会导致如此 因此作为妥协 只好设置一个标志位
+         * 在主循环中进行存储
+         */
+        save_in_24c02 = 1;
         // ... ...
         DS18B20_Convert();
         convertCount = 0;
@@ -201,8 +221,14 @@ void init_data(void)
     // 从 DS18B20 读取 温度上下限 分辨率
     // DS18B20_Update();
     DS18B20_Get(&upperLimit, &lowerLimit, &dsr);
-    // 从 at24c02/24lc02 读取 风扇档位步长 开机音乐序号 音量(分为0-7) 3+2+3 =
-    // 1byte
+    // 从 at24c02/24lc02 读取 风扇档位步长 3bit 开机音乐序号 2bit 音量(分为0-7)
+    // 3bit
+    I2C_Init();
+    I2C_ReadData(0xa0, 0x00, &settingsSave, 1);
+    volume = settingsSave & 0x07;
+    ringtoneNum = (settingsSave >> 3) & 0x03;
+    fanGearStep = (settingsSave >> 5) & 0x03;
+    // I2C_WriteData(0xa0, 0x00, &settingsSave, 1);
 }
 
 void init_program(void)
@@ -229,11 +255,11 @@ void UpdateTemperature(void)
     EA = 0; // 获取温度转化得关闭中断 否则会破坏 DS18B20 的时序 造成错误
     temperature = DS18B20_ReadTemp(); // 获取温度计转换的温度
     DS18B20_Convert();
-    i = 42;
+    i = 35;
     do
     {
-    } while (--i); // 85个机器周期
-    EA = 1; // 约 5290+85 个机器周期 假设 触发定时中断 21 次 可能有一些误差 但非常小
+    } while (--i); // 85个机器周期 共约 2+1+5815+70 个机器周期
+    EA = 1; // 假设触发定时中断 23 次 可能有一些误差 但非常小
     temperature *= 0.0625; // 转化为可读温度
     // 更新温度最大最小值
     if (temperature > highest)
@@ -248,7 +274,7 @@ void UpdateTemperature(void)
         fanGear = (temperature - upperLimit) / fanGearStep + 1;
         if (fanGear > 3)
             fanGear = 3;
-        i = 21;
+        i = 23;
         do
         {
             AboveLimitClock(); // 上越界定时

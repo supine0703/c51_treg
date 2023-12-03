@@ -4,6 +4,7 @@
 #include "ds18b20.h"
 #include "lcd1602.h"
 #include "utility.h"
+#include "i2c.h"
 
 extern void Delay1ms(uint t);
 

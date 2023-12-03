@@ -22,13 +22,13 @@ void LCD1602_CheckBusy(void)
 	LCD1602_EN = 0;
 }
 
-void LCD1602_Write(bit rs, unsigned char byte);
+void LCD1602_WriteByte(bit rs, unsigned char byte);
 
 void LCD1602_WriteCmd(unsigned char cmd)
-{ if (!cmd) return; LCD1602_Write(0, cmd); }
+{ if (!cmd) return; LCD1602_WriteByte(0, cmd); }
 
 void LCD1602_WriteData(unsigned char dat)
-{ LCD1602_Write(1, dat); }
+{ LCD1602_WriteByte(1, dat); }
 
 #ifndef LCD1602_NO_READDATA
 unsigned char LCD1602_ReadData(void)
@@ -52,7 +52,7 @@ extern void _nop_(void);
 //void LCD1602_Wait(unsigned int t)
 //{ do { } while (t--); }
 
-void LCD1602_Write(bit rs, unsigned char byte)
+void LCD1602_WriteByte(bit rs, unsigned char byte)
 {
 	LCD1602_CheckBusy();
 	LCD1602_RW   = 0;

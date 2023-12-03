@@ -177,7 +177,7 @@
           </Flash1>
           <bUseTDR>0</bUseTDR>
           <Flash2></Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -233,7 +233,7 @@
               <RCB>
                 <Type>0</Type>
                 <StartAddress>0x0</StartAddress>
-                <Size>0x10000</Size>
+                <Size>0xffff</Size>
               </RCB>
               <RXB>
                 <Type>0</Type>
@@ -382,6 +382,16 @@
               <FilePath>.\STARTUP.A51</FilePath>
             </File>
             <File>
+              <FileName>__config__.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\include\__config__.h</FilePath>
+            </File>
+            <File>
+              <FileName>global.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\global.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\main.c</FilePath>
@@ -392,21 +402,6 @@
           <GroupName>include</GroupName>
           <Files>
             <File>
-              <FileName>__config__.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\include\__config__.h</FilePath>
-            </File>
-            <File>
-              <FileName>ds18b20.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\include\ds18b20.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd1602.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\include\lcd1602.h</FilePath>
-            </File>
-            <File>
               <FileName>ultimate.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\include\ultimate.h</FilePath>
@@ -414,28 +409,28 @@
             <File>
               <FileName>utility.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\utility.h</FilePath>
+              <FilePath>..\include\utility.h</FilePath>
+            </File>
+            <File>
+              <FileName>lcd1602.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\include\lcd1602.h</FilePath>
+            </File>
+            <File>
+              <FileName>ds18b20.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\include\ds18b20.h</FilePath>
+            </File>
+            <File>
+              <FileName>i2c.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\include\i2c.h</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
           <GroupName>src</GroupName>
           <Files>
-            <File>
-              <FileName>__config__.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\__config__.c</FilePath>
-            </File>
-            <File>
-              <FileName>ds18b20.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\ds18b20.c</FilePath>
-            </File>
-            <File>
-              <FileName>lcd1602.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\lcd1602.c</FilePath>
-            </File>
             <File>
               <FileName>ultimate.c</FileName>
               <FileType>1</FileType>
@@ -444,12 +439,22 @@
             <File>
               <FileName>utility.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\utility.c</FilePath>
+              <FilePath>..\src\utility.c</FilePath>
             </File>
             <File>
-              <FileName>global.c</FileName>
+              <FileName>lcd1602.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\global.c</FilePath>
+              <FilePath>..\src\lcd1602.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds18b20.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\ds18b20.c</FilePath>
+            </File>
+            <File>
+              <FileName>i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\i2c.c</FilePath>
             </File>
           </Files>
         </Group>

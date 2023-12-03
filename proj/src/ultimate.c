@@ -13,24 +13,21 @@ extern uchar fanGear, fanGearStep;
 extern uchar hus, hms, hs, hm; // 开机后 超过温度上限 时间
 extern uchar lus, lms, ls, lm; // 开机后 低于温度下限 时间
 extern uchar key, pressKey, page, option;
-extern uchar dsr, ringtone, volume, changeCount;
+extern uchar dsr, ringtoneNum, volume, changeCount;
 extern uchar code DC[];
 extern uchar numStr[];
-
-extern _nop_(void);
 
 void Delay1ms(uint t) // 12MHz
 {                     // 软件延迟 参数用uchar 比uint 精准
     uchar i;
-    while (t--) // mov dec mov jnz orl jz : 8us
+    while (t--) // mov dec mov jnz orl jz : 9us
     {
-        i = 142;    // mov : 1us
-        while (--i) // dec mov jz : 4us * 142
+        i = 123;    // mov : 1us
+        while (i--) // mov dec mov jz : 6us * 124
         {
-            _nop_();
-        } // nop jmp : 3us * 141
+        } // jmp : 2us * 123
     }     // 每当低位为 0 会多1us处理高位(dec) 忽略
-} // (8+1+7*142-3)us * t + 6us 约 t ms
+} // (8+1+8*124-2)us * t + ((t/256)+10+6)us 约 t ms
 
 // ============== LCD1602 ==============
 
@@ -190,8 +187,8 @@ void ShowSettings(uchar opt)
         case 2:
             // 4 开机铃声
             LCD1602_WriteCmd(Move_Cursor_Row1_Col(2));
-            LCD1602_ShowString("Ringtone:  ");
-            LCD1602_WriteData('0' + ringtone);
+            LCD1602_ShowString("ringtone:  ");
+            LCD1602_WriteData('0' + ringtoneNum);
             // 5 音量
             LCD1602_WriteCmd(Move_Cursor_Row2_Col(1));
             LCD1602_ShowString("Volume:");
@@ -265,7 +262,7 @@ void ChangeSetting(void)
             }
         }
     case 4: // 这一部分代码几乎一样，就复用了用来增大/减小选项值
-        i = ringtone; // 0 - 3
+        i = ringtoneNum; // 0 - 3
     case 3:
         if (option == 3)
             i = fanGearStep; // 0 - 7
@@ -290,13 +287,13 @@ void ChangeSetting(void)
             {
             case 2:
                 if (option == 4)
-                    ringtone = i;
+                    ringtoneNum = i;
                 else if (option == 3)
                     fanGearStep = i;
                 else if (option == 2)
                     dsr = i;
             case -2:
-                j = option == 4 ? ringtone : (option == 3 ? fanGearStep : dsr);
+                j = option == 4 ? ringtoneNum : (option == 3 ? fanGearStep : dsr);
                 LCD1602_WriteCmd(Shift_CursorLeft);
                 LCD1602_WriteData(j + '0');
                 return;
