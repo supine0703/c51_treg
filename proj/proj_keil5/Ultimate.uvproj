@@ -426,6 +426,11 @@
               <FileType>5</FileType>
               <FilePath>..\include\i2c.h</FilePath>
             </File>
+            <File>
+              <FileName>at24c02.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\include\at24c02.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -455,6 +460,11 @@
               <FileName>i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>at24c02.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\at24c02.c</FilePath>
             </File>
           </Files>
         </Group>

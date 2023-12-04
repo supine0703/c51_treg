@@ -1,4 +1,11 @@
-/** 在此添加共享的全局变量 */
+/**
+ * global.c
+ * 作者：李宗霖 日期：2023/12/01
+ * CSDN昵称：Leisure_水中鱼
+ * CSDN: https://blog.csdn.net/Supine_0?type=blog
+ * ----------------------------------------------
+ * 在此添加的全局变量 
+ */
 #define uint unsigned int
 #define uchar unsigned char
 
@@ -16,6 +23,7 @@ bit convert_finished = 1;  // 温度传感器完成温度转化
 bit dc_motor_working = 0;  // 直流电机需要工作
 bit above_upper_limit = 0; // 温度高于上限阈值
 bit below_lower_limit = 0; // 温度低于下限阈值
+bit ringtone_change = 0;   // 铃声发生改变 需要重新读取
 bit save_in_24c02 = 0;     // 在主函数中进行24c02数据的存储(妥协)
 
 // ==================== ===== ====================
@@ -58,7 +66,7 @@ uint code cttcn[] = {
 
 // 设置模式 第 5 6 项
 uchar ringtoneNum = 1; // 铃声序号
-uchar volume = 7;      // 音量大小
+uchar audio = 7;      // 音量大小
 
 // ==================== =============== ====================
 

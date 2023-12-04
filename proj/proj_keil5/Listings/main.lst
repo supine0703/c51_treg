@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              12/04/2023 07:06:34 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/05/2023 03:26:13 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -8,385 +8,445 @@ COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\main.c OPTIMIZE(8,SPEED)
 
 line level    source
 
-   1          #include "ultimate.h"
-   2          
-   3          extern bit page_change;
-   4          extern bit settings_mode;
-   5          extern bit ready_settings;
-   6          extern bit convert_finished;
-   7          extern bit dc_motor_working;
-   8          extern bit above_upper_limit;
-   9          extern bit below_lower_limit;
-  10          extern bit save_in_24c02;
-  11          
-  12          extern uint SHOW_WAIT;
-  13          extern uint convertCount, dcmCount;
-  14          
-  15          extern uchar page, option;
-  16          extern uchar hus, hms, hs, hm;
-  17          extern uchar lus, lms, ls, lm;
-  18          extern uchar dsr, fanGear, fanGearStep, volume, ringtoneNum;
-  19          extern char upperLimit, lowerLimit;
-  20          
-  21          extern float temperature;
-  22          extern float highest, lowest;
-  23          
-  24          extern uchar numStr[];
-  25          extern code uint cttcn[];
-  26          
-  27          extern uchar idata settingsSave;
+   1          /**
+   2           * main.c
+   3           * 作者：李宗霖 日期：2023/12/01
+   4           * CSDN昵称：Leisure_水中鱼
+   5           * CSDN: https://blog.csdn.net/Supine_0?type=blog
+   6           * ----------------------------------------------
+   7           * 程序的main 主要分为三个部分 初始化部分 主循环部分 中断部分
+   8           */
+   9          #include "__config__.h"
+  10          #include "at24c02.h"
+  11          #include "ds18b20.h"
+  12          #include "i2c.h"
+  13          #include "lcd1602.h"
+  14          #include "ultimate.h"
+  15          #include "utility.h"
+  16          
+  17          #define uint unsigned int
+  18          #define uchar unsigned char
+  19          
+  20          extern bit page_change;
+  21          extern bit settings_mode;
+  22          extern bit ready_settings;
+  23          extern bit convert_finished;
+  24          extern bit dc_motor_working;
+  25          extern bit above_upper_limit;
+  26          extern bit below_lower_limit;
+  27          extern bit save_in_24c02;
   28          
-  29          void init_data(void);          // 初始化数据
-  30          void init_program(void);       // 初始化程序
-  31          void UpdateTemperature(void);  // 更新温度信息
-  32          void UpdateViewPageShow(void); // 刷新视图显示
-  33          
-  34          void main(void)
-  35          {
-  36   1          /**
-  37   1           * 初始化数据:
-  38   1           * 1. 初始化 定时/计数器 对应的方式初值 优先级
-  39   1           * 2. 初始化 外部中断 对应的方式 初值 优先级
-  40   1           * 3. 从 DS18B20 读取 温度上限 下限 分辨率
-  41   1           * 4. 从 24LC02  读取 ...
-  42   1           */
-  43   1          init_data();
-  44   1      
-  45   1          /**
-  46   1           * 初始化程序:
-  47   1           * 1. 开始温度转换
-  48   1           * 2. LCD1602初始化 显示开机界面
-  49   1           * 3. 以打字机效果显示主视图
-  50   1           * 4. 打开 定时/计数器中断 外部中断
-  51   1           */
-  52   1          init_program();
-  53   1      
-  54   1          /**
-C51 COMPILER V9.60.7.0   MAIN                                                              12/04/2023 07:06:34 PAGE 2   
+  29          extern float temperature, highest, lowest;
+  30          extern uchar idata settingsSave;
+  31          extern uchar page, option;
+  32          extern uchar hus, hms, hs, hm, lus, lms, ls, lm;
+  33          extern uchar dsr, fanGear, fanGearStep;
+  34          extern uchar audio, ringtoneNum;
+  35          extern char upperLimit, lowerLimit;
+  36          
+  37          extern uchar numStr[];
+  38          extern uint code cttcn[];
+  39          extern uint convertCount, dcmCount;
+  40          extern uint SHOW_WAIT;
+  41          
+  42          sbit RELAY = DEFINE_RELAY; // 继电器
+  43          sbit DCM = DEFINE_DCM;     // 直流电机
+  44          
+  45          void init_data(void);          // 初始化数据
+  46          void init_program(void);       // 初始化程序
+  47          void UpdateTemperature(void);  // 更新温度信息
+  48          void UpdateViewPageShow(void); // 刷新视图显示
+  49          
+  50          void main(void)
+  51          {
+  52   1          /**
+  53   1           * 初始化数据:
+  54   1           * 1. 初始化 定时/计数器 对应的方式初值 优先级
+C51 COMPILER V9.60.7.0   MAIN                                                              12/05/2023 03:26:13 PAGE 2   
 
-  55   1           * 程序的主循环:
-  56   1           * 1. 判断是哪一种模式并执行模式对应的程序
-  57   1           * 2. 模式主程序:
-  58   1           * - 设置模式
-  59   1           *
-  60   1           * - 视图模式
-  61   1           *   1. 如果温度转换完成 更新温度信息
-  62   1           *   2. 判断当前处于哪一个视图
-  63   1           *   3. 如果视图发生改变 需要更新整个视图
-  64   1           *   4. 如果视图没有改变 刷新当前视图的 可变量
-  65   1           *   5. 以 按键系统1 接收按键操作 并反应
-  66   1           *
-  67   1           * 外部中断:
-  68   1           * X0: 长按切换设置模式和视图模式
-  69   1           */
-  70   1          while (1)
-  71   1          {
-  72   2              if (settings_mode) // 设置模式
-  73   2              {
-  74   3                  if (ready_settings)
-  75   3                  {
-  76   4                      ready_settings = 0;
-  77   4                      ShowSettings(0); // 显示设置模式 并指向第一条
-  78   4                  }
-  79   3                  KeysSystem_2(); // 第二套按键事件响应系统
-  80   3              }
-  81   2              else // 视图模式
-  82   2              {
-  83   3                  if (save_in_24c02)
-  84   3                  {
-  85   4                      save_in_24c02 = 0;
-  86   4                      I2C_WriteData(0xa0, 0x00, &settingsSave, 1);
-  87   4                  }
-  88   3                  if (convert_finished)
-  89   3                  { // 如果温度转换完成 更新温度信息
-  90   4                      UpdateTemperature();
-  91   4                      convert_finished = 0;
-  92   4                  }
-  93   3                  UpdateViewPageShow(); // 刷新视图显示
-  94   3                  KeysSystem_1();       // 第一套按键事件响应系统
-  95   3              }
-  96   2          }
-  97   1      }
-  98          
-  99          /**
- 100           * T0 中断函数
- 101           * 设定:
- 102           *     定时器 T0 方式2 初值 0 计数256溢出一次
- 103           *     所以 定时器中断内 指令周期总和需要少于 250 个机器周期
- 104           *     在 定时器中断函数内 获取温度等复杂函数 会严重破坏 T0 产生的时序
- 105           * 思路:
- 106           *     在中断函数内通过设置标志位 让复杂的函数逻辑在主循环中执行
- 107           * 理念:
- 108           *     在 11.0592MHz下  每 1/3.6 ms 溢出一次 即中断36次为 10ms
- 109           *     所以 T0 可以作为 1/3.6 ms 的时序产生器
- 110           *     通过 计数变量 count 即可实现不同周期的定时
- 111           */
- 112          void int_T0() interrupt 1
- 113          {
- 114   1          // 根据分辨率调整温度转换需要的时间
- 115   1          if (!convert_finished && ++convertCount >= cttcn[dsr])
- 116   1          {
-C51 COMPILER V9.60.7.0   MAIN                                                              12/04/2023 07:06:34 PAGE 3   
+  55   1           * 2. 初始化 外部中断 对应的方式 初值 优先级
+  56   1           * 3. 从 DS18B20 读取 温度上限 下限 分辨率
+  57   1           * 4. 从 24LC02  读取 ...
+  58   1           */
+  59   1          init_data();
+  60   1      
+  61   1          /**
+  62   1           * 初始化程序:
+  63   1           * 1. 开始温度转换
+  64   1           * 2. LCD1602初始化 显示开机界面
+  65   1           * 3. 以打字机效果显示主视图
+  66   1           * 4. 打开 定时/计数器中断 外部中断
+  67   1           */
+  68   1          init_program();
+  69   1      
+  70   1          /**
+  71   1           * 程序的主循环:
+  72   1           * 1. 判断是哪一种模式并执行模式对应的程序
+  73   1           * 2. 模式主程序:
+  74   1           * - 设置模式
+  75   1           *
+  76   1           * - 视图模式
+  77   1           *   1. 如果温度转换完成 更新温度信息
+  78   1           *   2. 判断当前处于哪一个视图
+  79   1           *   3. 如果视图发生改变 需要更新整个视图
+  80   1           *   4. 如果视图没有改变 刷新当前视图的 可变量
+  81   1           *   5. 以 按键系统1 接收按键操作 并反应
+  82   1           *
+  83   1           * 外部中断:
+  84   1           * X0: 长按切换设置模式和视图模式
+  85   1           */
+  86   1          while (1)
+  87   1          {
+  88   2              if (settings_mode) // 设置模式
+  89   2              {
+  90   3                  if (ready_settings)
+  91   3                  {
+  92   4                      ready_settings = 0;
+  93   4                      ShowSettings(0); // 显示设置模式 并指向第一条
+  94   4                  }
+  95   3                  KeysSystem_2(); // 第二套按键事件响应系统
+  96   3              }
+  97   2              else // 视图模式
+  98   2              {
+  99   3                  if (save_in_24c02)
+ 100   3                  {
+ 101   4                      save_in_24c02 = 0;
+ 102   4                      At24c02_WriteByte(0xa0, 0x00, &settingsSave, 1);
+ 103   4                  }
+ 104   3                  if (convert_finished)
+ 105   3                  { // 如果温度转换完成 更新温度信息
+ 106   4                      UpdateTemperature();
+ 107   4                      convert_finished = 0;
+ 108   4                  }
+ 109   3                  UpdateViewPageShow(); // 刷新视图显示
+ 110   3                  KeysSystem_1();       // 第一套按键事件响应系统
+ 111   3              }
+ 112   2          }
+ 113   1      }
+ 114          
+ 115          /**
+ 116           * T0 中断函数
+C51 COMPILER V9.60.7.0   MAIN                                                              12/05/2023 03:26:13 PAGE 3   
 
- 117   2              convertCount = 0;
- 118   2              convert_finished = 1;
- 119   2          }
- 120   1          // 将直流电机的方波分成 3段 根据档位决定某一段 电平高低
- 121   1          if (dc_motor_working)
- 122   1              if (++dcmCount >= 1440)       // 0.4s
- 123   1                  if (dcmCount >= 2520)     // 0.7s
- 124   1                      if (dcmCount >= 3600) // 1.0s
- 125   1                          dcmCount = 0;
- 126   1                      else // 0.7s - 1.0s
- 127   1                          DCM = fanGear >= 0x03;
- 128   1                  else // 0.4s - 0.7s
- 129   1                      DCM = fanGear >= 0x02;
- 130   1              else // 0.0s - 0.4s
- 131   1                  DCM = fanGear >= 0x01;
- 132   1          else
- 133   1              DCM = 0;
- 134   1          // 过界定时 需要 32个机器周期
- 135   1          if (above_upper_limit)
- 136   1              AboveLimitClock();
- 137   1          else if (below_lower_limit)
- 138   1              BelowLimitClock();
- 139   1      }
- 140          
- 141          /**
- 142           * X0 中断函数
- 143           * 设定:
- 144           *     外部中断0 为低优先级 可以被定时器中断 给中断
- 145           *     否则 外部中断会破坏 T0 产生的时序
- 146           *     设置模式下会关闭定时器 因为没有继续定时的必要
- 147           * 思路:
- 148           *     外部中断通过软件延迟 每0.05s判断一次是否仍然处于 按下且仅按下 INT0
- 149           状态
- 150           *     当按下持续时间超过给定阈值将会 切换设置/视图模式 并执行必要的
- 151           初始化/收尾
- 152           * 工作
- 153           */
- 154          void int_X0() interrupt 0
- 155          {
- 156   1          uchar ky; // 临时用来接收按键操作
- 157   1          uchar i = 20;
- 158   1          KEYS = 0xff;
- 159   1          do
- 160   1          {
- 161   2              ky = 0x03;
- 162   2              ky |= KEYS;
- 163   2              if (ky != 0xfb)
- 164   2              {
- 165   3                  Delay1ms(10);
- 166   3                  ky = 0x03;
- 167   3                  ky |= KEYS;
- 168   3                  if (ky != 0xfb)
- 169   3                      return;
- 170   3              }
- 171   2              Delay1ms(50);
- 172   2          } while (--i);
- 173   1          if (settings_mode) // 退出设置模式
- 174   1          {
- 175   2              // 将设置的内容存储至 DS18B20
- 176   2              DS18B20_Set(upperLimit, lowerLimit, dsr);
- 177   2              DS18B20_Save();
- 178   2              // 将设置的内容存储至 24lc02
-C51 COMPILER V9.60.7.0   MAIN                                                              12/04/2023 07:06:34 PAGE 4   
+ 117           * 设定:
+ 118           *     定时器 T0 方式2 初值 0 计数256溢出一次
+ 119           *     所以 定时器中断内 指令周期总和需要少于 250 个机器周期
+ 120           *     在 定时器中断函数内 获取温度等复杂函数 会严重破坏 T0 产生的时序
+ 121           * 思路:
+ 122           *     在中断函数内通过设置标志位 让复杂的函数逻辑在主循环中执行
+ 123           * 理念:
+ 124           *     在 11.0592MHz下  每 1/3.6 ms 溢出一次 即中断36次为 10ms
+ 125           *     所以 T0 可以作为 1/3.6 ms 的时序产生器
+ 126           *     通过 计数变量 count 即可实现不同周期的定时
+ 127           */
+ 128          void int_T0() interrupt 1
+ 129          {
+ 130   1          // 根据分辨率调整温度转换需要的时间
+ 131   1          if (!convert_finished && ++convertCount >= cttcn[dsr])
+ 132   1          {
+ 133   2              convertCount = 0;
+ 134   2              convert_finished = 1;
+ 135   2          }
+ 136   1          // 将直流电机的方波分成 3段 根据档位决定某一段 电平高低
+ 137   1          if (dc_motor_working)
+ 138   1              if (++dcmCount >= 1440)       // 0.4s
+ 139   1                  if (dcmCount >= 2520)     // 0.7s
+ 140   1                      if (dcmCount >= 3600) // 1.0s
+ 141   1                          dcmCount = 0;
+ 142   1                      else // 0.7s - 1.0s
+ 143   1                          DCM = fanGear >= 0x03;
+ 144   1                  else // 0.4s - 0.7s
+ 145   1                      DCM = fanGear >= 0x02;
+ 146   1              else // 0.0s - 0.4s
+ 147   1                  DCM = fanGear >= 0x01;
+ 148   1          else
+ 149   1              DCM = 0;
+ 150   1          // 过界定时 需要 32个机器周期
+ 151   1          if (above_upper_limit)
+ 152   1              AboveLimitClock();
+ 153   1          else if (below_lower_limit)
+ 154   1              BelowLimitClock();
+ 155   1      }
+ 156          
+ 157          /**
+ 158           * X0 中断函数
+ 159           * 设定:
+ 160           *     外部中断0 为低优先级 可以被定时器中断 给中断
+ 161           *     否则 外部中断会破坏 T0 产生的时序
+ 162           *     设置模式下会关闭定时器 因为没有继续定时的必要
+ 163           * 思路:
+ 164           *     外部中断通过软件延迟 每0.05s判断一次是否仍然处于 按下且仅按下 INT0
+ 165           状态
+ 166           *     当按下持续时间超过给定阈值将会 切换设置/视图模式 并执行必要的
+ 167           初始化/收尾
+ 168           * 工作
+ 169           */
+ 170          void int_X0() interrupt 0
+ 171          {
+ 172   1          uchar ky; // 临时用来接收按键操作
+ 173   1          uchar i = 20;
+ 174   1          KEYS = 0xff;
+ 175   1          do
+ 176   1          {
+ 177   2              ky = 0x03;
+ 178   2              ky |= KEYS;
+C51 COMPILER V9.60.7.0   MAIN                                                              12/05/2023 03:26:13 PAGE 4   
 
- 179   2              settingsSave = 0xff;
- 180   2              settingsSave &= (fanGearStep << 5) | (ringtoneNum << 3) | (volume);
- 181   2              /**
- 182   2               * @bug 不知道为什么 只要在此放下
- 183   2               * I2C_WriteData(0xa0,0x00,&settingsSave,1);
- 184   2               * 就会在触发外部中断时导致死循环/崩溃，哪怕 if(0)
- 185   2               * 没有调用此函数 仅仅是存在就会导致如此 因此作为妥协 只好设置一个�
-             -�志位
- 186   2               * 在主循环中进行存储
- 187   2               */
- 188   2              save_in_24c02 = 1;
- 189   2              // ... ...
- 190   2              DS18B20_Convert();
- 191   2              convertCount = 0;
- 192   2              convert_finished = 0; // 重新打开温度转换
- 193   2              TR0 = 1;              // 重启定时器开始测温
- 194   2              option = 0xff;        // 设置模式 不选择
- 195   2              page_change = 1;      // 需要刷新整个视图显示
- 196   2          }
- 197   1          else // 进入设置模式
- 198   1          {
- 199   2              RELAY = 0; // 断开继电器
- 200   2              DCM = 0;   // 关闭直流电机
- 201   2              TR0 = 0;   // 关闭定时计器T0
- 202   2              // 得从主函数中调用 否则可能会发生形参被出错 产生不可预料问题
- 203   2              // 可以设定一个标志 让主函数调用一次 ready_settings
- 204   2              ready_settings = 1; // 进入设置模式 刷新设置模式显示
- 205   2          }
- 206   1          settings_mode = !settings_mode;
- 207   1      }
- 208          
- 209          void init_data(void)
- 210          {
- 211   1          DCM = 0;     // 初始化电机不工作
- 212   1          RELAY = 0;   // 初始化继电器断开
- 213   1          TMOD = 0x02; // 定时器0 方式2
- 214   1          TH0 = 0x00;  // 自动装填
- 215   1          TL0 = 0x00;  // 记 256 次
- 216   1      
- 217   1          IT0 = 1; // 下降沿触发
- 218   1          PX0 = 0; // 低优先级
- 219   1          PT0 = 1; // 高优先级
- 220   1      
- 221   1          // 从 DS18B20 读取 温度上下限 分辨率
- 222   1          // DS18B20_Update();
- 223   1          DS18B20_Get(&upperLimit, &lowerLimit, &dsr);
- 224   1          // 从 at24c02/24lc02 读取 风扇档位步长 3bit 开机音乐序号 2bit 音量(分为0-7)
- 225   1          // 3bit
- 226   1          I2C_Init();
- 227   1          I2C_ReadData(0xa0, 0x00, &settingsSave, 1);
- 228   1          volume = settingsSave & 0x07;
- 229   1          ringtoneNum = (settingsSave >> 3) & 0x03;
- 230   1          fanGearStep = (settingsSave >> 5) & 0x03;
- 231   1          // I2C_WriteData(0xa0, 0x00, &settingsSave, 1);
- 232   1      }
- 233          
- 234          void init_program(void)
- 235          {
- 236   1          DS18B20_Convert();                // 开始温度转换
- 237   1          LCD1602_Action();                 // lcd1602 初始化（开机）
- 238   1          UpdateTemperature();              // 更新温度信息
- 239   1          LCD1602_WriteCmd(Show_CursorOn);  // 打开光标
-C51 COMPILER V9.60.7.0   MAIN                                                              12/04/2023 07:06:34 PAGE 5   
+ 179   2              if (ky != 0xfb)
+ 180   2              {
+ 181   3                  Delay1ms(10);
+ 182   3                  ky = 0x03;
+ 183   3                  ky |= KEYS;
+ 184   3                  if (ky != 0xfb)
+ 185   3                      return;
+ 186   3              }
+ 187   2              Delay1ms(50);
+ 188   2          } while (--i);
+ 189   1          if (settings_mode) // 退出设置模式
+ 190   1          {
+ 191   2              // 将设置的内容存储至 DS18B20
+ 192   2              DS18B20_Set(upperLimit, lowerLimit, dsr);
+ 193   2              DS18B20_Save();
+ 194   2              // 将设置的内容存储至 24lc02
+ 195   2              settingsSave = 0xff;
+ 196   2              settingsSave &= (fanGearStep << 5) | (ringtoneNum << 3) | (audio);
+ 197   2              /**
+ 198   2               * @bug 不知道为什么 只要在此放下
+ 199   2               * AT24C02_WriteData(0xa0,0x00,&settingsSave,1) / Byte(...)
+ 200   2               * 就会在触发外部中断时导致死循环/崩溃，哪怕 if(0)
+ 201   2               * 没有调用此函数 仅仅是存在就会导致如此 因此作为妥协
+ 202   2               只好设置一个标志位
+ 203   2               * 在主循环中进行存储
+ 204   2               */
+ 205   2              save_in_24c02 = 1;
+ 206   2              // ... ...
+ 207   2              DS18B20_Convert();
+ 208   2              convertCount = 0;
+ 209   2              convert_finished = 0; // 重新打开温度转换
+ 210   2              TR0 = 1;              // 重启定时器开始测温
+ 211   2              option = 0xff;        // 设置模式 不选择
+ 212   2              page_change = 1;      // 需要刷新整个视图显示
+ 213   2          }
+ 214   1          else // 进入设置模式
+ 215   1          {
+ 216   2              RELAY = 0; // 断开继电器
+ 217   2              DCM = 0;   // 关闭直流电机
+ 218   2              TR0 = 0;   // 关闭定时计器T0
+ 219   2              // 得从主函数中调用 否则可能会发生形参被出错 产生不可预料问题
+ 220   2              // 可以设定一个标志 让主函数调用一次 ready_settings
+ 221   2              ready_settings = 1; // 进入设置模式 刷新设置模式显示
+ 222   2          }
+ 223   1          settings_mode = !settings_mode;
+ 224   1      }
+ 225          
+ 226          void init_data(void)
+ 227          {
+ 228   1          DCM = 0;     // 初始化电机不工作
+ 229   1          RELAY = 0;   // 初始化继电器断开
+ 230   1          TMOD = 0x02; // 定时器0 方式2
+ 231   1          TH0 = 0x00;  // 自动装填
+ 232   1          TL0 = 0x00;  // 记 256 次
+ 233   1      
+ 234   1          IT0 = 1; // 下降沿触发
+ 235   1          PX0 = 0; // 低优先级
+ 236   1          PT0 = 1; // 高优先级
+ 237   1      
+ 238   1          // 从 DS18B20 读取 温度上下限 分辨率
+ 239   1          // DS18B20_Update();
+ 240   1          DS18B20_Get(&upperLimit, &lowerLimit, &dsr);
+C51 COMPILER V9.60.7.0   MAIN                                                              12/05/2023 03:26:13 PAGE 5   
 
- 240   1          SHOW_WAIT = 40;                   // 开机打字机特效
- 241   1          ShowViewPage_1();                 // 显示首页
- 242   1          LCD1602_WriteCmd(Show_CursorOff); // 关闭光标
- 243   1          SHOW_WAIT = 0;
- 244   1          DS18B20_Convert();    // 开始温度转换
- 245   1          convert_finished = 0; // 打开温度转换定时
- 246   1          EA = 1;               // 总中断允许开启
- 247   1          ET0 = 1;              // 允许定时器中断
- 248   1          TR0 = 1;              // T0 开始工作
- 249   1          EX0 = 1;              // 允许外部中断
- 250   1      }
- 251          
- 252          void UpdateTemperature(void)
- 253          {
- 254   1          uchar i;
- 255   1          EA = 0; // 获取温度转化得关闭中断 否则会破坏 DS18B20 的时序 造成错误
- 256   1          temperature = DS18B20_ReadTemp(); // 获取温度计转换的温度
- 257   1          DS18B20_Convert();
- 258   1          i = 35;
- 259   1          do
- 260   1          {
- 261   2          } while (--i); // 85个机器周期 共约 2+1+5815+70 个机器周期
- 262   1          EA = 1; // 假设触发定时中断 23 次 可能有一些误差 但非常小
- 263   1          temperature *= 0.0625; // 转化为可读温度
- 264   1          // 更新温度最大最小值
- 265   1          if (temperature > highest)
- 266   1              highest = temperature;
- 267   1          if (temperature < lowest)
- 268   1              lowest = temperature;
- 269   1          // 比较温度是否越界 并采取措施
- 270   1          if (temperature > upperLimit) // 高于温度上限
- 271   1          {
- 272   2              above_upper_limit = 1; // 设置上越界标志位
- 273   2              dc_motor_working = 1;  // 直流电机开始工作
- 274   2              fanGear = (temperature - upperLimit) / fanGearStep + 1;
- 275   2              if (fanGear > 3)
- 276   2                  fanGear = 3;
- 277   2              i = 23;
- 278   2              do
- 279   2              {
- 280   3                  AboveLimitClock(); // 上越界定时
- 281   3              } while (--i);
- 282   2          }
- 283   1          else // 温度正常
- 284   1          {
- 285   2              above_upper_limit = 0; // 上越界标志位清0
- 286   2              dc_motor_working = 0;  // 直流电机停止工作
- 287   2              fanGear = 0;           // 直流电机档位置0
- 288   2          }
- 289   1          if (temperature < lowerLimit) // 低于温度下限
- 290   1          {
- 291   2              below_lower_limit = 1; // 设置下越界标志位
- 292   2              RELAY = 1;             // 闭合继电器
- 293   2              i = 21;
- 294   2              do
- 295   2              {
- 296   3                  BelowLimitClock(); // 下越界定时
- 297   3              } while (--i);
- 298   2          }
- 299   1          else // 温度正常
- 300   1          {
- 301   2              RELAY = 0;             // 断开继电器
-C51 COMPILER V9.60.7.0   MAIN                                                              12/04/2023 07:06:34 PAGE 6   
+ 241   1          // 从 24c02 读取 风扇档位步长 开机音乐序号 音量(分为0-7)
+ 242   1          I2C_Init();
+ 243   1          At24c02_ReadData(0xa0, 0x00, &settingsSave, 1);
+ 244   1          audio = settingsSave & 0x07;
+ 245   1          ringtoneNum = (settingsSave >> 3) & 0x03;
+ 246   1          fanGearStep = (settingsSave >> 5) & 0x03;
+ 247   1      }
+ 248          
+ 249          void init_program(void)
+ 250          {
+ 251   1          DS18B20_Convert();                // 开始温度转换
+ 252   1          LCD1602_Action();                 // lcd1602 初始化（开机）
+ 253   1          UpdateTemperature();              // 更新温度信息
+ 254   1          LCD1602_WriteCmd(Show_CursorOn);  // 打开光标
+ 255   1          SHOW_WAIT = 40;                   // 开机打字机特效
+ 256   1          ShowViewPage_1();                 // 显示首页
+ 257   1          LCD1602_WriteCmd(Show_CursorOff); // 关闭光标
+ 258   1          SHOW_WAIT = 0;
+ 259   1          DS18B20_Convert();    // 开始温度转换
+ 260   1          convert_finished = 0; // 打开温度转换定时
+ 261   1          EA = 1;               // 总中断允许开启
+ 262   1          ET0 = 1;              // 允许定时器中断
+ 263   1          TR0 = 1;              // T0 开始工作
+ 264   1          EX0 = 1;              // 允许外部中断
+ 265   1      }
+ 266          
+ 267          void UpdateTemperature(void)
+ 268          {
+ 269   1          uchar i;
+ 270   1          EA = 0; // 获取温度转化得关闭中断 否则会破坏 DS18B20 的时序 造成错误
+ 271   1          temperature = DS18B20_ReadTemp(); // 获取温度计转换的温度
+ 272   1          DS18B20_Convert();
+ 273   1          i = 35;
+ 274   1          do
+ 275   1          {
+ 276   2          } while (--i); // 85个机器周期 共约 2+1+5815+70 个机器周期
+ 277   1          EA = 1; // 假设触发定时中断 23 次 可能有一些误差 但非常小
+ 278   1          temperature *= 0.0625; // 转化为可读温度
+ 279   1          // 更新温度最大最小值
+ 280   1          if (temperature > highest)
+ 281   1              highest = temperature;
+ 282   1          if (temperature < lowest)
+ 283   1              lowest = temperature;
+ 284   1          // 比较温度是否越界 并采取措施
+ 285   1          if (temperature > upperLimit) // 高于温度上限
+ 286   1          {
+ 287   2              above_upper_limit = 1; // 设置上越界标志位
+ 288   2              dc_motor_working = 1;  // 直流电机开始工作
+ 289   2              fanGear = (temperature - upperLimit) / fanGearStep + 1;
+ 290   2              if (fanGear > 3)
+ 291   2                  fanGear = 3;
+ 292   2              i = 23;
+ 293   2              do
+ 294   2              {
+ 295   3                  AboveLimitClock(); // 上越界定时
+ 296   3              } while (--i);
+ 297   2          }
+ 298   1          else // 温度正常
+ 299   1          {
+ 300   2              above_upper_limit = 0; // 上越界标志位清0
+ 301   2              dc_motor_working = 0;  // 直流电机停止工作
+ 302   2              fanGear = 0;           // 直流电机档位置0
+C51 COMPILER V9.60.7.0   MAIN                                                              12/05/2023 03:26:13 PAGE 6   
 
- 302   2              below_lower_limit = 0; // 下越界标志位清0
  303   2          }
- 304   1      }
- 305          
- 306          void UpdateViewPageShow(void)
- 307          {
- 308   1          switch (page) // 判断当前处于哪一个视图
- 309   1          {
- 310   2          case 0x7f: // 主视图 (温度信息查询视图)
- 311   2              if (page_change)
- 312   2              { // 如果视图改变 刷新整个屏幕内容显示
- 313   3                  ShowViewPage_1();
- 314   3                  page_change = 0;
- 315   3              }
- 316   2              // 刷新温度值显示
- 317   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(2));
- 318   2              FloatToString(temperature, numStr, 5, 1);
- 319   2              LCD1602_ShowString(numStr);
- 320   2              // 刷新风扇档位显示
- 321   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
- 322   2              Int8ToString(fanGear, numStr, 1);
- 323   2              LCD1602_ShowString(numStr);
- 324   2              break;
- 325   2          case 0xbf: // 最高/最低温(温度极值)查询视图
+ 304   1          if (temperature < lowerLimit) // 低于温度下限
+ 305   1          {
+ 306   2              below_lower_limit = 1; // 设置下越界标志位
+ 307   2              RELAY = 1;             // 闭合继电器
+ 308   2              i = 21;
+ 309   2              do
+ 310   2              {
+ 311   3                  BelowLimitClock(); // 下越界定时
+ 312   3              } while (--i);
+ 313   2          }
+ 314   1          else // 温度正常
+ 315   1          {
+ 316   2              RELAY = 0;             // 断开继电器
+ 317   2              below_lower_limit = 0; // 下越界标志位清0
+ 318   2          }
+ 319   1      }
+ 320          
+ 321          void UpdateViewPageShow(void)
+ 322          {
+ 323   1          switch (page) // 判断当前处于哪一个视图
+ 324   1          {
+ 325   2          case 0x7f: // 主视图 (温度信息查询视图)
  326   2              if (page_change)
  327   2              { // 如果视图改变 刷新整个屏幕内容显示
- 328   3                  ShowViewPage_2();
+ 328   3                  ShowViewPage_1();
  329   3                  page_change = 0;
  330   3              }
- 331   2              // 刷新显示温度的极值
- 332   2              LCD1602_WriteCmd(Move_Cursor_Row1_Col(9));
- 333   2              UpdateExtremes(1);
- 334   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(9));
- 335   2              UpdateExtremes(0);
- 336   2              break;
- 337   2          case 0xdf: // 温度越界计时视图
- 338   2              if (page_change)
- 339   2              { // 如果视图改变 刷新整个屏幕内容显示
- 340   3                  ShowViewPage_3();
- 341   3                  page_change = 0;
- 342   3              }
- 343   2              // 如果温度高于上限 刷新显示上越界计时
- 344   2              if (above_upper_limit)
- 345   2              {
- 346   3                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(8));
- 347   3                  UpdateOverLimitTimer(1);
- 348   3              }
- 349   2              // 如果温度低于下限 刷新显示下越界计时
- 350   2              else if (below_lower_limit)
- 351   2              {
- 352   3                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(8));
- 353   3                  UpdateOverLimitTimer(0);
- 354   3              }
- 355   2      
- 356   2          case 0xef: // 设置查询视图
- 357   2              if (page_change)
- 358   2              { // 如果视图改变 刷新整个屏幕内容显示
- 359   3                  ShowViewPage_4();
- 360   3                  page_change = 0;
- 361   3              }
- 362   2              // 没有需要刷新的可变量
- 363   2              break;
-C51 COMPILER V9.60.7.0   MAIN                                                              12/04/2023 07:06:34 PAGE 7   
+ 331   2              // 刷新温度值显示
+ 332   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(2));
+ 333   2              FloatToString(temperature, numStr, 5, 1);
+ 334   2              LCD1602_ShowString(numStr);
+ 335   2              // 刷新风扇档位显示
+ 336   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
+ 337   2              Int8ToString(fanGear, numStr, 1);
+ 338   2              LCD1602_ShowString(numStr);
+ 339   2              break;
+ 340   2          case 0xbf: // 最高/最低温(温度极值)查询视图
+ 341   2              if (page_change)
+ 342   2              { // 如果视图改变 刷新整个屏幕内容显示
+ 343   3                  ShowViewPage_2();
+ 344   3                  page_change = 0;
+ 345   3              }
+ 346   2              // 刷新显示温度的极值
+ 347   2              LCD1602_WriteCmd(Move_Cursor_Row1_Col(9));
+ 348   2              UpdateExtremes(1);
+ 349   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(9));
+ 350   2              UpdateExtremes(0);
+ 351   2              break;
+ 352   2          case 0xdf: // 温度越界计时视图
+ 353   2              if (page_change)
+ 354   2              { // 如果视图改变 刷新整个屏幕内容显示
+ 355   3                  ShowViewPage_3();
+ 356   3                  page_change = 0;
+ 357   3              }
+ 358   2              // 如果温度高于上限 刷新显示上越界计时
+ 359   2              if (above_upper_limit)
+ 360   2              {
+ 361   3                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(8));
+ 362   3                  UpdateOverLimitTimer(1);
+ 363   3              }
+ 364   2              // 如果温度低于下限 刷新显示下越界计时
+C51 COMPILER V9.60.7.0   MAIN                                                              12/05/2023 03:26:13 PAGE 7   
 
- 364   2          }
- 365   1      }
+ 365   2              else if (below_lower_limit)
+ 366   2              {
+ 367   3                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(8));
+ 368   3                  UpdateOverLimitTimer(0);
+ 369   3              }
+ 370   2      
+ 371   2          case 0xef: // 设置查询视图
+ 372   2              if (page_change)
+ 373   2              { // 如果视图改变 刷新整个屏幕内容显示
+ 374   3                  ShowViewPage_4();
+ 375   3                  page_change = 0;
+ 376   3              }
+ 377   2              // 没有需要刷新的可变量
+ 378   2              break;
+ 379   2          }
+ 380   1      }
+ 381          
+ 382          /*
+ 383           * 为了测时I2C 24C02
+ 384          extern void _nop_(void);
+ 385          uchar code aa[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+ 386          uchar idata bb[] = "                                                        ";
+ 387          extern void Delay1ms(uint t);
+ 388          extern uint SHOW_WAIT;
+ 389          
+ 390          void main(void)
+ 391          {
+ 392              uchar i, j;
+ 393              LCD1602_WriteCmd(Set_8bit_2line_5x7); // 命令6
+ 394              LCD1602_WriteCmd(Show_CursorOn);      // 命令4
+ 395              LCD1602_WriteCmd(Mode_CursorRightMove);
+ 396              LCD1602_WriteCmd(Clear_Screen); // 命令1
+ 397              // I2C_WriteData(0xa0, 0x00, aa, 26);
+ 398              I2C_Init();
+ 399              // I2C_WriteData(0xa0, 0x80, aa, 53);
+ 400              // At24c02_WriteByte(0xa0, 0x00, aa, 8);
+ 401              At24c02_WriteData(0xa0, 0xb0, aa, 53);
+ 402              SHOW_WAIT = 100;
+ 403          
+ 404              // LCD1602_ShowString(aa);
+ 405              At24c02_ReadData(0xa0, 0xb0, bb, 53);
+ 406              i = 53;
+ 407              while (1)
+ 408              {
+ 409                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(0));
+ 410                  for (j = 16; j && i; --j)
+ 411                  {
+ 412                      LCD1602_WriteData(bb[--i]);
+ 413                      Delay1ms(100);
+ 414                  }
+ 415                  if (!i)
+ 416                      break;
+ 417              }
+ 418              // // LCD1602_WriteCmd(Return_Cursor);
+ 419              // // LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
+ 420              // // LCD1602_ShowString(bb);
+ 421              while (1)
+ 422                  ;
+ 423          }
+ 424          */
 
+
+C51 COMPILER V9.60.7.0   MAIN                                                              12/05/2023 03:26:13 PAGE 8   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =   1033    ----

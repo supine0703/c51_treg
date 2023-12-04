@@ -1,9 +1,44 @@
-#include "i2c.h"
+/**
+ * 作者：李宗霖 日期：2023/12/04
+ * CSDN昵称：Leisure_水中鱼
+ * CSDN: https://blog.csdn.net/Supine_0?type=blog
+ * ----------------------------------------------
+ * - 此头文件对文件：'__config__.h' 强依赖
+ * - 数据端口 控制端口 需要通过'__config__.h'配置 SDA SCL
+ * ----------------------------------------------
+ */
+#include "__config__.h"
+#ifdef I2C_USE_DEFAULT
+#include <REG52.H>
+#undef I2C_DEFINE_SDA
+#undef I2C_DEFINE_SCL
+#define I2C_DEFINE_SDA P1 ^ 7
+#define I2C_DEFINE_SCL P1 ^ 6
+#endif
+
+sbit SDA = I2C_DEFINE_SDA;
+sbit SCL = I2C_DEFINE_SCL;
+
+#ifndef uchar
+#define uchar unsigned char
+#endif
 
 extern void _nop_(void);
 
 void I2C_Wait(void) // 4us
 {
+}
+
+bit I2C_CheckAck(void)
+{
+    bit flg;
+    SDA = 1;
+    I2C_Wait();
+    SCL = 1;
+    I2C_Wait();
+    flg = SDA;
+    SCL = 0;
+    return !flg;
 }
 
 void I2C_Start(void)
@@ -29,16 +64,14 @@ void I2C_Stop(void)
     I2C_Wait(); // 5us
 }
 
-bit I2C_CheckAck(void)
+void I2C_Init(void)
 {
-    bit flg;
-    SDA = 1;
-    I2C_Wait();
     SCL = 1;
+    _nop_();
+    SDA = 1;
+    _nop_();
     I2C_Wait();
-    flg = SDA;
-    SCL = 0;
-    return !flg;
+    I2C_Stop();
 }
 
 void I2C_Ack(void)
@@ -96,69 +129,4 @@ uchar I2C_RecByte(void)
     SCL = 0;
     I2C_Wait();
     return dat;
-}
-
-
-void I2C_Init(void)
-{
-    SCL = 1;
-    _nop_();
-    SDA = 1;
-    _nop_();
-    I2C_Wait();
-    I2C_Stop();
-}
-
-bit I2C_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
-{
-    bit flg;
-    uchar i;
-    I2C_Start();       // 启动I2C总线
-    I2C_SendByte(sla); // 发送器件地址码
-    if (flg = I2C_CheckAck())
-    {
-        I2C_SendByte(suba); // 发送期间单元地址
-        if (flg = I2C_CheckAck())
-        {
-            for (i = num; i; --i)
-            {
-                I2C_SendByte(*dat);
-                if (!(flg = I2C_CheckAck()))
-                    break; // 无应答
-                ++dat;
-            }
-        }
-    }
-    I2C_Stop(); // 发送结束信号
-    return flg;
-}
-
-bit I2C_ReadData(uchar sla, uchar suba, uchar* dat, uchar num)
-{
-    bit flg;
-    uchar i;
-    I2C_Start();       // 启动I2C总线
-    I2C_SendByte(sla); // 发送器件地址码
-    if (flg = I2C_CheckAck())
-    {
-        I2C_SendByte(suba); // 发送期间单元地址
-        if (flg = I2C_CheckAck())
-        {
-            I2C_Start();           // 重新启动I2C总线
-            I2C_SendByte(sla + 1); // 发送写器件地址码信号
-            if (flg = I2C_CheckAck())
-            {
-                for (i = num - 1; i; --i)
-                {
-                    *dat = I2C_RecByte();
-                    I2C_Ack();
-                    ++dat;
-                }
-                *dat = I2C_RecByte();
-                I2C_NoAck();
-            }
-        }
-    }
-    I2C_Stop();
-    return flg;
 }

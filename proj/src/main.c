@@ -1,4 +1,21 @@
+/**
+ * main.c
+ * 作者：李宗霖 日期：2023/12/01
+ * CSDN昵称：Leisure_水中鱼
+ * CSDN: https://blog.csdn.net/Supine_0?type=blog
+ * ----------------------------------------------
+ * 程序的main 主要分为三个部分 初始化部分 主循环部分 中断部分
+ */
+#include "__config__.h"
+#include "at24c02.h"
+#include "ds18b20.h"
+#include "i2c.h"
+#include "lcd1602.h"
 #include "ultimate.h"
+#include "utility.h"
+
+#define uint unsigned int
+#define uchar unsigned char
 
 extern bit page_change;
 extern bit settings_mode;
@@ -7,24 +24,24 @@ extern bit convert_finished;
 extern bit dc_motor_working;
 extern bit above_upper_limit;
 extern bit below_lower_limit;
+extern bit ringtone_change;
 extern bit save_in_24c02;
 
-extern uint SHOW_WAIT;
-extern uint convertCount, dcmCount;
-
+extern float temperature, highest, lowest;
+extern uchar idata settingsSave;
 extern uchar page, option;
-extern uchar hus, hms, hs, hm;
-extern uchar lus, lms, ls, lm;
-extern uchar dsr, fanGear, fanGearStep, volume, ringtoneNum;
+extern uchar hus, hms, hs, hm, lus, lms, ls, lm;
+extern uchar dsr, fanGear, fanGearStep;
+extern uchar audio, ringtoneNum;
 extern char upperLimit, lowerLimit;
 
-extern float temperature;
-extern float highest, lowest;
-
 extern uchar numStr[];
-extern code uint cttcn[];
+extern uint code cttcn[];
+extern uint convertCount, dcmCount;
+extern uint SHOW_WAIT;
 
-extern uchar idata settingsSave;
+sbit RELAY = DEFINE_RELAY; // 继电器
+sbit DCM = DEFINE_DCM;     // 直流电机
 
 void init_data(void);          // 初始化数据
 void init_program(void);       // 初始化程序
@@ -80,10 +97,16 @@ void main(void)
         }
         else // 视图模式
         {
+            if (ringtone_change)
+            {
+                // 从第二字节开始读取铃声 放入 ringtone
+                // ringtone[127]
+                // ...
+            }
             if (save_in_24c02)
             {
                 save_in_24c02 = 0;
-                I2C_WriteData(0xa0, 0x00, &settingsSave, 1);
+                At24c02_WriteByte(0xa0, 0x00, &settingsSave, 1);
             }
             if (convert_finished)
             { // 如果温度转换完成 更新温度信息
@@ -177,12 +200,13 @@ void int_X0() interrupt 0
         DS18B20_Save();
         // 将设置的内容存储至 24lc02
         settingsSave = 0xff;
-        settingsSave &= (fanGearStep << 5) | (ringtoneNum << 3) | (volume);
+        settingsSave &= (fanGearStep << 5) | (ringtoneNum << 3) | (audio);
         /**
          * @bug 不知道为什么 只要在此放下
-         * I2C_WriteData(0xa0,0x00,&settingsSave,1);
+         * AT24C02_WriteData(0xa0,0x00,&settingsSave,1) / Byte(...)
          * 就会在触发外部中断时导致死循环/崩溃，哪怕 if(0)
-         * 没有调用此函数 仅仅是存在就会导致如此 因此作为妥协 只好设置一个标志位
+         * 没有调用此函数 仅仅是存在就会导致如此 因此作为妥协
+         只好设置一个标志位
          * 在主循环中进行存储
          */
         save_in_24c02 = 1;
@@ -206,6 +230,11 @@ void int_X0() interrupt 0
     settings_mode = !settings_mode;
 }
 
+void int_T1() interrupt 3
+{
+    // ... audio 音频变量
+}
+
 void init_data(void)
 {
     DCM = 0;     // 初始化电机不工作
@@ -221,14 +250,14 @@ void init_data(void)
     // 从 DS18B20 读取 温度上下限 分辨率
     // DS18B20_Update();
     DS18B20_Get(&upperLimit, &lowerLimit, &dsr);
-    // 从 at24c02/24lc02 读取 风扇档位步长 3bit 开机音乐序号 2bit 音量(分为0-7)
-    // 3bit
+    // 从 24c02 读取 风扇档位步长 开机音乐序号 音频(分为0-7)
     I2C_Init();
-    I2C_ReadData(0xa0, 0x00, &settingsSave, 1);
-    volume = settingsSave & 0x07;
+    At24c02_ReadData(0xa0, 0x00, &settingsSave, 1);
+    audio = settingsSave & 0x07;
     ringtoneNum = (settingsSave >> 3) & 0x03;
     fanGearStep = (settingsSave >> 5) & 0x03;
-    // I2C_WriteData(0xa0, 0x00, &settingsSave, 1);
+    // 从 24c02 读取 铃声 放入ringtone
+    // ...
 }
 
 void init_program(void)
@@ -363,3 +392,47 @@ void UpdateViewPageShow(void)
         break;
     }
 }
+
+/*
+ * 为了测时I2C 24C02
+extern void _nop_(void);
+uchar code aa[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+uchar idata bb[] = "                                                        ";
+extern void Delay1ms(uint t);
+extern uint SHOW_WAIT;
+
+void main(void)
+{
+    uchar i, j;
+    LCD1602_WriteCmd(Set_8bit_2line_5x7); // 命令6
+    LCD1602_WriteCmd(Show_CursorOn);      // 命令4
+    LCD1602_WriteCmd(Mode_CursorRightMove);
+    LCD1602_WriteCmd(Clear_Screen); // 命令1
+    // I2C_WriteData(0xa0, 0x00, aa, 26);
+    I2C_Init();
+    // I2C_WriteData(0xa0, 0x80, aa, 53);
+    // At24c02_WriteByte(0xa0, 0x00, aa, 8);
+    At24c02_WriteData(0xa0, 0xb0, aa, 53);
+    SHOW_WAIT = 100;
+
+    // LCD1602_ShowString(aa);
+    At24c02_ReadData(0xa0, 0xb0, bb, 53);
+    i = 53;
+    while (1)
+    {
+        LCD1602_WriteCmd(Move_Cursor_Row1_Col(0));
+        for (j = 16; j && i; --j)
+        {
+            LCD1602_WriteData(bb[--i]);
+            Delay1ms(100);
+        }
+        if (!i)
+            break;
+    }
+    // // LCD1602_WriteCmd(Return_Cursor);
+    // // LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
+    // // LCD1602_ShowString(bb);
+    while (1)
+        ;
+}
+*/

@@ -1,4 +1,15 @@
-#include "ultimate.h"
+/**
+ * 作者：李宗霖 日期：2023/12/01
+ * CSDN昵称：Leisure_水中鱼
+ * CSDN: https://blog.csdn.net/Supine_0?type=blog
+ * ----------------------------------------------
+ */
+#include "__config__.h"
+#include "lcd1602.h"
+#include "utility.h"
+
+#define uint unsigned int
+#define uchar unsigned char
 
 #define WELCOME "Welcome to AAUCS"
 #define _GROUP_ "      NO.13     "
@@ -6,6 +17,7 @@
 
 extern uint SHOW_WAIT;
 extern bit page_change;
+extern bit ringtone_change;
 extern char upperLimit, lowerLimit;
 extern float temperature;
 extern float highest, lowest;
@@ -13,7 +25,7 @@ extern uchar fanGear, fanGearStep;
 extern uchar hus, hms, hs, hm; // 开机后 超过温度上限 时间
 extern uchar lus, lms, ls, lm; // 开机后 低于温度下限 时间
 extern uchar key, pressKey, page, option;
-extern uchar dsr, ringtoneNum, volume, changeCount;
+extern uchar dsr, ringtoneNum, audio, changeCount;
 extern uchar code DC[];
 extern uchar numStr[];
 
@@ -28,6 +40,8 @@ void Delay1ms(uint t) // 12MHz
         } // jmp : 2us * 123
     }     // 每当低位为 0 会多1us处理高位(dec) 忽略
 } // (8+1+8*124-2)us * t + ((t/256)+10+6)us 约 t ms
+
+void UpdateExtremes(bit which);
 
 // ============== LCD1602 ==============
 
@@ -140,9 +154,9 @@ void ShowViewPage_4(void)
     // LCD1602_ShowString();
     // 第二行 音量
     LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
-    LCD1602_ShowString("Volume: ");
+    LCD1602_ShowString("audio: ");
     i = 0;
-    while (i < volume)
+    while (i < audio)
     {
         LCD1602_WriteData(0xff);
         ++i;
@@ -151,7 +165,7 @@ void ShowViewPage_4(void)
 
 void ShowSettings(uchar opt)
 {
-    char i;
+    bit i;
     uchar sgl[2][2] = {{0x7e, 0x7f}, {' ', ' '}};
     if (opt == option)
         return;
@@ -160,7 +174,7 @@ void ShowSettings(uchar opt)
         LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
         switch (opt >> 1)
         {
-        case 0:
+        case 0: {
             // 0 温度上限
             LCD1602_WriteCmd(Move_Cursor_Row1_Col(1));
             LCD1602_ShowString("H Limit: ");
@@ -174,7 +188,8 @@ void ShowSettings(uchar opt)
             LCD1602_ShowString(numStr);
             LCD1602_ShowString(DC);
             break;
-        case 1:
+        }
+        case 1: {
             // 2 温感分辨率
             LCD1602_WriteCmd(Move_Cursor_Row1_Col(1));
             LCD1602_ShowString("TResolution: ");
@@ -184,21 +199,18 @@ void ShowSettings(uchar opt)
             LCD1602_ShowString("FGear' Step: ");
             LCD1602_WriteData('0' + fanGearStep);
             break;
-        case 2:
+        }
+        case 2: {
             // 4 开机铃声
             LCD1602_WriteCmd(Move_Cursor_Row1_Col(2));
             LCD1602_ShowString("ringtone:  ");
             LCD1602_WriteData('0' + ringtoneNum);
             // 5 音量
-            LCD1602_WriteCmd(Move_Cursor_Row2_Col(1));
-            LCD1602_ShowString("Volume:");
-            i = 0;
-            while (i < volume)
-            {
-                LCD1602_WriteData(0xff);
-                ++i;
-            }
+            LCD1602_WriteCmd(Move_Cursor_Row2_Col(4));
+            LCD1602_ShowString("Audio: ");
+            LCD1602_WriteData('0' + audio);
             break;
+        }
         }
     }
     i = opt & 1;
@@ -221,8 +233,9 @@ void ChangeSetting(void)
     bit flag = 0;
     switch (option)
     {
-    case 0: // 这一段差异性和共性都多，为了节约一点内存，三目运算符 时间换空间
-    case 1: // 这一段逻辑复杂，只用知道是增加/减少上限下限的
+    case 0: {
+    } // 这一段差异性和共性都多，为了节约一点内存，三目运算符 时间换空间
+    case 1: { // 这一段逻辑复杂，只用知道是增加/减少上限下限的
         i = option ? lowerLimit : upperLimit;
         while (1)
         {
@@ -241,35 +254,49 @@ void ChangeSetting(void)
             }
             switch (KeysSystem_3())
             {
-            case 2:
+            case 2: {
                 if (option)
                     lowerLimit = i;
                 else
                     upperLimit = i;
-            case -2: // 可能会因为时序造成空白 所以要
+            }
+            case -2: { // 可能会因为时序造成空白 所以要
                 LCD1602_WriteCmd((option ? 0xc0 : 0x80) | 10);
                 Int8ToString(option ? lowerLimit : upperLimit, numStr, 3);
                 LCD1602_ShowString(numStr); // 刷新一下数据
                 return;
-            case -1:
+            }
+            case -1: {
                 if (i > -55 && ((i > lowerLimit + 1) || option))
                     --i;
                 break;
-            case 1:
+            }
+            case 1: {
                 if (i < 127 && ((i < upperLimit - 1) || !option))
                     ++i;
                 break;
             }
+            }
         }
-    case 4: // 这一部分代码几乎一样，就复用了用来增大/减小选项值
-        i = ringtoneNum; // 0 - 3
-    case 3:
+    }
+    case 5: {
+        i = audio; // 0 - 7
+    }
+    case 4: {
+        if (option == 4)
+            i = ringtoneNum; // 0 - 3
+    }
+    case 3: {
         if (option == 3)
             i = fanGearStep; // 0 - 7
-    case 2:
+    }
+    case 2: { // 这一部分代码几乎一样，就复用了用来增大/减小选项值
         if (option == 2)
             i = dsr; // 0 - 3
-        LCD1602_WriteCmd((option & 1 ? 0xc0 : 0x80) | (option == 4 ? 14 : 15));
+        LCD1602_WriteCmd(
+            (option & 1 ? 0xc0 : 0x80) |
+            (option == 5 ? 12 : (option == 4 ? 14 : 15))
+        );
         while (1)
         {
             if (!--cunt)
@@ -285,30 +312,41 @@ void ChangeSetting(void)
             LCD1602_WriteData(j);
             switch (KeysSystem_3())
             {
-            case 2:
-                if (option == 4)
+            case 2: {
+                if (option == 5)
+                    audio = i;
+                else if (option == 4 && ringtoneNum != i)
+                {
+                    ringtone_change = 1;
                     ringtoneNum = i;
+                }
                 else if (option == 3)
                     fanGearStep = i;
                 else if (option == 2)
                     dsr = i;
-            case -2:
-                j = option == 4 ? ringtoneNum : (option == 3 ? fanGearStep : dsr);
+            }
+            case -2: {
+                j = option == 5
+                        ? audio
+                        : (option == 4 ? ringtoneNum
+                                       : (option == 3 ? fanGearStep : dsr));
                 LCD1602_WriteCmd(Shift_CursorLeft);
                 LCD1602_WriteData(j + '0');
                 return;
-            case -1:
-                if (i > 0)
+            }
+            case -1: {
+                if (i > 0 + (option == 4))
                     --i;
                 break;
-            case 1:
-                if (i < 3 + (option == 3 ? 4 : 0))
+            }
+            case 1: {
+                if (i < 3 + ((option == 3 || option == 5) ? 4 : 0))
                     ++i;
                 break;
             }
+            }
         }
-    case 5:
-        break;
+    }
     }
 }
 
@@ -370,26 +408,30 @@ void KeysSystem_2(void)
         // 执行按键功能
         switch (pressKey)
         {
-        case 0x7f: // P37 进入设置
+        case 0x7f: { // P37 进入设置
             EA = 0;
             pressKey = 0xff;
             ChangeSetting();
             pressKey = 0xff;
             EA = 1;
             return;
-        case 0xbf: // P36 下一条
+        }
+        case 0xbf: { // P36 下一条
             opt = option + 1;
             if (opt == SETTING_NUM)
                 opt = 0;
             break;
-        case 0xdf: // P35 上一条
+        }
+        case 0xdf: { // P35 上一条
             if (!option)
                 opt = SETTING_NUM - 1;
             else
                 opt = option - 1;
             break;
-        case 0xef: // P34 首条
+        }
+        case 0xef: { // P34 首条
             opt = 0;
+        }
         }
         ShowSettings(opt);
     default:
@@ -437,12 +479,14 @@ char KeysSystem_3(void)
         // 执行按键功能
         switch (pressKey)
         {
-        case 0x7f: // P37 取消
+        case 0x7f: { // P37 取消
             pressKey = 0xff;
             return -2;
-        case 0xef: // P34 确定
+        }
+        case 0xef: { // P34 确定
             pressKey = 0xff;
             return 2;
+        }
         }
     default:
         pressKey = 0xff;

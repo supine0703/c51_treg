@@ -19,6 +19,8 @@
         "__config__.h": "c",
         "reg52.h": "c",
         "REG52.H": "cpp",
-        "i2c.h": "c"
-    }
+        "i2c.h": "c",
+        "at24c02.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "enabledIfIncludesResolve"
 }

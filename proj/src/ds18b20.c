@@ -1,6 +1,25 @@
-#define uchar unsigned char
+/**
+ * 作者：李宗霖 日期：2023/12/01
+ * CSDN昵称：Leisure_水中鱼
+ * CSDN: https://blog.csdn.net/Supine_0?type=blog
+ * ----------------------------------------------
+ * - 此头文件对文件：'__config__.h' 强依赖
+ * - 数据端口 控制端口 需要通过'__config__.h'配置 DQ
+ * ----------------------------------------------
+ * 提供了 6MHz和12MHz的延迟函数 其他晶振频率 可根据此封装
+ */
+#include "__config__.h"
+#ifdef DS18B20_USE_DEFAULT
+#include <REG52.H>
+#undef DS18B20_DEFINE_DQ
+#define DS18B20_DEFINE_DQ P1 ^ 5
+#endif
 
-#include "ds18b20.h"
+sbit DQ = DS18B20_DEFINE_DQ;
+
+#ifndef uchar
+#define uchar unsigned char
+#endif
 
 extern void _nop_(void);
 
@@ -24,11 +43,9 @@ void DS18B20_Delay10us(uchar t)
     do          // 1+1+6+2 = 10us
     {
         _nop_(); // nop : 1us
-        i = 3;   // mov : 1us
-        do
-        {
-        } while (--i); // djnz : 2us
-    } while (--t);     // djnz : 2us
+        for (i = 3; i; --i)
+            ;      // mov djnz : 3us
+    } while (--t); // djnz : 2us
 } // (t-1)*10us + (5+1+4)us
 
 // -------------------------------------

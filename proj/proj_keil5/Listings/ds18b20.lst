@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   DS18B20                                                           12/04/2023 07:06:34 PAGE 1   
+C51 COMPILER V9.60.7.0   DS18B20                                                           12/05/2023 03:26:13 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DS18B20
@@ -8,177 +8,196 @@ COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\ds18b20.c OPTIMIZE(8,SPE
 
 line level    source
 
-   1          #define uchar unsigned char
-   2          
-   3          #include "ds18b20.h"
-   4          
-   5          extern void _nop_(void);
-   6          
-   7          /*
-   8          void DS18B20_Delay10us(uchar t) // 延迟t * 10us
-   9          {
-  10              if (t == 1) return;
-  11              t -= 2;
-  12              _nop_();
-  13              while (t--) { }
-  14          }*/
-  15          // 6MHz 延迟t * 10us
-  16          
-  17          // 12MHz 延迟t * 10us
-  18          void DS18B20_Delay10us(uchar t)
-  19          { // lcall mov ret : 5us
-  20   1          uchar i;
-  21   1          _nop_(); // nop : 1us
-  22   1          if (!--t)
-  23   1              return; // dec mov jz : 4us
-  24   1          do          // 1+1+6+2 = 10us
-  25   1          {
-  26   2              _nop_(); // nop : 1us
-  27   2              i = 3;   // mov : 1us
-  28   2              do
-  29   2              {
-  30   3              } while (--i); // djnz : 2us
-  31   2          } while (--t);     // djnz : 2us
-  32   1      } // (t-1)*10us + (5+1+4)us
-  33          
-  34          // -------------------------------------
+   1          /**
+   2           * 作者：李宗霖 日期：2023/12/01
+   3           * CSDN昵称：Leisure_水中鱼
+   4           * CSDN: https://blog.csdn.net/Supine_0?type=blog
+   5           * ----------------------------------------------
+   6           * - 此头文件对文件：'__config__.h' 强依赖
+   7           * - 数据端口 控制端口 需要通过'__config__.h'配置 DQ
+   8           * ----------------------------------------------
+   9           * 提供了 6MHz和12MHz的延迟函数 其他晶振频率 可根据此封装
+  10           */
+  11          #include "__config__.h"
+  12          #ifdef DS18B20_USE_DEFAULT
+              #include <REG52.H>
+              #undef DS18B20_DEFINE_DQ
+              #define DS18B20_DEFINE_DQ P1 ^ 5
+              #endif
+  17          
+  18          sbit DQ = DS18B20_DEFINE_DQ;
+  19          
+  20          #ifndef uchar
+  21          #define uchar unsigned char
+  22          #endif
+  23          
+  24          extern void _nop_(void);
+  25          
+  26          /*
+  27          void DS18B20_Delay10us(uchar t) // 延迟t * 10us
+  28          {
+  29              if (t == 1) return;
+  30              t -= 2;
+  31              _nop_();
+  32              while (t--) { }
+  33          }*/
+  34          // 6MHz 延迟t * 10us
   35          
-  36          uchar DS18B20_InitCheck(void)
-  37          {
-  38   1          uchar x = 0;
-  39   1          DQ = 1; // 复位DQ
-  40   1          DQ = 0;
-  41   1          DS18B20_Delay10us(60); // 拉低 480~960us
-  42   1          DQ = 1;
-  43   1          DS18B20_Delay10us(12); // 等待 15~60us 240us之内
-  44   1          x = DQ;                // 总线60~240us低电平
-  45   1          DQ = 1;                // 释放总线
-  46   1          DS18B20_Delay10us(24); // 保证时序完整
-  47   1          return x;
-  48   1      } // 约 bit 973 uchar 976
-  49          
-  50          uchar DS18B20_ReadByte(void)
-  51          {
-  52   1          uchar i = 8, dat = 0;
-  53   1          do // 串行读8位数据，先读低位后读高位
-  54   1          {
-C51 COMPILER V9.60.7.0   DS18B20                                                           12/04/2023 07:06:34 PAGE 2   
+  36          // 12MHz 延迟t * 10us
+  37          void DS18B20_Delay10us(uchar t)
+  38          { // lcall mov ret : 5us
+  39   1          uchar i;
+  40   1          _nop_(); // nop : 1us
+  41   1          if (!--t)
+  42   1              return; // dec mov jz : 4us
+  43   1          do          // 1+1+6+2 = 10us
+  44   1          {
+  45   2              _nop_(); // nop : 1us
+  46   2              for (i = 3; i; --i)
+  47   2                  ;      // mov djnz : 3us
+  48   2          } while (--t); // djnz : 2us
+  49   1      } // (t-1)*10us + (5+1+4)us
+  50          
+  51          // -------------------------------------
+  52          
+  53          uchar DS18B20_InitCheck(void)
+  54          {
+C51 COMPILER V9.60.7.0   DS18B20                                                           12/05/2023 03:26:13 PAGE 2   
 
-  55   2              DQ = 0; // 拉低
-  56   2              DS18B20_Delay10us(1);
-  57   2              DQ = 1; // 15μs内拉高释放总线
-  58   2              dat >>= 1;
-  59   2              if (DQ)
-  60   2                  dat |= 0x80;
-  61   2              DS18B20_Delay10us(5); // 最少60us
-  62   2          } while (--i);
-  63   1          return dat;
-  64   1      } // 约 560 (559) 587
-  65          
-  66          void DS18B20_WriteByte(uchar dat)
-  67          {
-  68   1          uchar i = 8;
-  69   1          do // 串行写8位数据，先写低位后写高位
-  70   1          {
-  71   2              DQ = 0;
-  72   2              DS18B20_Delay10us(1); // 至少间隔1us 低于15us
-  73   2              DQ = dat & 0x01;      // 写"1" 在15μs内拉高
-  74   2              DS18B20_Delay10us(5); // 写"0" 拉低60μs 10+50
-  75   2              DQ = 1;
-  76   2              dat >>= 1;
-  77   2          } while (--i);
-  78   1      } // 约 550 (551) 584
-  79          
-  80          // -------------------------------------
-  81          
-  82          void DS18B20_Convert() // 温度转换
-  83          {
-  84   1          if (DS18B20_InitCheck())
-  85   1              return;
-  86   1          DS18B20_WriteByte(0xcc);
-  87   1          DS18B20_WriteByte(0x44);
-  88   1      } // 约 2080 (2076) 2151
-  89          
-  90          int DS18B20_ReadTemp() // 温度读取
-  91          {
-  92   1          uchar low = 0, high = 0;
-  93   1          int temp = 0;
-  94   1          if (DS18B20_InitCheck())
-  95   1              return 0;
-  96   1          DS18B20_WriteByte(0xcc);
-  97   1          DS18B20_WriteByte(0xbe);
-  98   1          low = DS18B20_ReadByte();
-  99   1          high = DS18B20_ReadByte();
- 100   1          temp = (high << 8) | low;
- 101   1          return temp;
- 102   1      } // 约 3210 (3211) 3663
- 103          
- 104          // -------------------------------------
- 105          
- 106          void DS18B20_Set(uchar upperLimit, uchar lowerLimit, uchar resolution)
- 107          {
- 108   1          if (DS18B20_InitCheck())
- 109   1              return;
- 110   1          DS18B20_WriteByte(0xcc);
- 111   1          DS18B20_WriteByte(0x4e);       // 写暂存器指令4E
- 112   1          DS18B20_WriteByte(upperLimit); // 写高速缓存器TH高温限值
- 113   1          DS18B20_WriteByte(lowerLimit); // 写高速缓存器TL低温限值
- 114   1          DS18B20_WriteByte((resolution << 5) | 0x1f); // 精度设置
- 115   1      }
- 116          
-C51 COMPILER V9.60.7.0   DS18B20                                                           12/04/2023 07:06:34 PAGE 3   
+  55   1          uchar x = 0;
+  56   1          DQ = 1; // 复位DQ
+  57   1          DQ = 0;
+  58   1          DS18B20_Delay10us(60); // 拉低 480~960us
+  59   1          DQ = 1;
+  60   1          DS18B20_Delay10us(12); // 等待 15~60us 240us之内
+  61   1          x = DQ;                // 总线60~240us低电平
+  62   1          DQ = 1;                // 释放总线
+  63   1          DS18B20_Delay10us(24); // 保证时序完整
+  64   1          return x;
+  65   1      } // 约 bit 973 uchar 976
+  66          
+  67          uchar DS18B20_ReadByte(void)
+  68          {
+  69   1          uchar i = 8, dat = 0;
+  70   1          do // 串行读8位数据，先读低位后读高位
+  71   1          {
+  72   2              DQ = 0; // 拉低
+  73   2              DS18B20_Delay10us(1);
+  74   2              DQ = 1; // 15μs内拉高释放总线
+  75   2              dat >>= 1;
+  76   2              if (DQ)
+  77   2                  dat |= 0x80;
+  78   2              DS18B20_Delay10us(5); // 最少60us
+  79   2          } while (--i);
+  80   1          return dat;
+  81   1      } // 约 560 (559) 587
+  82          
+  83          void DS18B20_WriteByte(uchar dat)
+  84          {
+  85   1          uchar i = 8;
+  86   1          do // 串行写8位数据，先写低位后写高位
+  87   1          {
+  88   2              DQ = 0;
+  89   2              DS18B20_Delay10us(1); // 至少间隔1us 低于15us
+  90   2              DQ = dat & 0x01;      // 写"1" 在15μs内拉高
+  91   2              DS18B20_Delay10us(5); // 写"0" 拉低60μs 10+50
+  92   2              DQ = 1;
+  93   2              dat >>= 1;
+  94   2          } while (--i);
+  95   1      } // 约 550 (551) 584
+  96          
+  97          // -------------------------------------
+  98          
+  99          void DS18B20_Convert() // 温度转换
+ 100          {
+ 101   1          if (DS18B20_InitCheck())
+ 102   1              return;
+ 103   1          DS18B20_WriteByte(0xcc);
+ 104   1          DS18B20_WriteByte(0x44);
+ 105   1      } // 约 2080 (2076) 2151
+ 106          
+ 107          int DS18B20_ReadTemp() // 温度读取
+ 108          {
+ 109   1          uchar low = 0, high = 0;
+ 110   1          int temp = 0;
+ 111   1          if (DS18B20_InitCheck())
+ 112   1              return 0;
+ 113   1          DS18B20_WriteByte(0xcc);
+ 114   1          DS18B20_WriteByte(0xbe);
+ 115   1          low = DS18B20_ReadByte();
+ 116   1          high = DS18B20_ReadByte();
+C51 COMPILER V9.60.7.0   DS18B20                                                           12/05/2023 03:26:13 PAGE 3   
 
- 117          void DS18B20_Get(uchar* upperLimit, uchar* lowerLimit, uchar* resolution)
- 118          {
- 119   1          if (DS18B20_InitCheck())
- 120   1              return;
- 121   1          DS18B20_WriteByte(0xcc);
- 122   1          DS18B20_WriteByte(0xbe);
- 123   1          DS18B20_ReadByte();
- 124   1          DS18B20_ReadByte();
- 125   1          *upperLimit = DS18B20_ReadByte();
- 126   1          *lowerLimit = DS18B20_ReadByte();
- 127   1          *resolution = DS18B20_ReadByte();
- 128   1          *resolution >>= 5;
- 129   1      }
- 130          
- 131          void DS18B20_Save(void)
- 132          {
- 133   1          if (DS18B20_InitCheck())
- 134   1              return;
- 135   1          DS18B20_WriteByte(0xcc);
- 136   1          DS18B20_WriteByte(0x48);
- 137   1          DS18B20_Delay10us(12); // 需要给DS18B20存储的时间
- 138   1          // 经测试 最好高于80us 否则可能会造成存入失败或者数据错误
- 139   1      }
- 140          
- 141          // void DS18B20_Update(void)
- 142          // {
- 143          //     if (DS18B20_InitCheck())
- 144          //         return;
- 145          //     DS18B20_WriteByte(0xcc);
- 146          //     DS18B20_WriteByte(0xb8);
- 147          //     while (!DQ)
- 148          //     {
- 149          //     }
- 150          // }
- 151          
- 152          // char DS18B20_Mode(void)
- 153          // {
- 154          //     char dat;
- 155          //     if (DS18B20_InitCheck())
- 156          //         return -1;
- 157          //     DS18B20_WriteByte(0xcc);
- 158          //     DS18B20_WriteByte(0xb4);
- 159          //     DQ = 0; // 拉低
- 160          //     DS18B20_Delay10us(1);
- 161          //     DQ = 1; // 15μs内拉高释放总线
- 162          //     if (DQ)
- 163          //         dat = 1;
- 164          //     else dat = 0;
- 165          //     DS18B20_Delay10us(5); // 最少60us
- 166          //     return dat;
+ 117   1          temp = (high << 8) | low;
+ 118   1          return temp;
+ 119   1      } // 约 3210 (3211) 3663
+ 120          
+ 121          // -------------------------------------
+ 122          
+ 123          void DS18B20_Set(uchar upperLimit, uchar lowerLimit, uchar resolution)
+ 124          {
+ 125   1          if (DS18B20_InitCheck())
+ 126   1              return;
+ 127   1          DS18B20_WriteByte(0xcc);
+ 128   1          DS18B20_WriteByte(0x4e);       // 写暂存器指令4E
+ 129   1          DS18B20_WriteByte(upperLimit); // 写高速缓存器TH高温限值
+ 130   1          DS18B20_WriteByte(lowerLimit); // 写高速缓存器TL低温限值
+ 131   1          DS18B20_WriteByte((resolution << 5) | 0x1f); // 精度设置
+ 132   1      }
+ 133          
+ 134          void DS18B20_Get(uchar* upperLimit, uchar* lowerLimit, uchar* resolution)
+ 135          {
+ 136   1          if (DS18B20_InitCheck())
+ 137   1              return;
+ 138   1          DS18B20_WriteByte(0xcc);
+ 139   1          DS18B20_WriteByte(0xbe);
+ 140   1          DS18B20_ReadByte();
+ 141   1          DS18B20_ReadByte();
+ 142   1          *upperLimit = DS18B20_ReadByte();
+ 143   1          *lowerLimit = DS18B20_ReadByte();
+ 144   1          *resolution = DS18B20_ReadByte();
+ 145   1          *resolution >>= 5;
+ 146   1      }
+ 147          
+ 148          void DS18B20_Save(void)
+ 149          {
+ 150   1          if (DS18B20_InitCheck())
+ 151   1              return;
+ 152   1          DS18B20_WriteByte(0xcc);
+ 153   1          DS18B20_WriteByte(0x48);
+ 154   1          DS18B20_Delay10us(12); // 需要给DS18B20存储的时间
+ 155   1          // 经测试 最好高于80us 否则可能会造成存入失败或者数据错误
+ 156   1      }
+ 157          
+ 158          // void DS18B20_Update(void)
+ 159          // {
+ 160          //     if (DS18B20_InitCheck())
+ 161          //         return;
+ 162          //     DS18B20_WriteByte(0xcc);
+ 163          //     DS18B20_WriteByte(0xb8);
+ 164          //     while (!DQ)
+ 165          //     {
+ 166          //     }
  167          // }
+ 168          
+ 169          // char DS18B20_Mode(void)
+ 170          // {
+ 171          //     char dat;
+ 172          //     if (DS18B20_InitCheck())
+ 173          //         return -1;
+ 174          //     DS18B20_WriteByte(0xcc);
+ 175          //     DS18B20_WriteByte(0xb4);
+ 176          //     DQ = 0; // 拉低
+ 177          //     DS18B20_Delay10us(1);
+ 178          //     DQ = 1; // 15μs内拉高释放总线
+C51 COMPILER V9.60.7.0   DS18B20                                                           12/05/2023 03:26:13 PAGE 4   
+
+ 179          //     if (DQ)
+ 180          //         dat = 1;
+ 181          //     else dat = 0;
+ 182          //     DS18B20_Delay10us(5); // 最少60us
+ 183          //     return dat;
+ 184          // }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
@@ -190,8 +209,6 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
-
-C51 COMPILER V9.60.7.0   DS18B20                                                           12/04/2023 07:06:34 PAGE 4   
 
 
 C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

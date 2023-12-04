@@ -1,11 +1,15 @@
-#define uchar unsigned char
-#define uint unsigned int
-
 /**
+ * 作者：李宗霖 日期：2023/12/01
+ * CSDN昵称：Leisure_水中鱼
+ * CSDN: https://blog.csdn.net/Supine_0?type=blog
+ * ----------------------------------------------
  * 不加入结束符就可以插入别的字符串中间
  * 但是对于单独开空间存储的来说 要么不同长度各自开空间 要么手动加结束符
  * 所以出于妥协 添加一个宏来作为编译的这一份代码是否需要自动加入结束符
-*/
+ */
+#define uchar unsigned char
+#define uint unsigned int
+
 #define _ADD_END_
 
 /**

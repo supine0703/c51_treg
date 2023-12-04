@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/04/2023 07:06:34 PAGE 1   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE ULTIMATE
@@ -8,555 +8,600 @@ COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\ultimate.c OPTIMIZE(8,SP
 
 line level    source
 
-   1          #include "ultimate.h"
-   2          
-   3          #define WELCOME "Welcome to AAUCS"
-   4          #define _GROUP_ "      NO.13     "
-   5          #define SETTING_NUM 6
-   6          
-   7          extern uint SHOW_WAIT;
-   8          extern bit page_change;
-   9          extern char upperLimit, lowerLimit;
-  10          extern float temperature;
-  11          extern float highest, lowest;
-  12          extern uchar fanGear, fanGearStep;
-  13          extern uchar hus, hms, hs, hm; // 开机后 超过温度上限 时间
-  14          extern uchar lus, lms, ls, lm; // 开机后 低于温度下限 时间
-  15          extern uchar key, pressKey, page, option;
-  16          extern uchar dsr, ringtoneNum, volume, changeCount;
-  17          extern uchar code DC[];
-  18          extern uchar numStr[];
-  19          
-  20          void Delay1ms(uint t) // 12MHz
-  21          {                     // 软件延迟 参数用uchar 比uint 精准
-  22   1          uchar i;
-  23   1          while (t--) // mov dec mov jnz orl jz : 9us
-  24   1          {
-  25   2              i = 123;    // mov : 1us
-  26   2              while (i--) // mov dec mov jz : 6us * 124
-  27   2              {
-  28   3              } // jmp : 2us * 123
-  29   2          }     // 每当低位为 0 会多1us处理高位(dec) 忽略
-  30   1      } // (8+1+8*124-2)us * t + ((t/256)+10+6)us 约 t ms
+   1          /**
+   2           * 作者：李宗霖 日期：2023/12/01
+   3           * CSDN昵称：Leisure_水中鱼
+   4           * CSDN: https://blog.csdn.net/Supine_0?type=blog
+   5           * ----------------------------------------------
+   6           */
+   7          #include "__config__.h"
+   8          #include "lcd1602.h"
+   9          #include "utility.h"
+  10          
+  11          #define uint unsigned int
+  12          #define uchar unsigned char
+  13          
+  14          #define WELCOME "Welcome to AAUCS"
+  15          #define _GROUP_ "      NO.13     "
+  16          #define SETTING_NUM 6
+  17          
+  18          extern uint SHOW_WAIT;
+  19          extern bit page_change;
+  20          extern bit ringtone_change;
+  21          extern char upperLimit, lowerLimit;
+  22          extern float temperature;
+  23          extern float highest, lowest;
+  24          extern uchar fanGear, fanGearStep;
+  25          extern uchar hus, hms, hs, hm; // 开机后 超过温度上限 时间
+  26          extern uchar lus, lms, ls, lm; // 开机后 低于温度下限 时间
+  27          extern uchar key, pressKey, page, option;
+  28          extern uchar dsr, ringtoneNum, audio, changeCount;
+  29          extern uchar code DC[];
+  30          extern uchar numStr[];
   31          
-  32          // ============== LCD1602 ==============
-  33          
-  34          void LCD1602_ShowString(uchar* s)
-  35          {
-  36   1          while (*s)
-  37   1          {
-  38   2              LCD1602_WriteData(*s++);
-  39   2              Delay1ms(SHOW_WAIT);
-  40   2          }
-  41   1      }
-  42          
-  43          void LCD1602_Action(void)
-  44          {
-  45   1          uchar i;
-  46   1          // 开启 LCD1602 显示 (initial)
-  47   1          LCD1602_WriteCmd(Set_8bit_2line_5x7);   // 命令6
-  48   1          LCD1602_WriteCmd(Show_CursorOff);       // 命令4
-  49   1          LCD1602_WriteCmd(Mode_CursorRightMove); // 命令3
-  50   1          LCD1602_WriteCmd(Clear_Screen);         // 命令1
-  51   1      
-  52   1          // 开机界面
-  53   1          LCD1602_WriteCmd(Move_Cursor_Row1_Col(16)); // 命令8 设置光标在显示屏之外
-  54   1          LCD1602_ShowString(WELCOME);
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/04/2023 07:06:34 PAGE 2   
+  32          void Delay1ms(uint t) // 12MHz
+  33          {                     // 软件延迟 参数用uchar 比uint 精准
+  34   1          uchar i;
+  35   1          while (t--) // mov dec mov jnz orl jz : 9us
+  36   1          {
+  37   2              i = 123;    // mov : 1us
+  38   2              while (i--) // mov dec mov jz : 6us * 124
+  39   2              {
+  40   3              } // jmp : 2us * 123
+  41   2          }     // 每当低位为 0 会多1us处理高位(dec) 忽略
+  42   1      } // (8+1+8*124-2)us * t + ((t/256)+10+6)us 约 t ms
+  43          
+  44          void UpdateExtremes(bit which);
+  45          
+  46          // ============== LCD1602 ==============
+  47          
+  48          void LCD1602_ShowString(uchar* s)
+  49          {
+  50   1          while (*s)
+  51   1          {
+  52   2              LCD1602_WriteData(*s++);
+  53   2              Delay1ms(SHOW_WAIT);
+  54   2          }
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 2   
 
-  55   1          SHOW_WAIT = 200;
-  56   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(16)); // 命令8
-  57   1          LCD1602_WriteCmd(Mode_ScreenRightMove);     // 命令3
-  58   1          LCD1602_ShowString(_GROUP_); // 一边输出第二行 一边移动屏幕
-  59   1          LCD1602_WriteCmd(Mode_CursorRightMove); // 命令3  恢复光标自增
-  60   1      
-  61   1          i = 3;
-  62   1          do // 闪烁三次
-  63   1          {
-  64   2              LCD1602_WriteCmd(Show_ScreenOff); // 命令4
-  65   2              Delay1ms(SHOW_WAIT * 2);
-  66   2              LCD1602_WriteCmd(Show_CursorOff); // 命令4
-  67   2              Delay1ms(SHOW_WAIT * 2);
-  68   2          } while (--i);
-  69   1          i = 16;
-  70   1          do
-  71   1          {
-  72   2              LCD1602_WriteCmd(Shift_ScreenRight); // 命令5
-  73   2              Delay1ms(SHOW_WAIT);
-  74   2          } while (--i);                  // 字体移出屏幕
-  75   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
-  76   1          SHOW_WAIT = 0;
-  77   1      } // LCD1602 Action
-  78          
-  79          void ShowViewPage_1(void)
-  80          {
-  81   1          // 第一行 温度上限 温度下限
-  82   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
-  83   1          LCD1602_ShowString("H:");
-  84   1          Int8ToString(upperLimit, numStr, 3);
-  85   1          LCD1602_ShowString(numStr);
-  86   1          LCD1602_ShowString(DC);
-  87   1          LCD1602_ShowString("  L:");
-  88   1          Int8ToString(lowerLimit, numStr, 3);
-  89   1          LCD1602_ShowString(numStr);
-  90   1          LCD1602_ShowString(DC);
-  91   1          // 第二行 温度 风扇档位
-  92   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
-  93   1          LCD1602_ShowString("T:");
-  94   1          FloatToString(temperature, numStr, 5, 1);
-  95   1          LCD1602_ShowString(numStr);
-  96   1          LCD1602_ShowString(DC);
-  97   1          LCD1602_ShowString("  FAN:");
-  98   1          Int8ToString(fanGear, numStr, 1);
+  55   1      }
+  56          
+  57          void LCD1602_Action(void)
+  58          {
+  59   1          uchar i;
+  60   1          // 开启 LCD1602 显示 (initial)
+  61   1          LCD1602_WriteCmd(Set_8bit_2line_5x7);   // 命令6
+  62   1          LCD1602_WriteCmd(Show_CursorOff);       // 命令4
+  63   1          LCD1602_WriteCmd(Mode_CursorRightMove); // 命令3
+  64   1          LCD1602_WriteCmd(Clear_Screen);         // 命令1
+  65   1      
+  66   1          // 开机界面
+  67   1          LCD1602_WriteCmd(Move_Cursor_Row1_Col(16)); // 命令8 设置光标在显示屏之外
+  68   1          LCD1602_ShowString(WELCOME);
+  69   1          SHOW_WAIT = 200;
+  70   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(16)); // 命令8
+  71   1          LCD1602_WriteCmd(Mode_ScreenRightMove);     // 命令3
+  72   1          LCD1602_ShowString(_GROUP_); // 一边输出第二行 一边移动屏幕
+  73   1          LCD1602_WriteCmd(Mode_CursorRightMove); // 命令3  恢复光标自增
+  74   1      
+  75   1          i = 3;
+  76   1          do // 闪烁三次
+  77   1          {
+  78   2              LCD1602_WriteCmd(Show_ScreenOff); // 命令4
+  79   2              Delay1ms(SHOW_WAIT * 2);
+  80   2              LCD1602_WriteCmd(Show_CursorOff); // 命令4
+  81   2              Delay1ms(SHOW_WAIT * 2);
+  82   2          } while (--i);
+  83   1          i = 16;
+  84   1          do
+  85   1          {
+  86   2              LCD1602_WriteCmd(Shift_ScreenRight); // 命令5
+  87   2              Delay1ms(SHOW_WAIT);
+  88   2          } while (--i);                  // 字体移出屏幕
+  89   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
+  90   1          SHOW_WAIT = 0;
+  91   1      } // LCD1602 Action
+  92          
+  93          void ShowViewPage_1(void)
+  94          {
+  95   1          // 第一行 温度上限 温度下限
+  96   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
+  97   1          LCD1602_ShowString("H:");
+  98   1          Int8ToString(upperLimit, numStr, 3);
   99   1          LCD1602_ShowString(numStr);
- 100   1      }
- 101          
- 102          void ShowViewPage_2(void)
- 103          {
- 104   1          // 第一行 自开机后的最高温
- 105   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
- 106   1          LCD1602_ShowString("Highest: ");
- 107   1          UpdateExtremes(1);
- 108   1          // 第二行 自开机后的最低温
- 109   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
- 110   1          LCD1602_ShowString("Lowest:  ");
- 111   1          UpdateExtremes(0);
- 112   1      }
- 113          
- 114          void ShowViewPage_3(void)
- 115          {
- 116   1          void UpdateOverLimitTimer(bit which);
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/04/2023 07:06:34 PAGE 3   
+ 100   1          LCD1602_ShowString(DC);
+ 101   1          LCD1602_ShowString("  L:");
+ 102   1          Int8ToString(lowerLimit, numStr, 3);
+ 103   1          LCD1602_ShowString(numStr);
+ 104   1          LCD1602_ShowString(DC);
+ 105   1          // 第二行 温度 风扇档位
+ 106   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
+ 107   1          LCD1602_ShowString("T:");
+ 108   1          FloatToString(temperature, numStr, 5, 1);
+ 109   1          LCD1602_ShowString(numStr);
+ 110   1          LCD1602_ShowString(DC);
+ 111   1          LCD1602_ShowString("  FAN:");
+ 112   1          Int8ToString(fanGear, numStr, 1);
+ 113   1          LCD1602_ShowString(numStr);
+ 114   1      }
+ 115          
+ 116          void ShowViewPage_2(void)
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 3   
 
- 117   1          // 第一行 超过温度上限时长
- 118   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
- 119   1          LCD1602_ShowString("Above H:");
- 120   1          UpdateOverLimitTimer(1);
- 121   1          // 第二行 低于温度下限时长
- 122   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
- 123   1          LCD1602_ShowString("Below L:");
- 124   1          UpdateOverLimitTimer(0);
- 125   1      }
- 126          
- 127          void ShowViewPage_4(void)
- 128          {
- 129   1          char KeysSystem_3(void);
- 130   1          uchar i;
- 131   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
- 132   1          // 第一行 温感分辨率 风扇档位步长 (开机音乐?)
- 133   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
- 134   1          LCD1602_ShowString("TR: ");
- 135   1          LCD1602_WriteData('0' + dsr);
- 136   1          LCD1602_ShowString("   FGS: ");
- 137   1          LCD1602_WriteData('0' + fanGearStep);
- 138   1          LCD1602_ShowString(DC);
- 139   1          // LCD1602_ShowString("  M:");
- 140   1          // LCD1602_ShowString();
- 141   1          // 第二行 音量
- 142   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
- 143   1          LCD1602_ShowString("Volume: ");
- 144   1          i = 0;
- 145   1          while (i < volume)
- 146   1          {
- 147   2              LCD1602_WriteData(0xff);
- 148   2              ++i;
- 149   2          }
- 150   1      }
- 151          
- 152          void ShowSettings(uchar opt)
- 153          {
- 154   1          char i;
- 155   1          uchar sgl[2][2] = {{0x7e, 0x7f}, {' ', ' '}};
- 156   1          if (opt == option)
- 157   1              return;
- 158   1          if ((opt >> 1) != (option >> 1))
- 159   1          {
- 160   2              LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
- 161   2              switch (opt >> 1)
- 162   2              {
- 163   3              case 0:
- 164   3                  // 0 温度上限
- 165   3                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(1));
- 166   3                  LCD1602_ShowString("H Limit: ");
- 167   3                  Int8ToString(upperLimit, numStr, 3);
- 168   3                  LCD1602_ShowString(numStr);
- 169   3                  LCD1602_ShowString(DC);
- 170   3                  // 1 温度下限
- 171   3                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(1));
- 172   3                  LCD1602_ShowString("L Limit: ");
- 173   3                  Int8ToString(lowerLimit, numStr, 3);
- 174   3                  LCD1602_ShowString(numStr);
- 175   3                  LCD1602_ShowString(DC);
- 176   3                  break;
- 177   3              case 1:
- 178   3                  // 2 温感分辨率
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/04/2023 07:06:34 PAGE 4   
+ 117          {
+ 118   1          // 第一行 自开机后的最高温
+ 119   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
+ 120   1          LCD1602_ShowString("Highest: ");
+ 121   1          UpdateExtremes(1);
+ 122   1          // 第二行 自开机后的最低温
+ 123   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
+ 124   1          LCD1602_ShowString("Lowest:  ");
+ 125   1          UpdateExtremes(0);
+ 126   1      }
+ 127          
+ 128          void ShowViewPage_3(void)
+ 129          {
+ 130   1          void UpdateOverLimitTimer(bit which);
+ 131   1          // 第一行 超过温度上限时长
+ 132   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
+ 133   1          LCD1602_ShowString("Above H:");
+ 134   1          UpdateOverLimitTimer(1);
+ 135   1          // 第二行 低于温度下限时长
+ 136   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
+ 137   1          LCD1602_ShowString("Below L:");
+ 138   1          UpdateOverLimitTimer(0);
+ 139   1      }
+ 140          
+ 141          void ShowViewPage_4(void)
+ 142          {
+ 143   1          char KeysSystem_3(void);
+ 144   1          uchar i;
+ 145   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
+ 146   1          // 第一行 温感分辨率 风扇档位步长 (开机音乐?)
+ 147   1          LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
+ 148   1          LCD1602_ShowString("TR: ");
+ 149   1          LCD1602_WriteData('0' + dsr);
+ 150   1          LCD1602_ShowString("   FGS: ");
+ 151   1          LCD1602_WriteData('0' + fanGearStep);
+ 152   1          LCD1602_ShowString(DC);
+ 153   1          // LCD1602_ShowString("  M:");
+ 154   1          // LCD1602_ShowString();
+ 155   1          // 第二行 音量
+ 156   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
+ 157   1          LCD1602_ShowString("audio: ");
+ 158   1          i = 0;
+ 159   1          while (i < audio)
+ 160   1          {
+ 161   2              LCD1602_WriteData(0xff);
+ 162   2              ++i;
+ 163   2          }
+ 164   1      }
+ 165          
+ 166          void ShowSettings(uchar opt)
+ 167          {
+ 168   1          bit i;
+ 169   1          uchar sgl[2][2] = {{0x7e, 0x7f}, {' ', ' '}};
+ 170   1          if (opt == option)
+ 171   1              return;
+ 172   1          if ((opt >> 1) != (option >> 1))
+ 173   1          {
+ 174   2              LCD1602_WriteCmd(Clear_Screen); // 命令1 清屏
+ 175   2              switch (opt >> 1)
+ 176   2              {
+ 177   3              case 0: {
+ 178   4                  // 0 温度上限
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 4   
 
- 179   3                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(1));
- 180   3                  LCD1602_ShowString("TResolution: ");
- 181   3                  LCD1602_WriteData('0' + dsr);
- 182   3                  // 3 风扇档位步长
- 183   3                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(1));
- 184   3                  LCD1602_ShowString("FGear' Step: ");
- 185   3                  LCD1602_WriteData('0' + fanGearStep);
- 186   3                  break;
- 187   3              case 2:
- 188   3                  // 4 开机铃声
- 189   3                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(2));
- 190   3                  LCD1602_ShowString("ringtone:  ");
- 191   3                  LCD1602_WriteData('0' + ringtoneNum);
- 192   3                  // 5 音量
- 193   3                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(1));
- 194   3                  LCD1602_ShowString("Volume:");
- 195   3                  i = 0;
- 196   3                  while (i < volume)
- 197   3                  {
- 198   4                      LCD1602_WriteData(0xff);
- 199   4                      ++i;
- 200   4                  }
- 201   3                  break;
- 202   3              }
- 203   2          }
- 204   1          i = opt & 1;
- 205   1          LCD1602_WriteCmd(Move_Cursor_Row1_Col(0));
- 206   1          LCD1602_WriteData(sgl[i][0]);
- 207   1          LCD1602_WriteCmd(Move_Cursor_Row1_Col(15));
- 208   1          LCD1602_WriteData(sgl[i][1]);
- 209   1          i = !i;
- 210   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
- 211   1          LCD1602_WriteData(sgl[i][0]);
- 212   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
- 213   1          LCD1602_WriteData(sgl[i][1]);
- 214   1          option = opt;
- 215   1      }
- 216          
- 217          void ChangeSetting(void)
- 218          {
- 219   1          char i, j;
- 220   1          uchar cunt = 24;
- 221   1          bit flag = 0;
- 222   1          switch (option)
- 223   1          {
- 224   2          case 0: // 这一段差异性和共性都多，为了节约一点内存，三目运算符 时间换空
-             -间
- 225   2          case 1: // 这一段逻辑复杂，只用知道是增加/减少上限下限的
- 226   2              i = option ? lowerLimit : upperLimit;
- 227   2              while (1)
- 228   2              {
- 229   3                  if (!--cunt)
- 230   3                  {
- 231   4                      cunt = 24;
- 232   4                      flag = !flag;
- 233   4                  }
- 234   3                  LCD1602_WriteCmd((option ? 0xc0 : 0x80) | 10);
- 235   3                  if (flag)
- 236   3                      LCD1602_ShowString("   ");
- 237   3                  else
- 238   3                  {
- 239   4                      Int8ToString(i, numStr, 3);
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/04/2023 07:06:34 PAGE 5   
+ 179   4                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(1));
+ 180   4                  LCD1602_ShowString("H Limit: ");
+ 181   4                  Int8ToString(upperLimit, numStr, 3);
+ 182   4                  LCD1602_ShowString(numStr);
+ 183   4                  LCD1602_ShowString(DC);
+ 184   4                  // 1 温度下限
+ 185   4                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(1));
+ 186   4                  LCD1602_ShowString("L Limit: ");
+ 187   4                  Int8ToString(lowerLimit, numStr, 3);
+ 188   4                  LCD1602_ShowString(numStr);
+ 189   4                  LCD1602_ShowString(DC);
+ 190   4                  break;
+ 191   4              }
+ 192   3              case 1: {
+ 193   4                  // 2 温感分辨率
+ 194   4                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(1));
+ 195   4                  LCD1602_ShowString("TResolution: ");
+ 196   4                  LCD1602_WriteData('0' + dsr);
+ 197   4                  // 3 风扇档位步长
+ 198   4                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(1));
+ 199   4                  LCD1602_ShowString("FGear' Step: ");
+ 200   4                  LCD1602_WriteData('0' + fanGearStep);
+ 201   4                  break;
+ 202   4              }
+ 203   3              case 2: {
+ 204   4                  // 4 开机铃声
+ 205   4                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(2));
+ 206   4                  LCD1602_ShowString("ringtone:  ");
+ 207   4                  LCD1602_WriteData('0' + ringtoneNum);
+ 208   4                  // 5 音量
+ 209   4                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(4));
+ 210   4                  LCD1602_ShowString("Audio: ");
+ 211   4                  LCD1602_WriteData('0' + ringtoneNum);
+ 212   4                  break;
+ 213   4              }
+ 214   3              }
+ 215   2          }
+ 216   1          i = opt & 1;
+ 217   1          LCD1602_WriteCmd(Move_Cursor_Row1_Col(0));
+ 218   1          LCD1602_WriteData(sgl[i][0]);
+ 219   1          LCD1602_WriteCmd(Move_Cursor_Row1_Col(15));
+ 220   1          LCD1602_WriteData(sgl[i][1]);
+ 221   1          i = !i;
+ 222   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
+ 223   1          LCD1602_WriteData(sgl[i][0]);
+ 224   1          LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
+ 225   1          LCD1602_WriteData(sgl[i][1]);
+ 226   1          option = opt;
+ 227   1      }
+ 228          
+ 229          void ChangeSetting(void)
+ 230          {
+ 231   1          char i, j;
+ 232   1          uchar cunt = 24;
+ 233   1          bit flag = 0;
+ 234   1          switch (option)
+ 235   1          {
+ 236   2          case 0: {
+ 237   3          } // 这一段差异性和共性都多，为了节约一点内存，三目运算符 时间换空间
+ 238   2          case 1: { // 这一段逻辑复杂，只用知道是增加/减少上限下限的
+ 239   3              i = option ? lowerLimit : upperLimit;
+ 240   3              while (1)
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 5   
 
- 240   4                      LCD1602_ShowString(numStr);
- 241   4                  }
- 242   3                  switch (KeysSystem_3())
- 243   3                  {
- 244   4                  case 2:
- 245   4                      if (option)
- 246   4                          lowerLimit = i;
- 247   4                      else
- 248   4                          upperLimit = i;
- 249   4                  case -2: // 可能会因为时序造成空白 所以要
- 250   4                      LCD1602_WriteCmd((option ? 0xc0 : 0x80) | 10);
- 251   4                      Int8ToString(option ? lowerLimit : upperLimit, numStr, 3);
- 252   4                      LCD1602_ShowString(numStr); // 刷新一下数据
- 253   4                      return;
- 254   4                  case -1:
- 255   4                      if (i > -55 && ((i > lowerLimit + 1) || option))
- 256   4                          --i;
- 257   4                      break;
- 258   4                  case 1:
- 259   4                      if (i < 127 && ((i < upperLimit - 1) || !option))
- 260   4                          ++i;
- 261   4                      break;
- 262   4                  }
- 263   3              }
- 264   2          case 4: // 这一部分代码几乎一样，就复用了用来增大/减小选项值
- 265   2              i = ringtoneNum; // 0 - 3
- 266   2          case 3:
- 267   2              if (option == 3)
- 268   2                  i = fanGearStep; // 0 - 7
- 269   2          case 2:
- 270   2              if (option == 2)
- 271   2                  i = dsr; // 0 - 3
- 272   2              LCD1602_WriteCmd((option & 1 ? 0xc0 : 0x80) | (option == 4 ? 14 : 15));
- 273   2              while (1)
- 274   2              {
- 275   3                  if (!--cunt)
- 276   3                  {
- 277   4                      cunt = 24;
- 278   4                      flag = !flag;
- 279   4                  }
- 280   3                  if (flag)
- 281   3                      j = ' ';
- 282   3                  else
- 283   3                      j = '0' + i;
- 284   3                  LCD1602_WriteCmd(Shift_CursorLeft);
- 285   3                  LCD1602_WriteData(j);
- 286   3                  switch (KeysSystem_3())
- 287   3                  {
- 288   4                  case 2:
- 289   4                      if (option == 4)
- 290   4                          ringtoneNum = i;
- 291   4                      else if (option == 3)
- 292   4                          fanGearStep = i;
- 293   4                      else if (option == 2)
- 294   4                          dsr = i;
- 295   4                  case -2:
- 296   4                      j = option == 4 ? ringtoneNum : (option == 3 ? fanGearStep : dsr);
- 297   4                      LCD1602_WriteCmd(Shift_CursorLeft);
- 298   4                      LCD1602_WriteData(j + '0');
- 299   4                      return;
- 300   4                  case -1:
- 301   4                      if (i > 0)
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/04/2023 07:06:34 PAGE 6   
+ 241   3              {
+ 242   4                  if (!--cunt)
+ 243   4                  {
+ 244   5                      cunt = 24;
+ 245   5                      flag = !flag;
+ 246   5                  }
+ 247   4                  LCD1602_WriteCmd((option ? 0xc0 : 0x80) | 10);
+ 248   4                  if (flag)
+ 249   4                      LCD1602_ShowString("   ");
+ 250   4                  else
+ 251   4                  {
+ 252   5                      Int8ToString(i, numStr, 3);
+ 253   5                      LCD1602_ShowString(numStr);
+ 254   5                  }
+ 255   4                  switch (KeysSystem_3())
+ 256   4                  {
+ 257   5                  case 2: {
+ 258   6                      if (option)
+ 259   6                          lowerLimit = i;
+ 260   6                      else
+ 261   6                          upperLimit = i;
+ 262   6                  }
+ 263   5                  case -2: { // 可能会因为时序造成空白 所以要
+ 264   6                      LCD1602_WriteCmd((option ? 0xc0 : 0x80) | 10);
+ 265   6                      Int8ToString(option ? lowerLimit : upperLimit, numStr, 3);
+ 266   6                      LCD1602_ShowString(numStr); // 刷新一下数据
+ 267   6                      return;
+ 268   6                  }
+ 269   5                  case -1: {
+ 270   6                      if (i > -55 && ((i > lowerLimit + 1) || option))
+ 271   6                          --i;
+ 272   6                      break;
+ 273   6                  }
+ 274   5                  case 1: {
+ 275   6                      if (i < 127 && ((i < upperLimit - 1) || !option))
+ 276   6                          ++i;
+ 277   6                      break;
+ 278   6                  }
+ 279   5                  }
+ 280   4              }
+ 281   3          }
+ 282   2          case 5: {
+ 283   3              i = audio; // 0 - 7
+ 284   3          }
+ 285   2          case 4: {
+ 286   3              if (option == 4)
+ 287   3                  i = ringtoneNum; // 0 - 3
+ 288   3          }
+ 289   2          case 3: {
+ 290   3              if (option == 3)
+ 291   3                  i = fanGearStep; // 0 - 7
+ 292   3          }
+ 293   2          case 2: { // 这一部分代码几乎一样，就复用了用来增大/减小选项值
+ 294   3              if (option == 2)
+ 295   3                  i = dsr; // 0 - 3
+ 296   3              LCD1602_WriteCmd(
+ 297   3                  (option & 1 ? 0xc0 : 0x80) |
+ 298   3                  (option == 5 ? 12 : (option == 4 ? 14 : 15))
+ 299   3              );
+ 300   3              while (1)
+ 301   3              {
+ 302   4                  if (!--cunt)
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 6   
 
- 302   4                          --i;
- 303   4                      break;
- 304   4                  case 1:
- 305   4                      if (i < 3 + (option == 3 ? 4 : 0))
- 306   4                          ++i;
- 307   4                      break;
- 308   4                  }
- 309   3              }
- 310   2          case 5:
- 311   2              break;
- 312   2          }
- 313   1      }
- 314          
- 315          // -------------------------------------
- 316          
- 317          bit CheckKeysInvalid()
- 318          {
- 319   1          uchar old = key;
- 320   1          Delay1ms(10);
- 321   1          key = 0x0f;
- 322   1          key |= KEYS;
- 323   1          return key != old;
- 324   1      }
- 325          
- 326          void KeysSystem_1(void)
- 327          {
- 328   1          KEYS = 0xff;
- 329   1          key = 0x0f; // 排除 P33 P32 P31 P30
- 330   1          key |= KEYS;
- 331   1          switch (key)
- 332   1          {
- 333   2          case 0x7f: // P37
- 334   2          case 0xbf: // P36
- 335   2          case 0xdf: // P35
- 336   2          case 0xef: // P34
- 337   2              if (page == key || CheckKeysInvalid())
- 338   2                  return;
- 339   2              pressKey = key;
- 340   2              break;
- 341   2          case 0xff: // 松开 上升沿触发
- 342   2              if (pressKey == 0xff || CheckKeysInvalid())
- 343   2                  return;
- 344   2              page_change = 1;
- 345   2              page = pressKey;
- 346   2          default:
- 347   2              pressKey = 0xff;
- 348   2          }
- 349   1      }
- 350          
- 351          void KeysSystem_2(void)
- 352          {
- 353   1          uchar opt;
- 354   1          KEYS = 0xff;
- 355   1          key = 0x0f; // 排除 P33 P32 P31 P30
- 356   1          key |= KEYS;
- 357   1          switch (key)
- 358   1          {
- 359   2          case 0x7f: // P37
- 360   2          case 0xbf: // P36
- 361   2          case 0xdf: // P35
- 362   2          case 0xef: // P34
- 363   2              if (CheckKeysInvalid())
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/04/2023 07:06:34 PAGE 7   
+ 303   4                  {
+ 304   5                      cunt = 24;
+ 305   5                      flag = !flag;
+ 306   5                  }
+ 307   4                  if (flag)
+ 308   4                      j = ' ';
+ 309   4                  else
+ 310   4                      j = '0' + i;
+ 311   4                  LCD1602_WriteCmd(Shift_CursorLeft);
+ 312   4                  LCD1602_WriteData(j);
+ 313   4                  switch (KeysSystem_3())
+ 314   4                  {
+ 315   5                  case 2: {
+ 316   6                      if (option == 5)
+ 317   6                          audio = i;
+ 318   6                      else if (option == 4 && ringtoneNum != i)
+ 319   6                      {
+ 320   7                          ringtone_change = 1;
+ 321   7                          ringtoneNum = i;
+ 322   7                      }
+ 323   6                      else if (option == 3)
+ 324   6                          fanGearStep = i;
+ 325   6                      else if (option == 2)
+ 326   6                          dsr = i;
+ 327   6                  }
+ 328   5                  case -2: {
+ 329   6                      j = option == 5
+ 330   6                              ? audio
+ 331   6                              : (option == 4 ? ringtoneNum
+ 332   6                                             : (option == 3 ? fanGearStep : dsr));
+ 333   6                      LCD1602_WriteCmd(Shift_CursorLeft);
+ 334   6                      LCD1602_WriteData(j + '0');
+ 335   6                      return;
+ 336   6                  }
+ 337   5                  case -1: {
+ 338   6                      if (i > 0 + (option == 4))
+ 339   6                          --i;
+ 340   6                      break;
+ 341   6                  }
+ 342   5                  case 1: {
+ 343   6                      if (i < 3 + ((option == 3 || option == 5) ? 4 : 0))
+ 344   6                          ++i;
+ 345   6                      break;
+ 346   6                  }
+ 347   5                  }
+ 348   4              }
+ 349   3          }
+ 350   2          }
+ 351   1      }
+ 352          
+ 353          // -------------------------------------
+ 354          
+ 355          bit CheckKeysInvalid()
+ 356          {
+ 357   1          uchar old = key;
+ 358   1          Delay1ms(10);
+ 359   1          key = 0x0f;
+ 360   1          key |= KEYS;
+ 361   1          return key != old;
+ 362   1      }
+ 363          
+ 364          void KeysSystem_1(void)
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 7   
 
- 364   2                  return;
- 365   2              pressKey = key;
- 366   2              break;
- 367   2          case 0xff: // 松开 上升沿触发
- 368   2              if (pressKey == 0xff || CheckKeysInvalid())
- 369   2                  return;
- 370   2              // 执行按键功能
- 371   2              switch (pressKey)
- 372   2              {
- 373   3              case 0x7f: // P37 进入设置
- 374   3                  EA = 0;
- 375   3                  pressKey = 0xff;
- 376   3                  ChangeSetting();
- 377   3                  pressKey = 0xff;
- 378   3                  EA = 1;
- 379   3                  return;
- 380   3              case 0xbf: // P36 下一条
- 381   3                  opt = option + 1;
- 382   3                  if (opt == SETTING_NUM)
- 383   3                      opt = 0;
- 384   3                  break;
- 385   3              case 0xdf: // P35 上一条
- 386   3                  if (!option)
- 387   3                      opt = SETTING_NUM - 1;
- 388   3                  else
- 389   3                      opt = option - 1;
- 390   3                  break;
- 391   3              case 0xef: // P34 首条
- 392   3                  opt = 0;
- 393   3              }
- 394   2              ShowSettings(opt);
- 395   2          default:
- 396   2              pressKey = 0xff;
- 397   2          }
- 398   1      }
- 399          
- 400          char KeysSystem_3(void)
- 401          {
- 402   1          KEYS = 0xff;
- 403   1          key = 0x0f; // 排除 P33 P32 P31 P30
- 404   1          key |= KEYS;
- 405   1          if (CheckKeysInvalid())
- 406   1              return 0; // 为了稳定的时序，所以在这里消抖
- 407   1          switch (key)
- 408   1          {
- 409   2          // 低电平触发，长按加快变化
- 410   2          case 0xbf: // P36 增加
- 411   2          case 0xdf: // P35 减少
- 412   2              if (pressKey == key)
- 413   2              {
- 414   3                  if (!changeCount)
- 415   3                  {
- 416   4                      ++changeCount;
- 417   4                      return key == 0xbf ? 1 : -1;
- 418   4                  }
- 419   3                  if ((++changeCount >= 0x60) && !(changeCount & 0x0f))
- 420   3                      return key == 0xbf ? 1 : -1;
- 421   3                  if (changeCount == 0xff)
- 422   3                      changeCount = 0x5f;
- 423   3                  return 0;
- 424   3              }
- 425   2              else
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/04/2023 07:06:34 PAGE 8   
+ 365          {
+ 366   1          KEYS = 0xff;
+ 367   1          key = 0x0f; // 排除 P33 P32 P31 P30
+ 368   1          key |= KEYS;
+ 369   1          switch (key)
+ 370   1          {
+ 371   2          case 0x7f: // P37
+ 372   2          case 0xbf: // P36
+ 373   2          case 0xdf: // P35
+ 374   2          case 0xef: // P34
+ 375   2              if (page == key || CheckKeysInvalid())
+ 376   2                  return;
+ 377   2              pressKey = key;
+ 378   2              break;
+ 379   2          case 0xff: // 松开 上升沿触发
+ 380   2              if (pressKey == 0xff || CheckKeysInvalid())
+ 381   2                  return;
+ 382   2              page_change = 1;
+ 383   2              page = pressKey;
+ 384   2          default:
+ 385   2              pressKey = 0xff;
+ 386   2          }
+ 387   1      }
+ 388          
+ 389          void KeysSystem_2(void)
+ 390          {
+ 391   1          uchar opt;
+ 392   1          KEYS = 0xff;
+ 393   1          key = 0x0f; // 排除 P33 P32 P31 P30
+ 394   1          key |= KEYS;
+ 395   1          switch (key)
+ 396   1          {
+ 397   2          case 0x7f: // P37
+ 398   2          case 0xbf: // P36
+ 399   2          case 0xdf: // P35
+ 400   2          case 0xef: // P34
+ 401   2              if (CheckKeysInvalid())
+ 402   2                  return;
+ 403   2              pressKey = key;
+ 404   2              break;
+ 405   2          case 0xff: // 松开 上升沿触发
+ 406   2              if (pressKey == 0xff || CheckKeysInvalid())
+ 407   2                  return;
+ 408   2              // 执行按键功能
+ 409   2              switch (pressKey)
+ 410   2              {
+ 411   3              case 0x7f: { // P37 进入设置
+ 412   4                  EA = 0;
+ 413   4                  pressKey = 0xff;
+ 414   4                  ChangeSetting();
+ 415   4                  pressKey = 0xff;
+ 416   4                  EA = 1;
+ 417   4                  return;
+ 418   4              }
+ 419   3              case 0xbf: { // P36 下一条
+ 420   4                  opt = option + 1;
+ 421   4                  if (opt == SETTING_NUM)
+ 422   4                      opt = 0;
+ 423   4                  break;
+ 424   4              }
+ 425   3              case 0xdf: { // P35 上一条
+ 426   4                  if (!option)
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 8   
 
- 426   2              {
- 427   3                  changeCount = 0;
- 428   3              }
- 429   2          // 上升沿触发
- 430   2          case 0x7f: // P37 取消
- 431   2          case 0xef: // P34 确定
- 432   2              pressKey = key;
- 433   2              break;
- 434   2          case 0xff: // 松开 上升沿触发
- 435   2              if (pressKey == 0xff)
- 436   2                  return 0;
- 437   2              // 执行按键功能
- 438   2              switch (pressKey)
- 439   2              {
- 440   3              case 0x7f: // P37 取消
- 441   3                  pressKey = 0xff;
- 442   3                  return -2;
- 443   3              case 0xef: // P34 确定
- 444   3                  pressKey = 0xff;
- 445   3                  return 2;
- 446   3              }
- 447   2          default:
- 448   2              pressKey = 0xff;
- 449   2          }
- 450   1          return 0;
- 451   1      }
- 452          
- 453          void AboveLimitClock(void)
- 454          {
- 455   1          if (++hus == 180)
- 456   1          {
- 457   2              hus = 0;
- 458   2              if (++hms == 20)
- 459   2              {
- 460   3                  hms = 0;
- 461   3                  if (++hs == 60)
- 462   3                  {
- 463   4                      hs = 0;
- 464   4                      if (++hm == 60)
- 465   4                      {
- 466   5                          hm = 0;
- 467   5                      }
- 468   4                  }
- 469   3              }
- 470   2          }
- 471   1      }
- 472          
- 473          void BelowLimitClock(void)
- 474          {
- 475   1          if (++lus == 180)
- 476   1          {
- 477   2              lus = 0;
- 478   2              if (++lms == 20)
- 479   2              {
- 480   3                  lms = 0;
- 481   3                  if (++ls == 60)
- 482   3                  {
- 483   4                      ls = 0;
- 484   4                      if (++lm == 60)
- 485   4                      {
- 486   5                          lm = 0;
- 487   5                      }
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/04/2023 07:06:34 PAGE 9   
+ 427   4                      opt = SETTING_NUM - 1;
+ 428   4                  else
+ 429   4                      opt = option - 1;
+ 430   4                  break;
+ 431   4              }
+ 432   3              case 0xef: { // P34 首条
+ 433   4                  opt = 0;
+ 434   4              }
+ 435   3              }
+ 436   2              ShowSettings(opt);
+ 437   2          default:
+ 438   2              pressKey = 0xff;
+ 439   2          }
+ 440   1      }
+ 441          
+ 442          char KeysSystem_3(void)
+ 443          {
+ 444   1          KEYS = 0xff;
+ 445   1          key = 0x0f; // 排除 P33 P32 P31 P30
+ 446   1          key |= KEYS;
+ 447   1          if (CheckKeysInvalid())
+ 448   1              return 0; // 为了稳定的时序，所以在这里消抖
+ 449   1          switch (key)
+ 450   1          {
+ 451   2          // 低电平触发，长按加快变化
+ 452   2          case 0xbf: // P36 增加
+ 453   2          case 0xdf: // P35 减少
+ 454   2              if (pressKey == key)
+ 455   2              {
+ 456   3                  if (!changeCount)
+ 457   3                  {
+ 458   4                      ++changeCount;
+ 459   4                      return key == 0xbf ? 1 : -1;
+ 460   4                  }
+ 461   3                  if ((++changeCount >= 0x60) && !(changeCount & 0x0f))
+ 462   3                      return key == 0xbf ? 1 : -1;
+ 463   3                  if (changeCount == 0xff)
+ 464   3                      changeCount = 0x5f;
+ 465   3                  return 0;
+ 466   3              }
+ 467   2              else
+ 468   2              {
+ 469   3                  changeCount = 0;
+ 470   3              }
+ 471   2          // 上升沿触发
+ 472   2          case 0x7f: // P37 取消
+ 473   2          case 0xef: // P34 确定
+ 474   2              pressKey = key;
+ 475   2              break;
+ 476   2          case 0xff: // 松开 上升沿触发
+ 477   2              if (pressKey == 0xff)
+ 478   2                  return 0;
+ 479   2              // 执行按键功能
+ 480   2              switch (pressKey)
+ 481   2              {
+ 482   3              case 0x7f: { // P37 取消
+ 483   4                  pressKey = 0xff;
+ 484   4                  return -2;
+ 485   4              }
+ 486   3              case 0xef: { // P34 确定
+ 487   4                  pressKey = 0xff;
+ 488   4                  return 2;
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 9   
 
- 488   4                  }
- 489   3              }
- 490   2          }
- 491   1      }
- 492          
- 493          void UpdateOverLimitTimer(bit which) // 1: Above  0: Below
- 494          {
- 495   1          if (which)
- 496   1          {
- 497   2              Int8ToString(hm, numStr, 2);
- 498   2              Int8ToString(hs, numStr + 3, 2);
- 499   2          }
- 500   1          else
- 501   1          {
- 502   2              Int8ToString(lm, numStr, 2);
- 503   2              Int8ToString(ls, numStr + 3, 2);
- 504   2          }
- 505   1          LCD1602_ShowString(numStr);
- 506   1          LCD1602_ShowString("m");
- 507   1          LCD1602_ShowString(numStr + 3);
- 508   1          LCD1602_ShowString(".");
- 509   1          if (which)
- 510   1              Int8ToString(hms >> 1, numStr, 1);
- 511   1          else
- 512   1              Int8ToString(lms >> 1, numStr, 1);
- 513   1          LCD1602_ShowString(numStr);
- 514   1          LCD1602_ShowString("s");
+ 489   4              }
+ 490   3              }
+ 491   2          default:
+ 492   2              pressKey = 0xff;
+ 493   2          }
+ 494   1          return 0;
+ 495   1      }
+ 496          
+ 497          void AboveLimitClock(void)
+ 498          {
+ 499   1          if (++hus == 180)
+ 500   1          {
+ 501   2              hus = 0;
+ 502   2              if (++hms == 20)
+ 503   2              {
+ 504   3                  hms = 0;
+ 505   3                  if (++hs == 60)
+ 506   3                  {
+ 507   4                      hs = 0;
+ 508   4                      if (++hm == 60)
+ 509   4                      {
+ 510   5                          hm = 0;
+ 511   5                      }
+ 512   4                  }
+ 513   3              }
+ 514   2          }
  515   1      }
  516          
- 517          void UpdateExtremes(bit which) // 1: Highest  0: Lowest
+ 517          void BelowLimitClock(void)
  518          {
- 519   1          FloatToString(which ? highest : lowest, numStr, 5, 1);
- 520   1          LCD1602_ShowString(numStr);
- 521   1          LCD1602_ShowString(DC);
- 522   1      }
+ 519   1          if (++lus == 180)
+ 520   1          {
+ 521   2              lus = 0;
+ 522   2              if (++lms == 20)
+ 523   2              {
+ 524   3                  lms = 0;
+ 525   3                  if (++ls == 60)
+ 526   3                  {
+ 527   4                      ls = 0;
+ 528   4                      if (++lm == 60)
+ 529   4                      {
+ 530   5                          lm = 0;
+ 531   5                      }
+ 532   4                  }
+ 533   3              }
+ 534   2          }
+ 535   1      }
+ 536          
+ 537          void UpdateOverLimitTimer(bit which) // 1: Above  0: Below
+ 538          {
+ 539   1          if (which)
+ 540   1          {
+ 541   2              Int8ToString(hm, numStr, 2);
+ 542   2              Int8ToString(hs, numStr + 3, 2);
+ 543   2          }
+ 544   1          else
+ 545   1          {
+ 546   2              Int8ToString(lm, numStr, 2);
+ 547   2              Int8ToString(ls, numStr + 3, 2);
+ 548   2          }
+ 549   1          LCD1602_ShowString(numStr);
+ 550   1          LCD1602_ShowString("m");
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 10  
+
+ 551   1          LCD1602_ShowString(numStr + 3);
+ 552   1          LCD1602_ShowString(".");
+ 553   1          if (which)
+ 554   1              Int8ToString(hms >> 1, numStr, 1);
+ 555   1          else
+ 556   1              Int8ToString(lms >> 1, numStr, 1);
+ 557   1          LCD1602_ShowString(numStr);
+ 558   1          LCD1602_ShowString("s");
+ 559   1      }
+ 560          
+ 561          void UpdateExtremes(bit which) // 1: Highest  0: Lowest
+ 562          {
+ 563   1          FloatToString(which ? highest : lowest, numStr, 5, 1);
+ 564   1          LCD1602_ShowString(numStr);
+ 565   1          LCD1602_ShowString(DC);
+ 566   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1977    ----
-   CONSTANT SIZE    =    195    ----
+   CODE SIZE        =   2043    ----
+   CONSTANT SIZE    =    194    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----      15
+   DATA SIZE        =   ----      14
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =   ----       3
+   BIT SIZE         =   ----       4
 END OF MODULE INFORMATION.
 
 
