@@ -5,8 +5,7 @@
             "includePath": [
                 "d:\\GitHub_project\\c51Lib\\proj\\include",
                 "d:\\GitHub_project\\c51Lib\\proj\\proj_keil5",
-                "d:\\GitHub_project\\c51Lib\\proj\\src",
-                "D:\\install\\Keil_v5\\C51\\INC"
+                "d:\\GitHub_project\\c51Lib\\proj\\src"
             ],
             "defines": [
                 "__C51__",

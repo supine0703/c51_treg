@@ -1,0 +1,1 @@
+"..\src\i2c.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\include) DEBUG OBJECTEXTEND PRINT(.\Listings\i2c.lst) TABS (2) OBJECT(.\Objects\i2c.obj)

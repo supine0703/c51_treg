@@ -1,0 +1,1 @@
+"..\src\global.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\include) DEBUG OBJECTEXTEND PRINT(.\Listings\global.lst) TABS (2) OBJECT(.\Objects\global.obj)

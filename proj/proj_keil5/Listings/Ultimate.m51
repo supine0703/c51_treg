@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    12/05/2023  15:23:21  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    12/05/2023  16:17:06  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
@@ -34,6 +34,7 @@ INPUT MODULES INCLUDED:
   D:\INSTALL\KEIL_V5\C51\LIB\C51S.LIB (?C?CLDPTR)
   D:\INSTALL\KEIL_V5\C51\LIB\C51S.LIB (?C?CSTPTR)
   D:\INSTALL\KEIL_V5\C51\LIB\C51S.LIB (?C?CSTOPTR)
+  D:\INSTALL\KEIL_V5\C51\LIB\C51S.LIB (?C?IMUL)
   D:\INSTALL\KEIL_V5\C51\LIB\C51S.LIB (?C?UIDIV)
   D:\INSTALL\KEIL_V5\C51\LIB\C51S.LIB (?C?LNEG)
 
@@ -46,90 +47,105 @@ LINK MAP OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
 
             * * * * * * *   D A T A   M E M O R Y   * * * * * * *
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
-            DATA    0008H     0018H     UNIT         _DATA_GROUP_
+            DATA    0008H     0017H     UNIT         ?DT?_FLOATTOSTRING?UTILITY
+            DATA    001FH     0001H     UNIT         ?DT?UPDATETEMPERATURE?MAIN
             BIT     0020H.0   0001H.1   UNIT         ?BI?GLOBAL
             BIT     0021H.1   0000H.2   UNIT         _BIT_GROUP_
-                    0021H.3   0000H.5                *** GAP ***
-            DATA    0022H     0050H     UNIT         ?DT?MUSIC
-            DATA    0072H     0006H     UNIT         ?DT?_AT24C02_WRITEDATA?AT24C02
-            DATA    0078H     0002H     UNIT         ?DT?_AT24C02_CHECK?AT24C02
-            IDATA   007AH     0080H     UNIT         ?ID?GLOBAL
-            IDATA   00FAH     0001H     UNIT         ?STACK
+            BIT     0021H.3   0000H.1   UNIT         ?BI?_SHOWSETTINGS?ULTIMATE
+            BIT     0021H.4   0000H.1   UNIT         ?BI?CHANGESETTING?ULTIMATE
+            BIT     0021H.5   0000H.1   UNIT         ?BI?UPDATEOVERLIMITTIMER?ULTIMATE
+            BIT     0021H.6   0000H.1   UNIT         ?BI?UPDATEEXTREMES?ULTIMATE
+            BIT     0021H.7   0000H.1   UNIT         ?BI?_INT8TOSTRING?UTILITY
+            BIT     0022H.0   0000H.1   UNIT         ?BI?LCD1602_WRITEBYTE?LCD1602
+            BIT     0022H.1   0000H.1   UNIT         ?BI?_AT24C02_WRITEBYTE?AT24C02
+                    0022H.2   0000H.6                *** GAP ***
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 2
+
+
+            DATA    0023H     002CH     UNIT         ?DT?GLOBAL
+            DATA    004FH     0009H     UNIT         ?DT?_DS18B20_GET?DS18B20
+            DATA    0058H     0008H     UNIT         _DATA_GROUP_
+            DATA    0060H     0007H     UNIT         ?DT?_AT24C02_WRITEBYTE?AT24C02
+            DATA    0067H     0006H     UNIT         ?DT?MAIN
+            DATA    006DH     0006H     UNIT         ?DT?_AT24C02_WRITEDATA?AT24C02
+            DATA    0073H     0006H     UNIT         ?DT?MUSIC
+            DATA    0079H     0005H     UNIT         ?DT?_SHOWSETTINGS?ULTIMATE
+            DATA    007EH     0002H     UNIT         ?DT?_AT24C02_CHECK?AT24C02
+            IDATA   0080H     0080H     UNIT         ?ID?MAIN
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
             CODE    0003H     0003H     ABSOLUTE     
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 2
-
-
-            CODE    0006H     0001H     UNIT         ?PR?INT_T1?MAIN
-                    0007H     0004H                  *** GAP ***
+                    0006H     0005H                  *** GAP ***
             CODE    000BH     0003H     ABSOLUTE     
             CODE    000EH     000DH     UNIT         ?PR?_DS18B20_DELAY10US?DS18B20
             CODE    001BH     0003H     ABSOLUTE     
-            CODE    001EH     059EH     UNIT         ?C?LIB_CODE
-            CODE    05BCH     02A7H     UNIT         ?PR?_FLOATTOSTRING?UTILITY
-            CODE    0863H     0252H     UNIT         ?PR?CHANGESETTING?ULTIMATE
-            CODE    0AB5H     014BH     UNIT         ?PR?_SHOWSETTINGS?ULTIMATE
-            CODE    0C00H     0122H     UNIT         ?PR?UPDATETEMPERATURE?MAIN
-            CODE    0D22H     00D4H     UNIT         ?PR?INT_T0?MAIN
-            CODE    0DF6H     00C9H     UNIT         ?C_INITSEG
-            CODE    0EBFH     00C2H     UNIT         ?CO?ULTIMATE
-            CODE    0F81H     00B6H     UNIT         ?PR?_INT8TOSTRING?UTILITY
-            CODE    1037H     00ABH     UNIT         ?PR?INT_X0?MAIN
-            CODE    10E2H     00A7H     UNIT         ?PR?UPDATEVIEWPAGESHOW?MAIN
-            CODE    1189H     009CH     UNIT         ?PR?SHOWVIEWPAGE_1?ULTIMATE
-            CODE    1225H     0090H     UNIT         ?PR?KEYSSYSTEM_3?ULTIMATE
-            CODE    12B5H     008CH     UNIT         ?C_C51STARTUP
-            CODE    1341H     007AH     UNIT         ?PR?_AT24C02_READDATA?AT24C02
-            CODE    13BBH     0079H     UNIT         ?PR?KEYSSYSTEM_2?ULTIMATE
-            CODE    1434H     0076H     UNIT         ?PR?UPDATEOVERLIMITTIMER?ULTIMATE
-            CODE    14AAH     0073H     UNIT         ?PR?LCD1602_ACTION?ULTIMATE
-            CODE    151DH     005CH     UNIT         ?PR?_AT24C02_WRITEDATA?AT24C02
-            CODE    1579H     005BH     UNIT         ?PR?_AT24C02_WRITEBYTE?AT24C02
-            CODE    15D4H     0057H     UNIT         ?PR?SHOWVIEWPAGE_4?ULTIMATE
-            CODE    162BH     0055H     UNIT         ?PR?INIT_DATA?MAIN
-            CODE    1680H     004EH     UNIT         ?CO?MUSIC
-            CODE    16CEH     004AH     UNIT         ?PR?_DS18B20_GET?DS18B20
-            CODE    1718H     0042H     UNIT         ?PR?KEYSSYSTEM_1?ULTIMATE
-            CODE    175AH     003DH     UNIT         ?PR?MAIN?MAIN
-            CODE    1797H     0032H     UNIT         ?PR?_LCD1602_SHOWSTRING?ULTIMATE
-            CODE    17C9H     0030H     UNIT         ?PR?UPDATEEXTREMES?ULTIMATE
-            CODE    17F9H     002FH     UNIT         ?PR?INIT_PROGRAM?MAIN
-            CODE    1828H     002CH     UNIT         ?PR?_DS18B20_SET?DS18B20
-            CODE    1854H     002BH     UNIT         ?PR?DS18B20_READBYTE?DS18B20
-            CODE    187FH     0029H     UNIT         ?PR?ABOVELIMITCLOCK?ULTIMATE
-            CODE    18A8H     0029H     UNIT         ?PR?BELOWLIMITCLOCK?ULTIMATE
-            CODE    18D1H     0026H     UNIT         ?PR?SHOWVIEWPAGE_2?ULTIMATE
-            CODE    18F7H     0026H     UNIT         ?PR?SHOWVIEWPAGE_3?ULTIMATE
-            CODE    191DH     0023H     UNIT         ?PR?_AT24C02_CHECK?AT24C02
-            CODE    1940H     0021H     UNIT         ?PR?DS18B20_INITCHECK?DS18B20
-            CODE    1961H     001FH     UNIT         ?PR?_DELAY_MUSIC?MUSIC
-            CODE    1980H     001EH     UNIT         ?PR?_DELAY1MS?ULTIMATE
-            CODE    199EH     001EH     UNIT         ?PR?DS18B20_READTEMP?DS18B20
-            CODE    19BCH     001DH     UNIT         ?PR?_DS18B20_WRITEBYTE?DS18B20
-            CODE    19D9H     001AH     UNIT         ?PR?I2C_RECBYTE?I2C
-            CODE    19F3H     0019H     UNIT         ?PR?CHECKKEYSINVALID?ULTIMATE
-            CODE    1A0CH     0018H     UNIT         ?PR?_I2C_SENDBYTE?I2C
-            CODE    1A24H     0017H     UNIT         ?PR?TIMER0INIT?MUSIC
-            CODE    1A3BH     0016H     UNIT         ?PR?DS18B20_SAVE?DS18B20
-            CODE    1A51H     0014H     UNIT         ?PR?LCD1602_CHECKBUSY?LCD1602
-            CODE    1A65H     0012H     UNIT         ?PR?LCD1602_WRITEBYTE?LCD1602
-            CODE    1A77H     0011H     UNIT         ?PR?DS18B20_CONVERT?DS18B20
-            CODE    1A88H     0011H     UNIT         ?PR?I2C_START?I2C
-            CODE    1A99H     000EH     UNIT         ?PR?I2C_STOP?I2C
-            CODE    1AA7H     000EH     UNIT         ?PR?I2C_ACK?I2C
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 3
+            CODE    001EH     05B0H     UNIT         ?C?LIB_CODE
+            CODE    05CEH     02A7H     UNIT         ?PR?_FLOATTOSTRING?UTILITY
+            CODE    0875H     0252H     UNIT         ?PR?CHANGESETTING?ULTIMATE
+            CODE    0AC7H     014BH     UNIT         ?PR?_SHOWSETTINGS?ULTIMATE
+            CODE    0C12H     0122H     UNIT         ?PR?UPDATETEMPERATURE?MAIN
+            CODE    0D34H     00D4H     UNIT         ?PR?INT_T0?MAIN
+            CODE    0E08H     00C2H     UNIT         ?CO?ULTIMATE
+            CODE    0ECAH     00B6H     UNIT         ?PR?_INT8TOSTRING?UTILITY
+            CODE    0F80H     00ABH     UNIT         ?PR?INT_X0?MAIN
+            CODE    102BH     00A7H     UNIT         ?PR?UPDATEVIEWPAGESHOW?MAIN
+            CODE    10D2H     009CH     UNIT         ?PR?SHOWVIEWPAGE_1?ULTIMATE
+            CODE    116EH     0098H     UNIT         ?CO?MAIN
+            CODE    1206H     0098H     UNIT         ?CO?MUSIC
+            CODE    129EH     0090H     UNIT         ?PR?KEYSSYSTEM_3?ULTIMATE
+            CODE    132EH     008CH     UNIT         ?C_C51STARTUP
+            CODE    13BAH     007DH     UNIT         ?C_INITSEG
+            CODE    1437H     007AH     UNIT         ?PR?_AT24C02_READDATA?AT24C02
+            CODE    14B1H     0079H     UNIT         ?PR?KEYSSYSTEM_2?ULTIMATE
+            CODE    152AH     0076H     UNIT         ?PR?UPDATEOVERLIMITTIMER?ULTIMATE
+            CODE    15A0H     0074H     UNIT         ?PR?MAIN?MAIN
+            CODE    1614H     0073H     UNIT         ?PR?LCD1602_ACTION?ULTIMATE
+            CODE    1687H     005CH     UNIT         ?PR?_AT24C02_WRITEDATA?AT24C02
+            CODE    16E3H     005BH     UNIT         ?PR?_AT24C02_WRITEBYTE?AT24C02
+            CODE    173EH     0057H     UNIT         ?PR?SHOWVIEWPAGE_4?ULTIMATE
+            CODE    1795H     0055H     UNIT         ?PR?INIT_DATA?MAIN
+            CODE    17EAH     004FH     UNIT         ?PR?INT_T1?MAIN
+            CODE    1839H     004AH     UNIT         ?PR?_DS18B20_GET?DS18B20
+            CODE    1883H     0047H     UNIT         ?PR?MUSIC_SCORE?MUSIC
+            CODE    18CAH     0042H     UNIT         ?PR?KEYSSYSTEM_1?ULTIMATE
+            CODE    190CH     0032H     UNIT         ?PR?_LCD1602_SHOWSTRING?ULTIMATE
+            CODE    193EH     0030H     UNIT         ?PR?UPDATEEXTREMES?ULTIMATE
+            CODE    196EH     002FH     UNIT         ?PR?INIT_PROGRAM?MAIN
+            CODE    199DH     002CH     UNIT         ?PR?_DS18B20_SET?DS18B20
+            CODE    19C9H     002BH     UNIT         ?PR?DS18B20_READBYTE?DS18B20
+            CODE    19F4H     0029H     UNIT         ?PR?ABOVELIMITCLOCK?ULTIMATE
+            CODE    1A1DH     0029H     UNIT         ?PR?BELOWLIMITCLOCK?ULTIMATE
+            CODE    1A46H     0026H     UNIT         ?PR?SHOWVIEWPAGE_2?ULTIMATE
+            CODE    1A6CH     0026H     UNIT         ?PR?SHOWVIEWPAGE_3?ULTIMATE
+            CODE    1A92H     0023H     UNIT         ?PR?_AT24C02_CHECK?AT24C02
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 3
 
 
-            CODE    1AB5H     000DH     UNIT         ?PR?I2C_CHECKACK?I2C
-            CODE    1AC2H     000DH     UNIT         ?PR?AT24C02_WAIT?AT24C02
-            CODE    1ACFH     000CH     UNIT         ?PR?I2C_INIT?I2C
-            CODE    1ADBH     000CH     UNIT         ?PR?I2C_NOACK?I2C
-            CODE    1AE7H     000BH     UNIT         ?CO?GLOBAL
-            CODE    1AF2H     000BH     UNIT         ?PR?_LCD1602_WRITECMD?LCD1602
-            CODE    1AFDH     0008H     UNIT         ?PR?I2C_WAIT?I2C
-            CODE    1B05H     0007H     UNIT         ?PR?_LCD1602_WRITEDATA?LCD1602
+            CODE    1AB5H     0021H     UNIT         ?PR?DS18B20_INITCHECK?DS18B20
+            CODE    1AD6H     001FH     UNIT         ?PR?_DELAY_MUSIC?MUSIC
+            CODE    1AF5H     001EH     UNIT         ?PR?_DELAY1MS?ULTIMATE
+            CODE    1B13H     001EH     UNIT         ?PR?DS18B20_READTEMP?DS18B20
+            CODE    1B31H     001DH     UNIT         ?PR?_DS18B20_WRITEBYTE?DS18B20
+            CODE    1B4EH     001AH     UNIT         ?PR?I2C_RECBYTE?I2C
+            CODE    1B68H     0019H     UNIT         ?PR?CHECKKEYSINVALID?ULTIMATE
+            CODE    1B81H     0018H     UNIT         ?PR?_I2C_SENDBYTE?I2C
+            CODE    1B99H     0017H     UNIT         ?PR?TIMER0INIT?MUSIC
+            CODE    1BB0H     0016H     UNIT         ?PR?DS18B20_SAVE?DS18B20
+            CODE    1BC6H     0014H     UNIT         ?PR?LCD1602_CHECKBUSY?LCD1602
+            CODE    1BDAH     0012H     UNIT         ?PR?LCD1602_WRITEBYTE?LCD1602
+            CODE    1BECH     0011H     UNIT         ?PR?DS18B20_CONVERT?DS18B20
+            CODE    1BFDH     0011H     UNIT         ?PR?I2C_START?I2C
+            CODE    1C0EH     000EH     UNIT         ?PR?I2C_STOP?I2C
+            CODE    1C1CH     000EH     UNIT         ?PR?I2C_ACK?I2C
+            CODE    1C2AH     000DH     UNIT         ?PR?I2C_CHECKACK?I2C
+            CODE    1C37H     000DH     UNIT         ?PR?AT24C02_WAIT?AT24C02
+            CODE    1C44H     000CH     UNIT         ?PR?I2C_INIT?I2C
+            CODE    1C50H     000CH     UNIT         ?PR?I2C_NOACK?I2C
+            CODE    1C5CH     000BH     UNIT         ?CO?GLOBAL
+            CODE    1C67H     000BH     UNIT         ?PR?_LCD1602_WRITECMD?LCD1602
+            CODE    1C72H     0008H     UNIT         ?PR?I2C_WAIT?I2C
+            CODE    1C7AH     0007H     UNIT         ?PR?_LCD1602_WRITEDATA?LCD1602
 
 
 
@@ -144,45 +160,10 @@ SEGMENT                                      BIT_GROUP          DATA_GROUP
   +--> ?C_INITSEG
 
 ?PR?MAIN?MAIN                             -----    -----      -----    -----
-  +--> ?PR?INIT_DATA?MAIN
-  +--> ?PR?INIT_PROGRAM?MAIN
-  +--> ?PR?_SHOWSETTINGS?ULTIMATE
-  +--> ?PR?KEYSSYSTEM_2?ULTIMATE
-  +--> ?PR?_AT24C02_WRITEBYTE?AT24C02
-  +--> ?PR?UPDATETEMPERATURE?MAIN
-  +--> ?PR?UPDATEVIEWPAGESHOW?MAIN
-  +--> ?PR?KEYSSYSTEM_1?ULTIMATE
-
-?PR?INIT_DATA?MAIN                        -----    -----      -----    -----
-  +--> ?PR?_DS18B20_GET?DS18B20
-  +--> ?PR?I2C_INIT?I2C
   +--> ?PR?_AT24C02_READDATA?AT24C02
+  +--> ?PR?TIMER0INIT?MUSIC
 
-?PR?_DS18B20_GET?DS18B20                  -----    -----      0008H    0009H
-  +--> ?PR?DS18B20_INITCHECK?DS18B20
-  +--> ?PR?DS18B20_READBYTE?DS18B20
-
-?PR?DS18B20_INITCHECK?DS18B20             -----    -----      -----    -----
-  +--> ?PR?_DS18B20_DELAY10US?DS18B20
-
-?PR?DS18B20_READBYTE?DS18B20              -----    -----      -----    -----
-  +--> ?PR?_DS18B20_WRITEBYTE?DS18B20
-  +--> ?PR?_DS18B20_DELAY10US?DS18B20
-
-?PR?_DS18B20_WRITEBYTE?DS18B20            -----    -----      -----    -----
-  +--> ?PR?_DS18B20_DELAY10US?DS18B20
-
-?PR?I2C_INIT?I2C                          -----    -----      -----    -----
-  +--> ?PR?I2C_WAIT?I2C
-  +--> ?PR?I2C_STOP?I2C
-
-?PR?I2C_STOP?I2C                          -----    -----      -----    -----
-  +--> ?PR?I2C_WAIT?I2C
-
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 4
-
-
-?PR?_AT24C02_READDATA?AT24C02             0021H.1  0000H.1    0008H    0007H
+?PR?_AT24C02_READDATA?AT24C02             0021H.1  0000H.1    0058H    0007H
   +--> ?PR?I2C_START?I2C
   +--> ?PR?_I2C_SENDBYTE?I2C
   +--> ?PR?I2C_CHECKACK?I2C
@@ -198,6 +179,9 @@ SEGMENT                                      BIT_GROUP          DATA_GROUP
   +--> ?PR?I2C_WAIT?I2C
 
 ?PR?I2C_CHECKACK?I2C                      0021H.2  0000H.1    -----    -----
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 4
+
+
   +--> ?PR?I2C_WAIT?I2C
 
 ?PR?I2C_RECBYTE?I2C                       -----    -----      -----    -----
@@ -209,140 +193,8 @@ SEGMENT                                      BIT_GROUP          DATA_GROUP
 ?PR?I2C_NOACK?I2C                         -----    -----      -----    -----
   +--> ?PR?I2C_WAIT?I2C
 
-?PR?INIT_PROGRAM?MAIN                     -----    -----      -----    -----
-  +--> ?PR?DS18B20_CONVERT?DS18B20
-  +--> ?PR?LCD1602_ACTION?ULTIMATE
-  +--> ?PR?UPDATETEMPERATURE?MAIN
-  +--> ?PR?_LCD1602_WRITECMD?LCD1602
-  +--> ?PR?SHOWVIEWPAGE_1?ULTIMATE
-
-?PR?DS18B20_CONVERT?DS18B20               -----    -----      -----    -----
-  +--> ?PR?DS18B20_INITCHECK?DS18B20
-  +--> ?PR?_DS18B20_WRITEBYTE?DS18B20
-
-?PR?LCD1602_ACTION?ULTIMATE               -----    -----      0008H    0001H
-  +--> ?PR?_LCD1602_WRITECMD?LCD1602
-  +--> ?CO?ULTIMATE
-  +--> ?PR?_LCD1602_SHOWSTRING?ULTIMATE
-  +--> ?PR?_DELAY1MS?ULTIMATE
-
-?PR?_LCD1602_WRITECMD?LCD1602             -----    -----      -----    -----
-  +--> ?PR?LCD1602_WRITEBYTE?LCD1602
-
-?PR?LCD1602_WRITEBYTE?LCD1602             0021H.2  0000H.1    0011H    0001H
-  +--> ?PR?LCD1602_CHECKBUSY?LCD1602
-
-?PR?_LCD1602_SHOWSTRING?ULTIMATE          -----    -----      000EH    0003H
-  +--> ?PR?_LCD1602_WRITEDATA?LCD1602
-  +--> ?PR?_DELAY1MS?ULTIMATE
-
-?PR?_LCD1602_WRITEDATA?LCD1602            -----    -----      -----    -----
-  +--> ?PR?LCD1602_WRITEBYTE?LCD1602
-
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 5
-
-
-?PR?UPDATETEMPERATURE?MAIN                -----    -----      0008H    0001H
-  +--> ?PR?DS18B20_READTEMP?DS18B20
-  +--> ?PR?DS18B20_CONVERT?DS18B20
-  +--> ?PR?ABOVELIMITCLOCK?ULTIMATE
-  +--> ?PR?BELOWLIMITCLOCK?ULTIMATE
-
-?PR?DS18B20_READTEMP?DS18B20              -----    -----      -----    -----
-  +--> ?PR?DS18B20_INITCHECK?DS18B20
-  +--> ?PR?DS18B20_READBYTE?DS18B20
-
-?PR?SHOWVIEWPAGE_1?ULTIMATE               -----    -----      -----    -----
-  +--> ?PR?_LCD1602_WRITECMD?LCD1602
-  +--> ?CO?ULTIMATE
-  +--> ?PR?_LCD1602_SHOWSTRING?ULTIMATE
-  +--> ?PR?_INT8TOSTRING?UTILITY
-  +--> ?CO?GLOBAL
-  +--> ?PR?_FLOATTOSTRING?UTILITY
-
-?PR?_INT8TOSTRING?UTILITY                 0021H.2  0000H.1    000EH    0005H
-
-?PR?_FLOATTOSTRING?UTILITY                -----    -----      0008H    0017H
-
-?PR?_SHOWSETTINGS?ULTIMATE                0021H.1  0000H.1    0009H    0005H
-  +--> ?CO?ULTIMATE
-  +--> ?PR?_LCD1602_WRITECMD?LCD1602
-  +--> ?PR?_LCD1602_SHOWSTRING?ULTIMATE
-  +--> ?PR?_INT8TOSTRING?UTILITY
-  +--> ?CO?GLOBAL
-  +--> ?PR?_LCD1602_WRITEDATA?LCD1602
-
-?PR?KEYSSYSTEM_2?ULTIMATE                 -----    -----      0008H    0001H
-  +--> ?PR?CHECKKEYSINVALID?ULTIMATE
-  +--> ?PR?CHANGESETTING?ULTIMATE
-  +--> ?PR?_SHOWSETTINGS?ULTIMATE
-
-?PR?CHECKKEYSINVALID?ULTIMATE             -----    -----      -----    -----
-  +--> ?PR?_DELAY1MS?ULTIMATE
-
-?PR?CHANGESETTING?ULTIMATE                0021H.1  0000H.1    0009H    0003H
-  +--> ?PR?_LCD1602_WRITECMD?LCD1602
-  +--> ?CO?ULTIMATE
-  +--> ?PR?_INT8TOSTRING?UTILITY
-  +--> ?PR?_LCD1602_SHOWSTRING?ULTIMATE
-  +--> ?PR?KEYSSYSTEM_3?ULTIMATE
-  +--> ?PR?_LCD1602_WRITEDATA?LCD1602
-
-?PR?KEYSSYSTEM_3?ULTIMATE                 -----    -----      -----    -----
-  +--> ?PR?CHECKKEYSINVALID?ULTIMATE
-
-?PR?_AT24C02_WRITEBYTE?AT24C02            0021H.1  0000H.1    0008H    0007H
-  +--> ?PR?I2C_START?I2C
-  +--> ?PR?_I2C_SENDBYTE?I2C
-  +--> ?PR?I2C_CHECKACK?I2C
-  +--> ?PR?I2C_STOP?I2C
-
-?PR?UPDATEVIEWPAGESHOW?MAIN               -----    -----      -----    -----
-  +--> ?PR?SHOWVIEWPAGE_1?ULTIMATE
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 6
-
-
-  +--> ?PR?_LCD1602_WRITECMD?LCD1602
-  +--> ?PR?_FLOATTOSTRING?UTILITY
-  +--> ?PR?_LCD1602_SHOWSTRING?ULTIMATE
-  +--> ?PR?_INT8TOSTRING?UTILITY
-  +--> ?PR?SHOWVIEWPAGE_2?ULTIMATE
-  +--> ?PR?UPDATEEXTREMES?ULTIMATE
-  +--> ?PR?SHOWVIEWPAGE_3?ULTIMATE
-  +--> ?PR?UPDATEOVERLIMITTIMER?ULTIMATE
-  +--> ?PR?SHOWVIEWPAGE_4?ULTIMATE
-
-?PR?SHOWVIEWPAGE_2?ULTIMATE               -----    -----      -----    -----
-  +--> ?PR?_LCD1602_WRITECMD?LCD1602
-  +--> ?CO?ULTIMATE
-  +--> ?PR?_LCD1602_SHOWSTRING?ULTIMATE
-  +--> ?PR?UPDATEEXTREMES?ULTIMATE
-
-?PR?UPDATEEXTREMES?ULTIMATE               0021H.1  0000H.1    -----    -----
-  +--> ?PR?_FLOATTOSTRING?UTILITY
-  +--> ?PR?_LCD1602_SHOWSTRING?ULTIMATE
-  +--> ?CO?GLOBAL
-
-?PR?SHOWVIEWPAGE_3?ULTIMATE               -----    -----      -----    -----
-  +--> ?PR?_LCD1602_WRITECMD?LCD1602
-  +--> ?CO?ULTIMATE
-  +--> ?PR?_LCD1602_SHOWSTRING?ULTIMATE
-  +--> ?PR?UPDATEOVERLIMITTIMER?ULTIMATE
-
-?PR?UPDATEOVERLIMITTIMER?ULTIMATE         0021H.1  0000H.1    -----    -----
-  +--> ?PR?_INT8TOSTRING?UTILITY
-  +--> ?PR?_LCD1602_SHOWSTRING?ULTIMATE
-  +--> ?CO?ULTIMATE
-
-?PR?SHOWVIEWPAGE_4?ULTIMATE               -----    -----      0008H    0001H
-  +--> ?PR?_LCD1602_WRITECMD?LCD1602
-  +--> ?CO?ULTIMATE
-  +--> ?PR?_LCD1602_SHOWSTRING?ULTIMATE
-  +--> ?PR?_LCD1602_WRITEDATA?LCD1602
-  +--> ?CO?GLOBAL
-
-?PR?KEYSSYSTEM_1?ULTIMATE                 -----    -----      -----    -----
-  +--> ?PR?CHECKKEYSINVALID?ULTIMATE
+?PR?I2C_STOP?I2C                          -----    -----      -----    -----
+  +--> ?PR?I2C_WAIT?I2C
 
 *** NEW ROOT ***************************************************
 
@@ -353,59 +205,70 @@ SEGMENT                                      BIT_GROUP          DATA_GROUP
 
 *** NEW ROOT ***************************************************
 
-?PR?INT_X0?MAIN                           -----    -----      001FH    0001H
+?PR?INT_X0?MAIN                           -----    -----      005FH    0001H
   +--> ?PR?_DELAY1MS?ULTIMATE
   +--> ?PR?_DS18B20_SET?DS18B20
   +--> ?PR?DS18B20_SAVE?DS18B20
   +--> ?PR?DS18B20_CONVERT?DS18B20
 
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 7
-
-
 ?PR?_DS18B20_SET?DS18B20                  -----    -----      -----    -----
   +--> ?PR?DS18B20_INITCHECK?DS18B20
   +--> ?PR?_DS18B20_WRITEBYTE?DS18B20
+
+?PR?DS18B20_INITCHECK?DS18B20             -----    -----      -----    -----
+  +--> ?PR?_DS18B20_DELAY10US?DS18B20
+
+?PR?_DS18B20_WRITEBYTE?DS18B20            -----    -----      -----    -----
+  +--> ?PR?_DS18B20_DELAY10US?DS18B20
 
 ?PR?DS18B20_SAVE?DS18B20                  -----    -----      -----    -----
   +--> ?PR?DS18B20_INITCHECK?DS18B20
   +--> ?PR?_DS18B20_WRITEBYTE?DS18B20
   +--> ?PR?_DS18B20_DELAY10US?DS18B20
 
+?PR?DS18B20_CONVERT?DS18B20               -----    -----      -----    -----
+  +--> ?PR?DS18B20_INITCHECK?DS18B20
+  +--> ?PR?_DS18B20_WRITEBYTE?DS18B20
+
+*** NEW ROOT ***************************************************
+
+?PR?INT_T1?MAIN                           -----    -----      -----    -----
+  +--> ?CO?MAIN
+
+
+
+UNRESOLVED EXTERNAL SYMBOLS:
+   MUSIC_STORE
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 5
+
+
+   SETTINGSSAVE
+   _DELAY
+
 
 
 IGNORED SEGMENTS:
-   ?DT?GLOBAL
+   ?STACK
+   ?DT?_LCD1602_SHOWSTRING?ULTIMATE
+   ?DT?LCD1602_ACTION?ULTIMATE
+   ?DT?SHOWVIEWPAGE_4?ULTIMATE
+   ?DT?CHANGESETTING?ULTIMATE
+   ?DT?KEYSSYSTEM_2?ULTIMATE
+   ?DT?_INT8TOSTRING?UTILITY
+   ?DT?LCD1602_WRITEBYTE?LCD1602
+   ?ID?MUSIC
 
 
 
 IGNORED SYMBOLS:
-   AUDIO
-   CHANGECOUNT
-   CONVERTCOUNT
-   DCMCOUNT
-   DSR
-   FANGEAR
-   FANGEARSTEP
-   HIGHEST
-   HM
-   HMS
-   HS
-   HUS
-   KEY
-   LM
-   LMS
-   LOWERLIMIT
-   LOWEST
-   LS
-   LUS
-   NUMSTR
-   OPTION
-   PAGE
-   PRESSKEY
-   RINGTONENUM
-   SHOW_WAIT
-   TEMPERATURE
-   UPPERLIMIT
+   ?LCD1602_WRITEBYTE?BYTE
+   ?_INT8TOSTRING?BYTE
+   FREQSELECT
+   FREQTABLE
+   MUSIC
+   MUSICSELECT
+   MUSIC_ARRY
+   SPEED
 
 
 
@@ -415,20 +278,17 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   ----------------------------------
 
   -------         MODULE        ?C_STARTUP
-  C:12B5H         SEGMENT       ?C_C51STARTUP
-  I:00FAH         SEGMENT       ?STACK
+  C:132EH         SEGMENT       ?C_C51STARTUP
+  I:0000H         SEGMENT       ?STACK
   C:0000H         PUBLIC        ?C_STARTUP
   D:00E0H         SYMBOL        ACC
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 8
-
-
   D:00F0H         SYMBOL        B
   D:0083H         SYMBOL        DPH
   D:0082H         SYMBOL        DPL
   N:0000H         SYMBOL        IBPSTACK
   N:0100H         SYMBOL        IBPSTACKTOP
   N:0080H         SYMBOL        IDATALEN
-  C:12B8H         SYMBOL        IDATALOOP
+  C:1331H         SYMBOL        IDATALOOP
   N:0000H         SYMBOL        PBPSTACK
   N:0100H         SYMBOL        PBPSTACKTOP
   N:0000H         SYMBOL        PDATALEN
@@ -437,84 +297,88 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   N:0000H         SYMBOL        PPAGEENABLE
   D:00A0H         SYMBOL        PPAGE_SFR
   D:0081H         SYMBOL        SP
-  C:12B5H         SYMBOL        STARTUP1
+  C:132EH         SYMBOL        STARTUP1
   N:0000H         SYMBOL        XBPSTACK
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 6
+
+
   N:0000H         SYMBOL        XBPSTACKTOP
   N:0000H         SYMBOL        XDATALEN
   N:0000H         SYMBOL        XDATASTART
   C:0000H         LINE#         126
-  C:12B5H         LINE#         133
-  C:12B7H         LINE#         134
-  C:12B8H         LINE#         135
-  C:12B9H         LINE#         136
-  C:12BBH         LINE#         185
-  C:12BEH         LINE#         196
+  C:132EH         LINE#         133
+  C:1330H         LINE#         134
+  C:1331H         LINE#         135
+  C:1332H         LINE#         136
+  C:1334H         LINE#         185
+  C:1337H         LINE#         196
   -------         ENDMOD        ?C_STARTUP
 
   -------         MODULE        GLOBAL
   C:0000H         SYMBOL        _ICE_DUMMY_
   B:0020H.0       PUBLIC        settings_mode
-  C:1AEFH         PUBLIC        DC
-  I:007AH         PUBLIC        settingsSave
-  D:0000H         PUBLIC        numStr
-  D:0006H         PUBLIC        convertCount
-  D:0008H         PUBLIC        audio
-  D:0009H         PUBLIC        option
-  D:000AH         PUBLIC        ringtoneNum
-  C:1AE7H         PUBLIC        cttcn
-  D:000BH         PUBLIC        page
-  D:000CH         PUBLIC        lowest
+  C:1C64H         PUBLIC        DC
+  D:0023H         PUBLIC        numStr
+  D:0029H         PUBLIC        convertCount
+  D:002BH         PUBLIC        audio
+  D:002CH         PUBLIC        option
+  D:002DH         PUBLIC        ringtoneNum
+  C:1C5CH         PUBLIC        cttcn
+  D:002EH         PUBLIC        page
+  D:002FH         PUBLIC        lowest
   B:0020H.1       PUBLIC        above_upper_limit
   B:0020H.2       PUBLIC        below_lower_limit
-  D:0010H         PUBLIC        lowerLimit
-  D:0011H         PUBLIC        upperLimit
-  D:0012H         PUBLIC        temperature
+  D:0033H         PUBLIC        lowerLimit
+  D:0034H         PUBLIC        upperLimit
+  D:0035H         PUBLIC        temperature
   B:0020H.3       PUBLIC        ringtone_change
   B:0020H.4       PUBLIC        convert_finished
-  D:0016H         PUBLIC        fanGear
-  D:0017H         PUBLIC        dcmCount
+  D:0039H         PUBLIC        fanGear
+  D:003AH         PUBLIC        dcmCount
   B:0020H.5       PUBLIC        dc_motor_working
-  D:0019H         PUBLIC        hms
-  D:001AH         PUBLIC        key
-  D:001BH         PUBLIC        dsr
-  D:001CH         PUBLIC        lms
-  D:001DH         PUBLIC        hus
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 9
-
-
-  D:001EH         PUBLIC        lus
-  D:001FH         PUBLIC        hm
-  D:0020H         PUBLIC        fanGearStep
-  D:0021H         PUBLIC        SHOW_WAIT
-  D:0023H         PUBLIC        lm
-  D:0024H         PUBLIC        pressKey
-  D:0025H         PUBLIC        hs
-  D:0026H         PUBLIC        ls
+  D:003CH         PUBLIC        hms
+  D:003DH         PUBLIC        key
+  D:003EH         PUBLIC        dsr
+  D:003FH         PUBLIC        lms
+  D:0040H         PUBLIC        hus
+  D:0041H         PUBLIC        lus
+  D:0042H         PUBLIC        hm
+  D:0043H         PUBLIC        fanGearStep
+  D:0044H         PUBLIC        SHOW_WAIT
+  D:0046H         PUBLIC        lm
+  D:0047H         PUBLIC        pressKey
+  D:0048H         PUBLIC        hs
+  D:0049H         PUBLIC        ls
   B:0020H.6       PUBLIC        page_change
-  I:007BH         PUBLIC        ringtone
   B:0020H.7       PUBLIC        ready_settings
-  D:0027H         PUBLIC        highest
-  D:002BH         PUBLIC        changeCount
+  D:004AH         PUBLIC        highest
+  D:004EH         PUBLIC        changeCount
   B:0021H.0       PUBLIC        save_in_24c02
   -------         ENDMOD        GLOBAL
 
   -------         MODULE        MAIN
   C:0000H         SYMBOL        _ICE_DUMMY_
   B:00A0H.3       PUBLIC        RELAY
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 7
+
+
   D:0090H         PUBLIC        P1
   D:00A0H         PUBLIC        P2
   D:00B0H         PUBLIC        P3
+  C:11B8H         PUBLIC        Music
+  B:0090H.4       PUBLIC        Buzzer
   B:00A8H.7       PUBLIC        EA
   D:00A8H         PUBLIC        IE
-  C:17F9H         PUBLIC        init_program
+  C:196EH         PUBLIC        init_program
   D:00B8H         PUBLIC        IP
-  C:175AH         PUBLIC        main
-  C:10E2H         PUBLIC        UpdateViewPageShow
-  C:0D22H         PUBLIC        int_T0
-  C:0006H         PUBLIC        int_T1
-  C:162BH         PUBLIC        init_data
+  I:0080H         PUBLIC        Music_arry
+  C:15A0H         PUBLIC        main
+  C:102BH         PUBLIC        UpdateViewPageShow
+  C:0D34H         PUBLIC        int_T0
+  C:17EAH         PUBLIC        int_T1
+  C:1795H         PUBLIC        init_data
   D:0098H         PUBLIC        SCON
-  C:1037H         PUBLIC        int_X0
+  C:0F80H         PUBLIC        int_X0
   D:0089H         PUBLIC        TMOD
   D:0088H         PUBLIC        TCON
   B:00A8H.1       PUBLIC        ET0
@@ -527,300 +391,307 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   B:0088H.4       PUBLIC        TR0
   B:00B8H.0       PUBLIC        PX0
   D:00C8H         PUBLIC        T2CON
+  D:0067H         PUBLIC        MusicSelect
+  D:0069H         PUBLIC        Speed
+  D:006BH         PUBLIC        FreqSelect
   D:00D0H         PUBLIC        PSW
-  C:0C00H         PUBLIC        UpdateTemperature
+  C:116EH         PUBLIC        FreqTable
+  C:0C12H         PUBLIC        UpdateTemperature
   -------         PROC          MAIN
-  C:175AH         LINE#         51
-  C:175AH         LINE#         52
-  C:175AH         LINE#         60
-  C:175DH         LINE#         69
-  C:1760H         LINE#         87
-  C:1760H         LINE#         88
-  C:1760H         LINE#         89
-  C:1763H         LINE#         90
-  C:1763H         LINE#         91
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 10
+  -------         DO            
+  D:0007H         SYMBOL        i
+  -------         ENDDO         
+  C:15A0H         LINE#         53
+  C:15A0H         LINE#         54
+  C:15A0H         LINE#         123
+  C:15A3H         LINE#         124
+  C:15A8H         LINE#         125
+  C:15A8H         LINE#         126
+  C:15A8H         LINE#         127
+  C:15B1H         LINE#         128
+  C:15B1H         LINE#         129
+  C:15C1H         LINE#         130
+  C:15C4H         LINE#         131
+  C:15C4H         LINE#         132
+  C:15C4H         LINE#         134
+  C:15CEH         LINE#         135
+  C:15CEH         LINE#         136
+  C:15D3H         LINE#         137
+  C:15DBH         LINE#         139
+  C:15F6H         LINE#         140
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 8
 
 
-  C:1766H         LINE#         92
-  C:1766H         LINE#         93
-  C:1768H         LINE#         94
-  C:176DH         LINE#         95
-  C:176DH         LINE#         96
-  C:1770H         LINE#         97
-  C:1772H         LINE#         99
-  C:1772H         LINE#         100
-  C:1772H         LINE#         101
-  C:1772H         LINE#         105
-  C:1772H         LINE#         106
-  C:1775H         LINE#         107
-  C:1775H         LINE#         108
-  C:1777H         LINE#         109
-  C:1787H         LINE#         110
-  C:1787H         LINE#         111
-  C:178AH         LINE#         112
-  C:178AH         LINE#         113
-  C:178DH         LINE#         114
-  C:178FH         LINE#         115
-  C:178FH         LINE#         116
-  C:1792H         LINE#         117
-  C:1795H         LINE#         118
-  C:1795H         LINE#         119
+  C:15FEH         LINE#         142
+  C:1600H         LINE#         143
+  C:1607H         LINE#         144
+  C:1609H         LINE#         145
+  C:160BH         LINE#         147
+  C:160BH         LINE#         148
+  C:160DH         LINE#         149
+  C:1612H         LINE#         150
+  C:1612H         LINE#         151
   -------         ENDPROC       MAIN
   -------         PROC          INT_T0
-  C:0D22H         LINE#         135
-  C:0D3FH         LINE#         138
-  C:0D66H         LINE#         139
-  C:0D66H         LINE#         140
-  C:0D6CH         LINE#         141
-  C:0D6EH         LINE#         142
-  C:0D6EH         LINE#         144
-  C:0D71H         LINE#         145
-  C:0D82H         LINE#         146
-  C:0D8CH         LINE#         147
-  C:0D96H         LINE#         148
-  C:0D9EH         LINE#         150
-  C:0DADH         LINE#         152
-  C:0DBCH         LINE#         154
-  C:0DCBH         LINE#         156
-  C:0DCDH         LINE#         158
-  C:0DD0H         LINE#         159
-  C:0DD5H         LINE#         160
-  C:0DD8H         LINE#         161
-  C:0DDBH         LINE#         162
+  C:0D34H         LINE#         167
+  C:0D51H         LINE#         170
+  C:0D78H         LINE#         171
+  C:0D78H         LINE#         172
+  C:0D7EH         LINE#         173
+  C:0D80H         LINE#         174
+  C:0D80H         LINE#         176
+  C:0D83H         LINE#         177
+  C:0D94H         LINE#         178
+  C:0D9EH         LINE#         179
+  C:0DA8H         LINE#         180
+  C:0DB0H         LINE#         182
+  C:0DBFH         LINE#         184
+  C:0DCEH         LINE#         186
+  C:0DDDH         LINE#         188
+  C:0DDFH         LINE#         190
+  C:0DE2H         LINE#         191
+  C:0DE7H         LINE#         192
+  C:0DEAH         LINE#         193
+  C:0DEDH         LINE#         194
   -------         ENDPROC       INT_T0
   -------         PROC          INT_X0
   -------         DO            
   D:0007H         SYMBOL        ky
-  D:001FH         SYMBOL        i
+  D:005FH         SYMBOL        i
   -------         ENDDO         
-  C:1037H         LINE#         177
-  C:1054H         LINE#         180
-  C:1057H         LINE#         181
-  C:105AH         LINE#         183
-  C:105AH         LINE#         184
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 11
+  C:0F80H         LINE#         209
+  C:0F9DH         LINE#         212
+  C:0FA0H         LINE#         213
+  C:0FA3H         LINE#         215
+  C:0FA3H         LINE#         216
+  C:0FA5H         LINE#         217
+  C:0FA9H         LINE#         218
+  C:0FAEH         LINE#         219
+  C:0FAEH         LINE#         220
+  C:0FB5H         LINE#         221
+  C:0FB7H         LINE#         222
+  C:0FBBH         LINE#         223
+  C:0FC0H         LINE#         225
+  C:0FC0H         LINE#         226
+  C:0FC7H         LINE#         227
+  C:0FCAH         LINE#         228
+  C:0FCDH         LINE#         229
+  C:0FCDH         LINE#         231
+  C:0FD6H         LINE#         232
+  C:0FD9H         LINE#         234
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 9
 
 
-  C:105CH         LINE#         185
-  C:1060H         LINE#         186
-  C:1065H         LINE#         187
-  C:1065H         LINE#         188
-  C:106CH         LINE#         189
-  C:106EH         LINE#         190
-  C:1072H         LINE#         191
-  C:1077H         LINE#         193
-  C:1077H         LINE#         194
-  C:107EH         LINE#         195
-  C:1081H         LINE#         196
-  C:1084H         LINE#         197
-  C:1084H         LINE#         199
-  C:108DH         LINE#         200
-  C:1090H         LINE#         202
-  C:1094H         LINE#         203
-  C:10A7H         LINE#         212
-  C:10A9H         LINE#         214
-  C:10ACH         LINE#         215
-  C:10B2H         LINE#         216
-  C:10B4H         LINE#         217
-  C:10B6H         LINE#         218
-  C:10B9H         LINE#         219
-  C:10BBH         LINE#         220
-  C:10BDH         LINE#         222
-  C:10BDH         LINE#         223
-  C:10BFH         LINE#         224
-  C:10C1H         LINE#         225
-  C:10C3H         LINE#         228
-  C:10C5H         LINE#         229
-  C:10C5H         LINE#         230
-  C:10C7H         LINE#         231
+  C:0FDDH         LINE#         235
+  C:0FF0H         LINE#         244
+  C:0FF2H         LINE#         246
+  C:0FF5H         LINE#         247
+  C:0FFBH         LINE#         248
+  C:0FFDH         LINE#         249
+  C:0FFFH         LINE#         250
+  C:1002H         LINE#         251
+  C:1004H         LINE#         252
+  C:1006H         LINE#         254
+  C:1006H         LINE#         255
+  C:1008H         LINE#         256
+  C:100AH         LINE#         257
+  C:100CH         LINE#         260
+  C:100EH         LINE#         261
+  C:100EH         LINE#         262
+  C:1010H         LINE#         263
   -------         ENDPROC       INT_X0
   -------         PROC          INT_T1
-  C:0006H         LINE#         233
-  C:0006H         LINE#         236
+  C:17EAH         LINE#         266
+  C:17F9H         LINE#         269
+  C:1815H         LINE#         270
+  C:1815H         LINE#         272
+  C:1827H         LINE#         273
+  C:182AH         LINE#         274
+  C:182CH         LINE#         275
+  C:182CH         LINE#         276
   -------         ENDPROC       INT_T1
   -------         PROC          INIT_DATA
-  C:162BH         LINE#         238
-  C:162BH         LINE#         239
-  C:162BH         LINE#         240
-  C:162DH         LINE#         241
-  C:162FH         LINE#         242
-  C:1632H         LINE#         243
-  C:1635H         LINE#         244
-  C:1637H         LINE#         246
-  C:1639H         LINE#         247
-  C:163BH         LINE#         248
-  C:163DH         LINE#         252
-  C:1655H         LINE#         254
-  C:1658H         LINE#         255
-  C:1668H         LINE#         256
-  C:1670H         LINE#         257
-  C:1678H         LINE#         258
-  C:167FH         LINE#         261
+  C:1795H         LINE#         278
+  C:1795H         LINE#         279
+  C:1795H         LINE#         280
+  C:1797H         LINE#         281
+  C:1799H         LINE#         282
+  C:179CH         LINE#         283
+  C:179FH         LINE#         284
+  C:17A1H         LINE#         286
+  C:17A3H         LINE#         287
+  C:17A5H         LINE#         288
+  C:17A7H         LINE#         292
+  C:17BFH         LINE#         294
+  C:17C2H         LINE#         295
+  C:17D2H         LINE#         296
+  C:17DAH         LINE#         297
+  C:17E2H         LINE#         298
+  C:17E9H         LINE#         301
   -------         ENDPROC       INIT_DATA
   -------         PROC          INIT_PROGRAM
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 12
+  C:196EH         LINE#         303
+  C:196EH         LINE#         304
+  C:196EH         LINE#         305
+  C:1971H         LINE#         306
+  C:1974H         LINE#         307
+  C:1977H         LINE#         308
+  C:197CH         LINE#         309
+  C:1982H         LINE#         310
+  C:1985H         LINE#         311
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 10
 
 
-  C:17F9H         LINE#         263
-  C:17F9H         LINE#         264
-  C:17F9H         LINE#         265
-  C:17FCH         LINE#         266
-  C:17FFH         LINE#         267
-  C:1802H         LINE#         268
-  C:1807H         LINE#         269
-  C:180DH         LINE#         270
-  C:1810H         LINE#         271
-  C:1815H         LINE#         272
-  C:181AH         LINE#         273
-  C:181DH         LINE#         274
-  C:181FH         LINE#         275
-  C:1821H         LINE#         276
-  C:1823H         LINE#         277
-  C:1825H         LINE#         278
-  C:1827H         LINE#         279
+  C:198AH         LINE#         312
+  C:198FH         LINE#         313
+  C:1992H         LINE#         314
+  C:1994H         LINE#         315
+  C:1996H         LINE#         316
+  C:1998H         LINE#         317
+  C:199AH         LINE#         318
+  C:199CH         LINE#         319
   -------         ENDPROC       INIT_PROGRAM
   -------         PROC          UPDATETEMPERATURE
   -------         DO            
-  D:0008H         SYMBOL        i
+  D:001FH         SYMBOL        i
   -------         ENDDO         
-  C:0C00H         LINE#         281
-  C:0C00H         LINE#         282
-  C:0C00H         LINE#         284
-  C:0C02H         LINE#         285
-  C:0C15H         LINE#         286
-  C:0C18H         LINE#         287
-  C:0C1BH         LINE#         289
-  C:0C1BH         LINE#         290
-  C:0C1EH         LINE#         291
-  C:0C20H         LINE#         292
-  C:0C3AH         LINE#         294
-  C:0C51H         LINE#         295
-  C:0C5DH         LINE#         296
-  C:0C72H         LINE#         297
-  C:0C7EH         LINE#         299
-  C:0C93H         LINE#         300
-  C:0C93H         LINE#         301
-  C:0C95H         LINE#         302
-  C:0C97H         LINE#         303
-  C:0CE0H         LINE#         304
-  C:0CE7H         LINE#         305
-  C:0CEAH         LINE#         306
-  C:0CEDH         LINE#         308
-  C:0CEDH         LINE#         309
-  C:0CF0H         LINE#         310
-  C:0CF3H         LINE#         311
-  C:0CF5H         LINE#         313
-  C:0CF5H         LINE#         314
-  C:0CF7H         LINE#         315
-  C:0CF9H         LINE#         316
-  C:0CFCH         LINE#         317
-  C:0CFCH         LINE#         318
-  C:0D0FH         LINE#         319
-  C:0D0FH         LINE#         320
-  C:0D11H         LINE#         321
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 13
+  C:0C12H         LINE#         321
+  C:0C12H         LINE#         322
+  C:0C12H         LINE#         324
+  C:0C14H         LINE#         325
+  C:0C27H         LINE#         326
+  C:0C2AH         LINE#         327
+  C:0C2DH         LINE#         329
+  C:0C2DH         LINE#         330
+  C:0C30H         LINE#         331
+  C:0C32H         LINE#         332
+  C:0C4CH         LINE#         334
+  C:0C63H         LINE#         335
+  C:0C6FH         LINE#         336
+  C:0C84H         LINE#         337
+  C:0C90H         LINE#         339
+  C:0CA5H         LINE#         340
+  C:0CA5H         LINE#         341
+  C:0CA7H         LINE#         342
+  C:0CA9H         LINE#         343
+  C:0CF2H         LINE#         344
+  C:0CF9H         LINE#         345
+  C:0CFCH         LINE#         346
+  C:0CFFH         LINE#         348
+  C:0CFFH         LINE#         349
+  C:0D02H         LINE#         350
+  C:0D05H         LINE#         351
+  C:0D07H         LINE#         353
+  C:0D07H         LINE#         354
+  C:0D09H         LINE#         355
+  C:0D0BH         LINE#         356
+  C:0D0EH         LINE#         357
+  C:0D0EH         LINE#         358
+  C:0D21H         LINE#         359
+  C:0D21H         LINE#         360
+  C:0D23H         LINE#         361
+  C:0D25H         LINE#         362
+  C:0D28H         LINE#         364
+  C:0D28H         LINE#         365
+  C:0D2BH         LINE#         366
+  C:0D2EH         LINE#         367
+  C:0D2FH         LINE#         369
+  C:0D2FH         LINE#         370
+  C:0D31H         LINE#         371
+  C:0D33H         LINE#         372
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 11
 
 
-  C:0D13H         LINE#         322
-  C:0D16H         LINE#         324
-  C:0D16H         LINE#         325
-  C:0D19H         LINE#         326
-  C:0D1CH         LINE#         327
-  C:0D1DH         LINE#         329
-  C:0D1DH         LINE#         330
-  C:0D1FH         LINE#         331
-  C:0D21H         LINE#         332
-  C:0D21H         LINE#         333
+  C:0D33H         LINE#         373
   -------         ENDPROC       UPDATETEMPERATURE
   -------         PROC          UPDATEVIEWPAGESHOW
-  C:10E2H         LINE#         335
-  C:10E2H         LINE#         336
-  C:10E2H         LINE#         337
-  C:10FAH         LINE#         338
-  C:10FAH         LINE#         339
-  C:10FAH         LINE#         340
-  C:10FDH         LINE#         341
-  C:10FDH         LINE#         342
-  C:1100H         LINE#         343
-  C:1102H         LINE#         344
-  C:1102H         LINE#         346
-  C:1107H         LINE#         347
-  C:111EH         LINE#         348
-  C:1127H         LINE#         350
-  C:112CH         LINE#         351
-  C:113AH         LINE#         352
-  C:1143H         LINE#         353
-  C:1143H         LINE#         354
-  C:1143H         LINE#         355
-  C:1146H         LINE#         356
-  C:1146H         LINE#         357
-  C:1149H         LINE#         358
-  C:114BH         LINE#         359
-  C:114BH         LINE#         361
-  C:1150H         LINE#         362
-  C:1155H         LINE#         363
-  C:115AH         LINE#         364
-  C:115FH         LINE#         365
-  C:115FH         LINE#         366
-  C:115FH         LINE#         367
-  C:1162H         LINE#         368
-  C:1162H         LINE#         369
-  C:1165H         LINE#         370
-  C:1167H         LINE#         371
-  C:1167H         LINE#         373
-  C:116AH         LINE#         374
-  C:116AH         LINE#         375
-  C:116FH         LINE#         376
-  C:1171H         LINE#         377
-  C:1173H         LINE#         379
-  C:1176H         LINE#         380
-  C:1176H         LINE#         381
-  C:117BH         LINE#         382
-  C:1180H         LINE#         383
-  C:1180H         LINE#         385
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 14
-
-
-  C:1180H         LINE#         386
-  C:1183H         LINE#         387
-  C:1183H         LINE#         388
-  C:1186H         LINE#         389
-  C:1188H         LINE#         390
-  C:1188H         LINE#         392
-  C:1188H         LINE#         393
-  C:1188H         LINE#         394
+  C:102BH         LINE#         375
+  C:102BH         LINE#         376
+  C:102BH         LINE#         377
+  C:1043H         LINE#         378
+  C:1043H         LINE#         379
+  C:1043H         LINE#         380
+  C:1046H         LINE#         381
+  C:1046H         LINE#         382
+  C:1049H         LINE#         383
+  C:104BH         LINE#         384
+  C:104BH         LINE#         386
+  C:1050H         LINE#         387
+  C:1067H         LINE#         388
+  C:1070H         LINE#         390
+  C:1075H         LINE#         391
+  C:1083H         LINE#         392
+  C:108CH         LINE#         393
+  C:108CH         LINE#         394
+  C:108CH         LINE#         395
+  C:108FH         LINE#         396
+  C:108FH         LINE#         397
+  C:1092H         LINE#         398
+  C:1094H         LINE#         399
+  C:1094H         LINE#         401
+  C:1099H         LINE#         402
+  C:109EH         LINE#         403
+  C:10A3H         LINE#         404
+  C:10A8H         LINE#         405
+  C:10A8H         LINE#         406
+  C:10A8H         LINE#         407
+  C:10ABH         LINE#         408
+  C:10ABH         LINE#         409
+  C:10AEH         LINE#         410
+  C:10B0H         LINE#         411
+  C:10B0H         LINE#         413
+  C:10B3H         LINE#         414
+  C:10B3H         LINE#         415
+  C:10B8H         LINE#         416
+  C:10BAH         LINE#         417
+  C:10BCH         LINE#         419
+  C:10BFH         LINE#         420
+  C:10BFH         LINE#         421
+  C:10C4H         LINE#         422
+  C:10C9H         LINE#         423
+  C:10C9H         LINE#         425
+  C:10C9H         LINE#         426
+  C:10CCH         LINE#         427
+  C:10CCH         LINE#         428
+  C:10CFH         LINE#         429
+  C:10D1H         LINE#         430
+  C:10D1H         LINE#         432
+  C:10D1H         LINE#         433
+  C:10D1H         LINE#         434
   -------         ENDPROC       UPDATEVIEWPAGESHOW
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 12
+
+
   -------         ENDMOD        MAIN
 
   -------         MODULE        ULTIMATE
   C:0000H         SYMBOL        _ICE_DUMMY_
   D:0090H         PUBLIC        P1
   D:00B0H         PUBLIC        P3
-  C:1989H         PUBLIC        _Delay1ms
+  C:1AFEH         PUBLIC        _Delay1ms
   B:00A8H.7       PUBLIC        EA
-  C:1434H         PUBLIC        UpdateOverLimitTimer
+  C:152AH         PUBLIC        UpdateOverLimitTimer
   D:00A8H         PUBLIC        IE
   D:00B8H         PUBLIC        IP
-  C:179DH         PUBLIC        _LCD1602_ShowString
-  C:0863H         PUBLIC        ChangeSetting
+  C:1912H         PUBLIC        _LCD1602_ShowString
+  C:0875H         PUBLIC        ChangeSetting
   D:0098H         PUBLIC        SCON
   D:0088H         PUBLIC        TCON
-  C:1718H         PUBLIC        KeysSystem_1
-  C:13BBH         PUBLIC        KeysSystem_2
-  C:17C9H         PUBLIC        UpdateExtremes
-  C:1225H         PUBLIC        KeysSystem_3
-  C:0F7DH         SYMBOL        _?ix1000
-  C:19F3H         PUBLIC        CheckKeysInvalid
-  C:1189H         PUBLIC        ShowViewPage_1
-  C:18D1H         PUBLIC        ShowViewPage_2
-  C:18F7H         PUBLIC        ShowViewPage_3
-  C:15D4H         PUBLIC        ShowViewPage_4
-  C:14AAH         PUBLIC        LCD1602_Action
-  C:187FH         PUBLIC        AboveLimitClock
+  C:18CAH         PUBLIC        KeysSystem_1
+  C:14B1H         PUBLIC        KeysSystem_2
+  C:193EH         PUBLIC        UpdateExtremes
+  C:129EH         PUBLIC        KeysSystem_3
+  C:0EC6H         SYMBOL        _?ix1000
+  C:1B68H         PUBLIC        CheckKeysInvalid
+  C:10D2H         PUBLIC        ShowViewPage_1
+  C:1A46H         PUBLIC        ShowViewPage_2
+  C:1A6CH         PUBLIC        ShowViewPage_3
+  C:173EH         PUBLIC        ShowViewPage_4
+  C:1614H         PUBLIC        LCD1602_Action
+  C:19F4H         PUBLIC        AboveLimitClock
   D:00C8H         PUBLIC        T2CON
-  C:18A8H         PUBLIC        BelowLimitClock
-  C:0AB5H         PUBLIC        _ShowSettings
+  C:1A1DH         PUBLIC        BelowLimitClock
+  C:0AC7H         PUBLIC        _ShowSettings
   D:00D0H         PUBLIC        PSW
   -------         PROC          L?0183
   -------         ENDPROC       L?0183
@@ -829,559 +700,556 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   -------         DO            
   D:0005H         SYMBOL        i
   -------         ENDDO         
-  C:1989H         LINE#         32
-  C:1989H         LINE#         33
-  C:1989H         LINE#         35
-  C:1993H         LINE#         36
-  C:1993H         LINE#         37
-  C:1995H         LINE#         38
-  C:199BH         LINE#         39
-  C:199BH         LINE#         40
-  C:199DH         LINE#         41
-  C:199DH         LINE#         42
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 15
-
-
+  C:1AFEH         LINE#         32
+  C:1AFEH         LINE#         33
+  C:1AFEH         LINE#         35
+  C:1B08H         LINE#         36
+  C:1B08H         LINE#         37
+  C:1B0AH         LINE#         38
+  C:1B10H         LINE#         39
+  C:1B10H         LINE#         40
+  C:1B12H         LINE#         41
+  C:1B12H         LINE#         42
   -------         ENDPROC       _DELAY1MS
-  C:1797H         SYMBOL        L?0182
+  C:190CH         SYMBOL        L?0182
   -------         PROC          L?0181
   -------         ENDPROC       L?0181
-  C:1797H         SYMBOL        L?0182
+  C:190CH         SYMBOL        L?0182
   -------         PROC          _LCD1602_SHOWSTRING
-  D:000EH         SYMBOL        s
-  C:179DH         LINE#         48
-  C:17A3H         LINE#         49
-  C:17A3H         LINE#         50
-  C:17AEH         LINE#         51
-  C:17AEH         LINE#         52
-  C:17BFH         LINE#         53
-  C:17C6H         LINE#         54
-  C:17C8H         LINE#         55
+  D:0000H         SYMBOL        s
+  C:1912H         LINE#         48
+  C:1918H         LINE#         49
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 13
+
+
+  C:1918H         LINE#         50
+  C:1923H         LINE#         51
+  C:1923H         LINE#         52
+  C:1934H         LINE#         53
+  C:193BH         LINE#         54
+  C:193DH         LINE#         55
   -------         ENDPROC       _LCD1602_SHOWSTRING
   -------         PROC          LCD1602_ACTION
   -------         DO            
-  D:0008H         SYMBOL        i
+  D:0000H         SYMBOL        i
   -------         ENDDO         
-  C:14AAH         LINE#         57
-  C:14AAH         LINE#         58
-  C:14AAH         LINE#         61
-  C:14AFH         LINE#         62
-  C:14B4H         LINE#         63
-  C:14B9H         LINE#         64
-  C:14BEH         LINE#         67
-  C:14C3H         LINE#         68
-  C:14CCH         LINE#         69
-  C:14D2H         LINE#         70
-  C:14D7H         LINE#         71
-  C:14DCH         LINE#         72
-  C:14E5H         LINE#         73
-  C:14EAH         LINE#         75
-  C:14EDH         LINE#         77
-  C:14EDH         LINE#         78
-  C:14F2H         LINE#         79
-  C:14F5H         LINE#         80
-  C:14FAH         LINE#         81
-  C:14FDH         LINE#         82
-  C:1500H         LINE#         83
-  C:1503H         LINE#         85
-  C:1503H         LINE#         86
-  C:1508H         LINE#         87
-  C:150FH         LINE#         88
-  C:1512H         LINE#         89
-  C:1517H         LINE#         90
-  C:151CH         LINE#         91
+  C:1614H         LINE#         57
+  C:1614H         LINE#         58
+  C:1614H         LINE#         61
+  C:1619H         LINE#         62
+  C:161EH         LINE#         63
+  C:1623H         LINE#         64
+  C:1628H         LINE#         67
+  C:162DH         LINE#         68
+  C:1636H         LINE#         69
+  C:163CH         LINE#         70
+  C:1641H         LINE#         71
+  C:1646H         LINE#         72
+  C:164FH         LINE#         73
+  C:1654H         LINE#         75
+  C:1657H         LINE#         77
+  C:1657H         LINE#         78
+  C:165CH         LINE#         79
+  C:165FH         LINE#         80
+  C:1664H         LINE#         81
+  C:1667H         LINE#         82
+  C:166AH         LINE#         83
+  C:166DH         LINE#         85
+  C:166DH         LINE#         86
+  C:1672H         LINE#         87
+  C:1679H         LINE#         88
+  C:167CH         LINE#         89
+  C:1681H         LINE#         90
+  C:1686H         LINE#         91
   -------         ENDPROC       LCD1602_ACTION
   -------         PROC          SHOWVIEWPAGE_1
-  C:1189H         LINE#         93
-  C:1189H         LINE#         94
-  C:1189H         LINE#         96
-  C:118EH         LINE#         97
-  C:1197H         LINE#         98
-  C:11A5H         LINE#         99
-  C:11A8H         LINE#         100
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 16
+  C:10D2H         LINE#         93
+  C:10D2H         LINE#         94
+  C:10D2H         LINE#         96
+  C:10D7H         LINE#         97
+  C:10E0H         LINE#         98
+  C:10EEH         LINE#         99
+  C:10F1H         LINE#         100
+  C:10FAH         LINE#         101
+  C:1103H         LINE#         102
+  C:1111H         LINE#         103
+  C:1114H         LINE#         104
+  C:111DH         LINE#         106
+  C:1122H         LINE#         107
+  C:112BH         LINE#         108
+  C:1142H         LINE#         109
+  C:1145H         LINE#         110
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 14
 
 
-  C:11B1H         LINE#         101
-  C:11BAH         LINE#         102
-  C:11C8H         LINE#         103
-  C:11CBH         LINE#         104
-  C:11D4H         LINE#         106
-  C:11D9H         LINE#         107
-  C:11E2H         LINE#         108
-  C:11F9H         LINE#         109
-  C:11FCH         LINE#         110
-  C:1205H         LINE#         111
-  C:120EH         LINE#         112
-  C:121CH         LINE#         113
+  C:114EH         LINE#         111
+  C:1157H         LINE#         112
+  C:1165H         LINE#         113
   -------         ENDPROC       SHOWVIEWPAGE_1
   -------         PROC          SHOWVIEWPAGE_2
-  C:18D1H         LINE#         116
-  C:18D1H         LINE#         117
-  C:18D1H         LINE#         119
-  C:18D6H         LINE#         120
-  C:18DFH         LINE#         121
-  C:18E4H         LINE#         123
-  C:18E9H         LINE#         124
-  C:18F2H         LINE#         125
+  C:1A46H         LINE#         116
+  C:1A46H         LINE#         117
+  C:1A46H         LINE#         119
+  C:1A4BH         LINE#         120
+  C:1A54H         LINE#         121
+  C:1A59H         LINE#         123
+  C:1A5EH         LINE#         124
+  C:1A67H         LINE#         125
   -------         ENDPROC       SHOWVIEWPAGE_2
   -------         PROC          SHOWVIEWPAGE_3
-  C:18F7H         LINE#         128
-  C:18F7H         LINE#         129
-  C:18F7H         LINE#         132
-  C:18FCH         LINE#         133
-  C:1905H         LINE#         134
-  C:190AH         LINE#         136
-  C:190FH         LINE#         137
-  C:1918H         LINE#         138
+  C:1A6CH         LINE#         128
+  C:1A6CH         LINE#         129
+  C:1A6CH         LINE#         132
+  C:1A71H         LINE#         133
+  C:1A7AH         LINE#         134
+  C:1A7FH         LINE#         136
+  C:1A84H         LINE#         137
+  C:1A8DH         LINE#         138
   -------         ENDPROC       SHOWVIEWPAGE_3
   -------         PROC          SHOWVIEWPAGE_4
   -------         DO            
-  D:0008H         SYMBOL        i
+  D:0000H         SYMBOL        i
   -------         ENDDO         
-  C:15D4H         LINE#         141
-  C:15D4H         LINE#         142
-  C:15D4H         LINE#         145
-  C:15D9H         LINE#         147
-  C:15DEH         LINE#         148
-  C:15E7H         LINE#         149
-  C:15EFH         LINE#         150
-  C:15F8H         LINE#         151
-  C:1600H         LINE#         152
-  C:1609H         LINE#         156
-  C:160EH         LINE#         157
-  C:1617H         LINE#         158
-  C:161AH         LINE#         159
-  C:1621H         LINE#         160
-  C:1621H         LINE#         161
-  C:1626H         LINE#         162
-  C:1628H         LINE#         163
-  C:162AH         LINE#         164
+  C:173EH         LINE#         141
+  C:173EH         LINE#         142
+  C:173EH         LINE#         145
+  C:1743H         LINE#         147
+  C:1748H         LINE#         148
+  C:1751H         LINE#         149
+  C:1759H         LINE#         150
+  C:1762H         LINE#         151
+  C:176AH         LINE#         152
+  C:1773H         LINE#         156
+  C:1778H         LINE#         157
+  C:1781H         LINE#         158
+  C:1784H         LINE#         159
+  C:178BH         LINE#         160
+  C:178BH         LINE#         161
+  C:1790H         LINE#         162
+  C:1792H         LINE#         163
+  C:1794H         LINE#         164
   -------         ENDPROC       SHOWVIEWPAGE_4
   -------         PROC          _SHOWSETTINGS
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 17
-
-
-  D:0009H         SYMBOL        opt
+  D:0079H         SYMBOL        opt
   -------         DO            
-  B:0021H.1       SYMBOL        i
-  D:000AH         SYMBOL        sgl
+  B:0021H.3       SYMBOL        i
+  D:007AH         SYMBOL        sgl
   -------         ENDDO         
-  C:0AB5H         LINE#         166
-  C:0AB7H         LINE#         167
-  C:0AB7H         LINE#         169
-  C:0ACAH         LINE#         170
-  C:0AD3H         LINE#         172
-  C:0AE2H         LINE#         173
-  C:0AE2H         LINE#         174
-  C:0AE7H         LINE#         175
-  C:0AFBH         LINE#         176
-  C:0AFBH         LINE#         177
-  C:0AFBH         LINE#         179
-  C:0B00H         LINE#         180
-  C:0B09H         LINE#         181
-  C:0B17H         LINE#         182
-  C:0B1AH         LINE#         183
-  C:0B23H         LINE#         185
-  C:0B28H         LINE#         186
-  C:0B31H         LINE#         187
-  C:0B3FH         LINE#         188
-  C:0B42H         LINE#         189
-  C:0B4BH         LINE#         190
-  C:0B4DH         LINE#         191
-  C:0B4DH         LINE#         192
-  C:0B4DH         LINE#         194
-  C:0B52H         LINE#         195
-  C:0B5BH         LINE#         196
-  C:0B63H         LINE#         198
-  C:0B68H         LINE#         199
-  C:0B71H         LINE#         200
-  C:0B73H         LINE#         201
-  C:0B75H         LINE#         202
-  C:0B75H         LINE#         203
-  C:0B75H         LINE#         205
-  C:0B7AH         LINE#         206
-  C:0B83H         LINE#         207
-  C:0B8BH         LINE#         209
-  C:0B90H         LINE#         210
-  C:0B99H         LINE#         211
-  C:0BA1H         LINE#         212
-  C:0BA1H         LINE#         213
-  C:0BA1H         LINE#         214
-  C:0BA1H         LINE#         215
-  C:0BA1H         LINE#         216
-  C:0BA6H         LINE#         217
-  C:0BABH         LINE#         218
-  C:0BBBH         LINE#         219
-  C:0BC0H         LINE#         220
-  C:0BD0H         LINE#         221
-  C:0BD2H         LINE#         222
-  C:0BD7H         LINE#         223
-  C:0BE7H         LINE#         224
-  C:0BECH         LINE#         225
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 18
+  C:0AC7H         LINE#         166
+  C:0AC9H         LINE#         167
+  C:0AC9H         LINE#         169
+  C:0ADCH         LINE#         170
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 15
 
 
-  C:0BFCH         LINE#         226
-  C:0BFFH         LINE#         227
+  C:0AE5H         LINE#         172
+  C:0AF4H         LINE#         173
+  C:0AF4H         LINE#         174
+  C:0AF9H         LINE#         175
+  C:0B0DH         LINE#         176
+  C:0B0DH         LINE#         177
+  C:0B0DH         LINE#         179
+  C:0B12H         LINE#         180
+  C:0B1BH         LINE#         181
+  C:0B29H         LINE#         182
+  C:0B2CH         LINE#         183
+  C:0B35H         LINE#         185
+  C:0B3AH         LINE#         186
+  C:0B43H         LINE#         187
+  C:0B51H         LINE#         188
+  C:0B54H         LINE#         189
+  C:0B5DH         LINE#         190
+  C:0B5FH         LINE#         191
+  C:0B5FH         LINE#         192
+  C:0B5FH         LINE#         194
+  C:0B64H         LINE#         195
+  C:0B6DH         LINE#         196
+  C:0B75H         LINE#         198
+  C:0B7AH         LINE#         199
+  C:0B83H         LINE#         200
+  C:0B85H         LINE#         201
+  C:0B87H         LINE#         202
+  C:0B87H         LINE#         203
+  C:0B87H         LINE#         205
+  C:0B8CH         LINE#         206
+  C:0B95H         LINE#         207
+  C:0B9DH         LINE#         209
+  C:0BA2H         LINE#         210
+  C:0BABH         LINE#         211
+  C:0BB3H         LINE#         212
+  C:0BB3H         LINE#         213
+  C:0BB3H         LINE#         214
+  C:0BB3H         LINE#         215
+  C:0BB3H         LINE#         216
+  C:0BB8H         LINE#         217
+  C:0BBDH         LINE#         218
+  C:0BCDH         LINE#         219
+  C:0BD2H         LINE#         220
+  C:0BE2H         LINE#         221
+  C:0BE4H         LINE#         222
+  C:0BE9H         LINE#         223
+  C:0BF9H         LINE#         224
+  C:0BFEH         LINE#         225
+  C:0C0EH         LINE#         226
+  C:0C11H         LINE#         227
   -------         ENDPROC       _SHOWSETTINGS
   -------         PROC          CHANGESETTING
   -------         DO            
-  D:0009H         SYMBOL        i
-  D:000AH         SYMBOL        j
-  D:000BH         SYMBOL        cunt
-  B:0021H.1       SYMBOL        flag
+  D:0000H         SYMBOL        i
+  D:0001H         SYMBOL        j
+  D:0002H         SYMBOL        cunt
+  B:0021H.4       SYMBOL        flag
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 16
+
+
   -------         ENDDO         
-  C:0863H         LINE#         229
-  C:0863H         LINE#         230
-  C:0863H         LINE#         232
-  C:0866H         LINE#         233
-  C:0868H         LINE#         234
-  C:088CH         LINE#         235
-  C:088CH         LINE#         236
-  C:088CH         LINE#         237
-  C:088CH         LINE#         238
-  C:088CH         LINE#         239
-  C:0898H         LINE#         240
-  C:0898H         LINE#         241
-  C:0898H         LINE#         242
-  C:089BH         LINE#         243
-  C:089BH         LINE#         244
-  C:089EH         LINE#         245
-  C:08A0H         LINE#         246
-  C:08A0H         LINE#         247
-  C:08B1H         LINE#         248
-  C:08B4H         LINE#         249
-  C:08BCH         LINE#         251
-  C:08BCH         LINE#         252
-  C:08CAH         LINE#         253
-  C:08D3H         LINE#         254
-  C:08D3H         LINE#         255
-  C:08E8H         LINE#         256
-  C:08E8H         LINE#         257
-  C:08E8H         LINE#         258
-  C:08ECH         LINE#         259
-  C:08F1H         LINE#         261
-  C:08F4H         LINE#         262
-  C:08F4H         LINE#         263
-  C:08F4H         LINE#         264
-  C:0905H         LINE#         265
-  C:091BH         LINE#         266
-  C:0924H         LINE#         268
-  C:0924H         LINE#         269
-  C:0924H         LINE#         270
-  C:0959H         LINE#         271
-  C:095BH         LINE#         272
-  C:095EH         LINE#         273
-  C:095EH         LINE#         274
-  C:095EH         LINE#         275
-  C:097FH         LINE#         276
-  C:0981H         LINE#         277
-  C:0984H         LINE#         278
-  C:0984H         LINE#         279
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 19
+  C:0875H         LINE#         229
+  C:0875H         LINE#         230
+  C:0875H         LINE#         232
+  C:0878H         LINE#         233
+  C:087AH         LINE#         234
+  C:089EH         LINE#         235
+  C:089EH         LINE#         236
+  C:089EH         LINE#         237
+  C:089EH         LINE#         238
+  C:089EH         LINE#         239
+  C:08AAH         LINE#         240
+  C:08AAH         LINE#         241
+  C:08AAH         LINE#         242
+  C:08ADH         LINE#         243
+  C:08ADH         LINE#         244
+  C:08B0H         LINE#         245
+  C:08B2H         LINE#         246
+  C:08B2H         LINE#         247
+  C:08C3H         LINE#         248
+  C:08C6H         LINE#         249
+  C:08CEH         LINE#         251
+  C:08CEH         LINE#         252
+  C:08DCH         LINE#         253
+  C:08E5H         LINE#         254
+  C:08E5H         LINE#         255
+  C:08FAH         LINE#         256
+  C:08FAH         LINE#         257
+  C:08FAH         LINE#         258
+  C:08FEH         LINE#         259
+  C:0903H         LINE#         261
+  C:0906H         LINE#         262
+  C:0906H         LINE#         263
+  C:0906H         LINE#         264
+  C:0917H         LINE#         265
+  C:092DH         LINE#         266
+  C:0936H         LINE#         268
+  C:0936H         LINE#         269
+  C:0936H         LINE#         270
+  C:096BH         LINE#         271
+  C:096DH         LINE#         272
+  C:0970H         LINE#         273
+  C:0970H         LINE#         274
+  C:0970H         LINE#         275
+  C:0991H         LINE#         276
+  C:0993H         LINE#         277
+  C:0996H         LINE#         278
+  C:0996H         LINE#         279
+  C:0996H         LINE#         280
+  C:0996H         LINE#         281
+  C:0996H         LINE#         282
+  C:0996H         LINE#         283
+  C:0999H         LINE#         284
+  C:0999H         LINE#         285
+  C:0999H         LINE#         286
+  C:099EH         LINE#         287
+  C:09A1H         LINE#         288
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 17
 
 
-  C:0984H         LINE#         280
-  C:0984H         LINE#         281
-  C:0984H         LINE#         282
-  C:0984H         LINE#         283
-  C:0987H         LINE#         284
-  C:0987H         LINE#         285
-  C:0987H         LINE#         286
-  C:098CH         LINE#         287
-  C:098FH         LINE#         288
-  C:098FH         LINE#         289
-  C:098FH         LINE#         290
-  C:0994H         LINE#         291
-  C:0997H         LINE#         292
-  C:0997H         LINE#         293
-  C:0997H         LINE#         294
-  C:099CH         LINE#         295
-  C:099FH         LINE#         296
-  C:09C4H         LINE#         300
-  C:09C4H         LINE#         301
-  C:09C4H         LINE#         302
-  C:09C7H         LINE#         303
-  C:09C7H         LINE#         304
-  C:09CAH         LINE#         305
-  C:09CCH         LINE#         306
-  C:09CCH         LINE#         307
-  C:09CFH         LINE#         308
-  C:09D4H         LINE#         310
-  C:09DAH         LINE#         311
-  C:09DFH         LINE#         312
-  C:09E4H         LINE#         313
-  C:09F9H         LINE#         314
-  C:09F9H         LINE#         315
-  C:09F9H         LINE#         316
-  C:09FEH         LINE#         317
-  C:0A03H         LINE#         318
-  C:0A0EH         LINE#         319
-  C:0A0EH         LINE#         320
-  C:0A10H         LINE#         321
-  C:0A13H         LINE#         322
-  C:0A15H         LINE#         323
-  C:0A1AH         LINE#         324
-  C:0A1FH         LINE#         325
-  C:0A24H         LINE#         326
-  C:0A27H         LINE#         327
-  C:0A27H         LINE#         328
-  C:0A27H         LINE#         329
-  C:0A46H         LINE#         333
-  C:0A4BH         LINE#         334
-  C:0A53H         LINE#         336
-  C:0A53H         LINE#         337
-  C:0A53H         LINE#         338
-  C:0A77H         LINE#         339
-  C:0A79H         LINE#         340
-  C:0A7CH         LINE#         341
-  C:0A7CH         LINE#         342
-  C:0A7CH         LINE#         343
-  C:0AAFH         LINE#         344
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 20
-
-
-  C:0AB1H         LINE#         345
-  C:0AB4H         LINE#         346
-  C:0AB4H         LINE#         347
-  C:0AB4H         LINE#         348
-  C:0AB4H         LINE#         349
-  C:0AB4H         LINE#         350
-  C:0AB4H         LINE#         351
+  C:09A1H         LINE#         289
+  C:09A1H         LINE#         290
+  C:09A6H         LINE#         291
+  C:09A9H         LINE#         292
+  C:09A9H         LINE#         293
+  C:09A9H         LINE#         294
+  C:09AEH         LINE#         295
+  C:09B1H         LINE#         296
+  C:09D6H         LINE#         300
+  C:09D6H         LINE#         301
+  C:09D6H         LINE#         302
+  C:09D9H         LINE#         303
+  C:09D9H         LINE#         304
+  C:09DCH         LINE#         305
+  C:09DEH         LINE#         306
+  C:09DEH         LINE#         307
+  C:09E1H         LINE#         308
+  C:09E6H         LINE#         310
+  C:09ECH         LINE#         311
+  C:09F1H         LINE#         312
+  C:09F6H         LINE#         313
+  C:0A0BH         LINE#         314
+  C:0A0BH         LINE#         315
+  C:0A0BH         LINE#         316
+  C:0A10H         LINE#         317
+  C:0A15H         LINE#         318
+  C:0A20H         LINE#         319
+  C:0A20H         LINE#         320
+  C:0A22H         LINE#         321
+  C:0A25H         LINE#         322
+  C:0A27H         LINE#         323
+  C:0A2CH         LINE#         324
+  C:0A31H         LINE#         325
+  C:0A36H         LINE#         326
+  C:0A39H         LINE#         327
+  C:0A39H         LINE#         328
+  C:0A39H         LINE#         329
+  C:0A58H         LINE#         333
+  C:0A5DH         LINE#         334
+  C:0A65H         LINE#         336
+  C:0A65H         LINE#         337
+  C:0A65H         LINE#         338
+  C:0A89H         LINE#         339
+  C:0A8BH         LINE#         340
+  C:0A8EH         LINE#         341
+  C:0A8EH         LINE#         342
+  C:0A8EH         LINE#         343
+  C:0AC1H         LINE#         344
+  C:0AC3H         LINE#         345
+  C:0AC6H         LINE#         346
+  C:0AC6H         LINE#         347
+  C:0AC6H         LINE#         348
+  C:0AC6H         LINE#         349
+  C:0AC6H         LINE#         350
+  C:0AC6H         LINE#         351
   -------         ENDPROC       CHANGESETTING
   -------         PROC          CHECKKEYSINVALID
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 18
+
+
   -------         DO            
   D:0003H         SYMBOL        old
   -------         ENDDO         
-  C:19F3H         LINE#         355
-  C:19F3H         LINE#         356
-  C:19F3H         LINE#         357
-  C:19F5H         LINE#         358
-  C:19FCH         LINE#         359
-  C:19FFH         LINE#         360
-  C:1A03H         LINE#         361
-  C:1A0BH         LINE#         362
+  C:1B68H         LINE#         355
+  C:1B68H         LINE#         356
+  C:1B68H         LINE#         357
+  C:1B6AH         LINE#         358
+  C:1B71H         LINE#         359
+  C:1B74H         LINE#         360
+  C:1B78H         LINE#         361
+  C:1B80H         LINE#         362
   -------         ENDPROC       CHECKKEYSINVALID
   -------         PROC          KEYSSYSTEM_1
-  C:1718H         LINE#         364
-  C:1718H         LINE#         365
-  C:1718H         LINE#         366
-  C:171BH         LINE#         367
-  C:171EH         LINE#         368
-  C:1722H         LINE#         369
-  C:1738H         LINE#         370
-  C:1738H         LINE#         371
-  C:1738H         LINE#         372
-  C:1738H         LINE#         373
-  C:1738H         LINE#         374
-  C:1738H         LINE#         375
-  C:1743H         LINE#         377
-  C:1746H         LINE#         378
-  C:1747H         LINE#         379
-  C:1747H         LINE#         380
-  C:1751H         LINE#         382
-  C:1753H         LINE#         383
-  C:1756H         LINE#         384
-  C:1756H         LINE#         385
-  C:1759H         LINE#         386
-  C:1759H         LINE#         387
+  C:18CAH         LINE#         364
+  C:18CAH         LINE#         365
+  C:18CAH         LINE#         366
+  C:18CDH         LINE#         367
+  C:18D0H         LINE#         368
+  C:18D4H         LINE#         369
+  C:18EAH         LINE#         370
+  C:18EAH         LINE#         371
+  C:18EAH         LINE#         372
+  C:18EAH         LINE#         373
+  C:18EAH         LINE#         374
+  C:18EAH         LINE#         375
+  C:18F5H         LINE#         377
+  C:18F8H         LINE#         378
+  C:18F9H         LINE#         379
+  C:18F9H         LINE#         380
+  C:1903H         LINE#         382
+  C:1905H         LINE#         383
+  C:1908H         LINE#         384
+  C:1908H         LINE#         385
+  C:190BH         LINE#         386
+  C:190BH         LINE#         387
   -------         ENDPROC       KEYSSYSTEM_1
   -------         PROC          KEYSSYSTEM_2
   -------         DO            
-  D:0008H         SYMBOL        opt
+  D:0000H         SYMBOL        opt
   -------         ENDDO         
-  C:13BBH         LINE#         389
-  C:13BBH         LINE#         390
-  C:13BBH         LINE#         392
-  C:13BEH         LINE#         393
-  C:13C1H         LINE#         394
-  C:13C5H         LINE#         395
-  C:13DBH         LINE#         396
-  C:13DBH         LINE#         397
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 21
+  C:14B1H         LINE#         389
+  C:14B1H         LINE#         390
+  C:14B1H         LINE#         392
+  C:14B4H         LINE#         393
+  C:14B7H         LINE#         394
+  C:14BBH         LINE#         395
+  C:14D1H         LINE#         396
+  C:14D1H         LINE#         397
+  C:14D1H         LINE#         398
+  C:14D1H         LINE#         399
+  C:14D1H         LINE#         400
+  C:14D1H         LINE#         401
+  C:14D6H         LINE#         403
+  C:14D9H         LINE#         404
+  C:14DAH         LINE#         405
+  C:14DAH         LINE#         406
+  C:14E4H         LINE#         409
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 19
 
 
-  C:13DBH         LINE#         398
-  C:13DBH         LINE#         399
-  C:13DBH         LINE#         400
-  C:13DBH         LINE#         401
-  C:13E0H         LINE#         403
-  C:13E3H         LINE#         404
-  C:13E4H         LINE#         405
-  C:13E4H         LINE#         406
-  C:13EEH         LINE#         409
-  C:1400H         LINE#         410
-  C:1400H         LINE#         411
-  C:1400H         LINE#         412
-  C:1402H         LINE#         413
-  C:1405H         LINE#         414
-  C:1408H         LINE#         415
-  C:140BH         LINE#         416
-  C:140EH         LINE#         418
-  C:140EH         LINE#         419
-  C:140EH         LINE#         420
-  C:1413H         LINE#         421
-  C:1416H         LINE#         422
-  C:1416H         LINE#         423
-  C:1418H         LINE#         424
-  C:1418H         LINE#         425
-  C:1418H         LINE#         426
-  C:141CH         LINE#         427
-  C:1421H         LINE#         429
-  C:1426H         LINE#         430
-  C:1428H         LINE#         431
-  C:1428H         LINE#         432
-  C:1428H         LINE#         433
-  C:142BH         LINE#         434
-  C:142BH         LINE#         435
-  C:142BH         LINE#         436
-  C:1430H         LINE#         437
-  C:1430H         LINE#         438
-  C:1433H         LINE#         439
-  C:1433H         LINE#         440
+  C:14F6H         LINE#         410
+  C:14F6H         LINE#         411
+  C:14F6H         LINE#         412
+  C:14F8H         LINE#         413
+  C:14FBH         LINE#         414
+  C:14FEH         LINE#         415
+  C:1501H         LINE#         416
+  C:1504H         LINE#         418
+  C:1504H         LINE#         419
+  C:1504H         LINE#         420
+  C:1509H         LINE#         421
+  C:150CH         LINE#         422
+  C:150CH         LINE#         423
+  C:150EH         LINE#         424
+  C:150EH         LINE#         425
+  C:150EH         LINE#         426
+  C:1512H         LINE#         427
+  C:1517H         LINE#         429
+  C:151CH         LINE#         430
+  C:151EH         LINE#         431
+  C:151EH         LINE#         432
+  C:151EH         LINE#         433
+  C:1521H         LINE#         434
+  C:1521H         LINE#         435
+  C:1521H         LINE#         436
+  C:1526H         LINE#         437
+  C:1526H         LINE#         438
+  C:1529H         LINE#         439
+  C:1529H         LINE#         440
   -------         ENDPROC       KEYSSYSTEM_2
   -------         PROC          KEYSSYSTEM_3
-  C:1225H         LINE#         442
-  C:1225H         LINE#         443
-  C:1225H         LINE#         444
-  C:1228H         LINE#         445
-  C:122BH         LINE#         446
-  C:122FH         LINE#         447
-  C:1234H         LINE#         448
-  C:1237H         LINE#         449
-  C:124DH         LINE#         450
-  C:124DH         LINE#         452
-  C:124DH         LINE#         453
-  C:124DH         LINE#         454
-  C:1253H         LINE#         455
-  C:1253H         LINE#         456
-  C:1257H         LINE#         457
-  C:1257H         LINE#         458
-  C:1259H         LINE#         459
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 22
+  C:129EH         LINE#         442
+  C:129EH         LINE#         443
+  C:129EH         LINE#         444
+  C:12A1H         LINE#         445
+  C:12A4H         LINE#         446
+  C:12A8H         LINE#         447
+  C:12ADH         LINE#         448
+  C:12B0H         LINE#         449
+  C:12C6H         LINE#         450
+  C:12C6H         LINE#         452
+  C:12C6H         LINE#         453
+  C:12C6H         LINE#         454
+  C:12CCH         LINE#         455
+  C:12CCH         LINE#         456
+  C:12D0H         LINE#         457
+  C:12D0H         LINE#         458
+  C:12D2H         LINE#         459
+  C:12DDH         LINE#         460
+  C:12DDH         LINE#         461
+  C:12ECH         LINE#         462
+  C:12F7H         LINE#         463
+  C:12FCH         LINE#         464
+  C:12FFH         LINE#         465
+  C:1302H         LINE#         466
+  C:1302H         LINE#         468
+  C:1302H         LINE#         469
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 20
 
 
-  C:1264H         LINE#         460
-  C:1264H         LINE#         461
-  C:1273H         LINE#         462
-  C:127EH         LINE#         463
-  C:1283H         LINE#         464
-  C:1286H         LINE#         465
-  C:1289H         LINE#         466
-  C:1289H         LINE#         468
-  C:1289H         LINE#         469
-  C:128CH         LINE#         470
-  C:128CH         LINE#         472
-  C:128CH         LINE#         473
-  C:128CH         LINE#         474
-  C:128FH         LINE#         475
-  C:1291H         LINE#         476
-  C:1291H         LINE#         477
-  C:1296H         LINE#         478
-  C:1299H         LINE#         480
-  C:12A3H         LINE#         481
-  C:12A3H         LINE#         482
-  C:12A3H         LINE#         483
-  C:12A6H         LINE#         484
-  C:12A9H         LINE#         485
-  C:12A9H         LINE#         486
-  C:12A9H         LINE#         487
-  C:12ACH         LINE#         488
-  C:12AFH         LINE#         489
-  C:12AFH         LINE#         490
-  C:12AFH         LINE#         491
-  C:12AFH         LINE#         492
-  C:12B2H         LINE#         493
-  C:12B2H         LINE#         494
-  C:12B4H         LINE#         495
+  C:1305H         LINE#         470
+  C:1305H         LINE#         472
+  C:1305H         LINE#         473
+  C:1305H         LINE#         474
+  C:1308H         LINE#         475
+  C:130AH         LINE#         476
+  C:130AH         LINE#         477
+  C:130FH         LINE#         478
+  C:1312H         LINE#         480
+  C:131CH         LINE#         481
+  C:131CH         LINE#         482
+  C:131CH         LINE#         483
+  C:131FH         LINE#         484
+  C:1322H         LINE#         485
+  C:1322H         LINE#         486
+  C:1322H         LINE#         487
+  C:1325H         LINE#         488
+  C:1328H         LINE#         489
+  C:1328H         LINE#         490
+  C:1328H         LINE#         491
+  C:1328H         LINE#         492
+  C:132BH         LINE#         493
+  C:132BH         LINE#         494
+  C:132DH         LINE#         495
   -------         ENDPROC       KEYSSYSTEM_3
   -------         PROC          ABOVELIMITCLOCK
-  C:187FH         LINE#         497
-  C:187FH         LINE#         498
-  C:187FH         LINE#         499
-  C:1886H         LINE#         500
-  C:1886H         LINE#         501
-  C:1889H         LINE#         502
-  C:1890H         LINE#         503
-  C:1890H         LINE#         504
-  C:1893H         LINE#         505
-  C:189AH         LINE#         506
-  C:189AH         LINE#         507
-  C:189DH         LINE#         508
-  C:18A4H         LINE#         509
-  C:18A4H         LINE#         510
-  C:18A7H         LINE#         511
-  C:18A7H         LINE#         512
-  C:18A7H         LINE#         513
-  C:18A7H         LINE#         514
-  C:18A7H         LINE#         515
+  C:19F4H         LINE#         497
+  C:19F4H         LINE#         498
+  C:19F4H         LINE#         499
+  C:19FBH         LINE#         500
+  C:19FBH         LINE#         501
+  C:19FEH         LINE#         502
+  C:1A05H         LINE#         503
+  C:1A05H         LINE#         504
+  C:1A08H         LINE#         505
+  C:1A0FH         LINE#         506
+  C:1A0FH         LINE#         507
+  C:1A12H         LINE#         508
+  C:1A19H         LINE#         509
+  C:1A19H         LINE#         510
+  C:1A1CH         LINE#         511
+  C:1A1CH         LINE#         512
+  C:1A1CH         LINE#         513
+  C:1A1CH         LINE#         514
+  C:1A1CH         LINE#         515
   -------         ENDPROC       ABOVELIMITCLOCK
   -------         PROC          BELOWLIMITCLOCK
-  C:18A8H         LINE#         517
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 23
+  C:1A1DH         LINE#         517
+  C:1A1DH         LINE#         518
+  C:1A1DH         LINE#         519
+  C:1A24H         LINE#         520
+  C:1A24H         LINE#         521
+  C:1A27H         LINE#         522
+  C:1A2EH         LINE#         523
+  C:1A2EH         LINE#         524
+  C:1A31H         LINE#         525
+  C:1A38H         LINE#         526
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 21
 
 
-  C:18A8H         LINE#         518
-  C:18A8H         LINE#         519
-  C:18AFH         LINE#         520
-  C:18AFH         LINE#         521
-  C:18B2H         LINE#         522
-  C:18B9H         LINE#         523
-  C:18B9H         LINE#         524
-  C:18BCH         LINE#         525
-  C:18C3H         LINE#         526
-  C:18C3H         LINE#         527
-  C:18C6H         LINE#         528
-  C:18CDH         LINE#         529
-  C:18CDH         LINE#         530
-  C:18D0H         LINE#         531
-  C:18D0H         LINE#         532
-  C:18D0H         LINE#         533
-  C:18D0H         LINE#         534
-  C:18D0H         LINE#         535
+  C:1A38H         LINE#         527
+  C:1A3BH         LINE#         528
+  C:1A42H         LINE#         529
+  C:1A42H         LINE#         530
+  C:1A45H         LINE#         531
+  C:1A45H         LINE#         532
+  C:1A45H         LINE#         533
+  C:1A45H         LINE#         534
+  C:1A45H         LINE#         535
   -------         ENDPROC       BELOWLIMITCLOCK
   -------         PROC          UPDATEOVERLIMITTIMER
-  B:0021H.1       SYMBOL        which
-  C:1434H         LINE#         537
-  C:1434H         LINE#         538
-  C:1434H         LINE#         539
-  C:143DH         LINE#         540
-  C:143DH         LINE#         541
-  C:1445H         LINE#         542
-  C:1450H         LINE#         543
-  C:1452H         LINE#         545
-  C:1452H         LINE#         546
-  C:145AH         LINE#         547
-  C:1468H         LINE#         548
-  C:1468H         LINE#         549
-  C:146BH         LINE#         550
-  C:1474H         LINE#         551
-  C:147DH         LINE#         552
-  C:1486H         LINE#         553
-  C:1489H         LINE#         554
-  C:148DH         LINE#         556
-  C:149EH         LINE#         557
-  C:14A1H         LINE#         558
+  B:0021H.5       SYMBOL        which
+  C:152AH         LINE#         537
+  C:152AH         LINE#         538
+  C:152AH         LINE#         539
+  C:1533H         LINE#         540
+  C:1533H         LINE#         541
+  C:153BH         LINE#         542
+  C:1546H         LINE#         543
+  C:1548H         LINE#         545
+  C:1548H         LINE#         546
+  C:1550H         LINE#         547
+  C:155EH         LINE#         548
+  C:155EH         LINE#         549
+  C:1561H         LINE#         550
+  C:156AH         LINE#         551
+  C:1573H         LINE#         552
+  C:157CH         LINE#         553
+  C:157FH         LINE#         554
+  C:1583H         LINE#         556
+  C:1594H         LINE#         557
+  C:1597H         LINE#         558
   -------         ENDPROC       UPDATEOVERLIMITTIMER
   -------         PROC          UPDATEEXTREMES
-  B:0021H.1       SYMBOL        which
-  C:17C9H         LINE#         561
-  C:17C9H         LINE#         562
-  C:17C9H         LINE#         563
-  C:17EDH         LINE#         564
-  C:17F0H         LINE#         565
+  B:0021H.6       SYMBOL        which
+  C:193EH         LINE#         561
+  C:193EH         LINE#         562
+  C:193EH         LINE#         563
+  C:1962H         LINE#         564
+  C:1965H         LINE#         565
   -------         ENDPROC       UPDATEEXTREMES
   -------         ENDMOD        ULTIMATE
 
   -------         MODULE        UTILITY
   C:0000H         SYMBOL        _ICE_DUMMY_
-  C:0F81H         PUBLIC        _Int8ToString
-  C:05BCH         PUBLIC        _FloatToString
+  C:0ECAH         PUBLIC        _Int8ToString
+  C:05CEH         PUBLIC        _FloatToString
   -------         PROC          _FLOATTOSTRING
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 24
-
-
   D:0008H         SYMBOL        num
   D:000CH         SYMBOL        str
   D:000FH         SYMBOL        length
@@ -1391,100 +1259,103 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   D:0012H         SYMBOL        mid
   D:0013H         SYMBOL        intn
   D:0015H         SYMBOL        decn
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 22
+
+
   D:0017H         SYMBOL        dec
   D:001BH         SYMBOL        std
   -------         ENDDO         
-  C:05BCH         LINE#         22
-  C:05CAH         LINE#         23
-  C:05CAH         LINE#         29
-  C:05D4H         LINE#         32
-  C:05E0H         LINE#         34
-  C:05E7H         LINE#         35
-  C:05E7H         LINE#         36
-  C:061BH         LINE#         37
-  C:061BH         LINE#         38
-  C:0634H         LINE#         39
-  C:0653H         LINE#         40
-  C:0655H         LINE#         42
-  C:065DH         LINE#         43
-  C:0672H         LINE#         44
-  C:0674H         LINE#         46
-  C:0677H         LINE#         49
-  C:067AH         LINE#         50
-  C:0681H         LINE#         51
-  C:069EH         LINE#         54
-  C:06C0H         LINE#         55
-  C:06C0H         LINE#         56
-  C:06CBH         LINE#         57
-  C:06DBH         LINE#         58
-  C:06E7H         LINE#         59
-  C:06E9H         LINE#         61
-  C:06E9H         LINE#         62
-  C:06F4H         LINE#         63
-  C:06FBH         LINE#         64
-  C:071EH         LINE#         65
-  C:071EH         LINE#         68
-  C:0735H         LINE#         69
-  C:0735H         LINE#         70
-  C:074FH         LINE#         71
-  C:0757H         LINE#         72
-  C:076FH         LINE#         73
-  C:07A2H         LINE#         74
-  C:07A7H         LINE#         76
-  C:07B5H         LINE#         77
-  C:07B5H         LINE#         78
-  C:07D8H         LINE#         79
-  C:07E7H         LINE#         80
-  C:07EDH         LINE#         81
-  C:07EDH         LINE#         82
-  C:07EFH         LINE#         83
-  C:07F1H         LINE#         84
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 25
-
-
-  C:07F1H         LINE#         85
-  C:07F5H         LINE#         86
-  C:083FH         LINE#         87
-  C:084BH         LINE#         88
-  C:0862H         LINE#         89
+  C:05CEH         LINE#         22
+  C:05DCH         LINE#         23
+  C:05DCH         LINE#         29
+  C:05E6H         LINE#         32
+  C:05F2H         LINE#         34
+  C:05F9H         LINE#         35
+  C:05F9H         LINE#         36
+  C:062DH         LINE#         37
+  C:062DH         LINE#         38
+  C:0646H         LINE#         39
+  C:0665H         LINE#         40
+  C:0667H         LINE#         42
+  C:066FH         LINE#         43
+  C:0684H         LINE#         44
+  C:0686H         LINE#         46
+  C:0689H         LINE#         49
+  C:068CH         LINE#         50
+  C:0693H         LINE#         51
+  C:06B0H         LINE#         54
+  C:06D2H         LINE#         55
+  C:06D2H         LINE#         56
+  C:06DDH         LINE#         57
+  C:06EDH         LINE#         58
+  C:06F9H         LINE#         59
+  C:06FBH         LINE#         61
+  C:06FBH         LINE#         62
+  C:0706H         LINE#         63
+  C:070DH         LINE#         64
+  C:0730H         LINE#         65
+  C:0730H         LINE#         68
+  C:0747H         LINE#         69
+  C:0747H         LINE#         70
+  C:0761H         LINE#         71
+  C:0769H         LINE#         72
+  C:0781H         LINE#         73
+  C:07B4H         LINE#         74
+  C:07B9H         LINE#         76
+  C:07C7H         LINE#         77
+  C:07C7H         LINE#         78
+  C:07EAH         LINE#         79
+  C:07F9H         LINE#         80
+  C:07FFH         LINE#         81
+  C:07FFH         LINE#         82
+  C:0801H         LINE#         83
+  C:0803H         LINE#         84
+  C:0803H         LINE#         85
+  C:0807H         LINE#         86
+  C:0851H         LINE#         87
+  C:085DH         LINE#         88
+  C:0874H         LINE#         89
   -------         ENDPROC       _FLOATTOSTRING
   -------         PROC          _INT8TOSTRING
   D:0007H         SYMBOL        num
-  D:000FH         SYMBOL        str
-  D:0012H         SYMBOL        length
+  D:0001H         SYMBOL        str
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 23
+
+
+  D:0004H         SYMBOL        length
   -------         DO            
-  B:0021H.2       SYMBOL        neg
+  B:0021H.7       SYMBOL        neg
   -------         ENDDO         
-  C:0F81H         LINE#         91
-  C:0F87H         LINE#         92
-  C:0F87H         LINE#         96
-  C:0F91H         LINE#         99
-  C:0F9EH         LINE#         100
-  C:0FA5H         LINE#         102
-  C:0FA8H         LINE#         103
-  C:0FA8H         LINE#         104
-  C:0FB1H         LINE#         106
-  C:0FBCH         LINE#         107
-  C:0FBFH         LINE#         108
-  C:0FC0H         LINE#         109
-  C:0FC0H         LINE#         110
-  C:0FC3H         LINE#         111
-  C:0FC7H         LINE#         112
-  C:0FC7H         LINE#         113
-  C:0FCFH         LINE#         114
-  C:0FD1H         LINE#         115
-  C:0FD1H         LINE#         116
-  C:0FEDH         LINE#         117
-  C:0FEFH         LINE#         118
-  C:0FF2H         LINE#         119
-  C:0FF2H         LINE#         120
-  C:0FFEH         LINE#         121
-  C:1002H         LINE#         122
-  C:100DH         LINE#         123
-  C:101BH         LINE#         124
-  C:101DH         LINE#         125
-  C:1021H         LINE#         126
-  C:1036H         LINE#         127
+  C:0ECAH         LINE#         91
+  C:0ED0H         LINE#         92
+  C:0ED0H         LINE#         96
+  C:0EDAH         LINE#         99
+  C:0EE7H         LINE#         100
+  C:0EEEH         LINE#         102
+  C:0EF1H         LINE#         103
+  C:0EF1H         LINE#         104
+  C:0EFAH         LINE#         106
+  C:0F05H         LINE#         107
+  C:0F08H         LINE#         108
+  C:0F09H         LINE#         109
+  C:0F09H         LINE#         110
+  C:0F0CH         LINE#         111
+  C:0F10H         LINE#         112
+  C:0F10H         LINE#         113
+  C:0F18H         LINE#         114
+  C:0F1AH         LINE#         115
+  C:0F1AH         LINE#         116
+  C:0F36H         LINE#         117
+  C:0F38H         LINE#         118
+  C:0F3BH         LINE#         119
+  C:0F3BH         LINE#         120
+  C:0F47H         LINE#         121
+  C:0F4BH         LINE#         122
+  C:0F56H         LINE#         123
+  C:0F64H         LINE#         124
+  C:0F66H         LINE#         125
+  C:0F6AH         LINE#         126
+  C:0F7FH         LINE#         127
   -------         ENDPROC       _INT8TOSTRING
   -------         ENDMOD        UTILITY
 
@@ -1493,16 +1364,13 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   D:0080H         PUBLIC        P0
   D:0090H         PUBLIC        P1
   D:00B0H         PUBLIC        P3
-  C:1A51H         PUBLIC        LCD1602_CheckBusy
-  C:1B05H         PUBLIC        _LCD1602_WriteData
+  C:1BC6H         PUBLIC        LCD1602_CheckBusy
+  C:1C7AH         PUBLIC        _LCD1602_WriteData
   D:00A8H         PUBLIC        IE
   B:0090H.2       PUBLIC        EN
   D:00B8H         PUBLIC        IP
-  C:1AF2H         PUBLIC        _LCD1602_WriteCmd
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 26
-
-
-  C:1A65H         PUBLIC        LCD1602_WriteByte
+  C:1C67H         PUBLIC        _LCD1602_WriteCmd
+  C:1BDAH         PUBLIC        LCD1602_WriteByte
   B:0090H.0       PUBLIC        RS
   B:0090H.1       PUBLIC        RW
   D:0098H         PUBLIC        SCON
@@ -1511,74 +1379,77 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   D:00D0H         PUBLIC        PSW
   -------         PROC          LCD1602_CHECKBUSY
   -------         DO            
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 24
+
+
   D:0007H         SYMBOL        busy
   -------         ENDDO         
-  C:1A51H         LINE#         40
-  C:1A51H         LINE#         41
-  C:1A51H         LINE#         43
-  C:1A54H         LINE#         45
-  C:1A54H         LINE#         46
-  C:1A54H         LINE#         47
-  C:1A56H         LINE#         48
-  C:1A58H         LINE#         49
-  C:1A5AH         LINE#         50
-  C:1A5CH         LINE#         51
-  C:1A5EH         LINE#         52
-  C:1A62H         LINE#         53
-  C:1A64H         LINE#         54
+  C:1BC6H         LINE#         40
+  C:1BC6H         LINE#         41
+  C:1BC6H         LINE#         43
+  C:1BC9H         LINE#         45
+  C:1BC9H         LINE#         46
+  C:1BC9H         LINE#         47
+  C:1BCBH         LINE#         48
+  C:1BCDH         LINE#         49
+  C:1BCFH         LINE#         50
+  C:1BD1H         LINE#         51
+  C:1BD3H         LINE#         52
+  C:1BD7H         LINE#         53
+  C:1BD9H         LINE#         54
   -------         ENDPROC       LCD1602_CHECKBUSY
   -------         PROC          _LCD1602_WRITECMD
   D:0007H         SYMBOL        cmd
-  C:1AF2H         LINE#         58
-  C:1AF2H         LINE#         59
-  C:1AF2H         LINE#         60
-  C:1AF5H         LINE#         62
-  C:1AFCH         LINE#         63
+  C:1C67H         LINE#         58
+  C:1C67H         LINE#         59
+  C:1C67H         LINE#         60
+  C:1C6AH         LINE#         62
+  C:1C71H         LINE#         63
   -------         ENDPROC       _LCD1602_WRITECMD
   -------         PROC          _LCD1602_WRITEDATA
   D:0007H         SYMBOL        dat
-  C:1B05H         LINE#         65
-  C:1B05H         LINE#         66
-  C:1B05H         LINE#         67
+  C:1C7AH         LINE#         65
+  C:1C7AH         LINE#         66
+  C:1C7AH         LINE#         67
   -------         ENDPROC       _LCD1602_WRITEDATA
   -------         PROC          LCD1602_WRITEBYTE
-  B:0021H.2       SYMBOL        rs
-  D:0011H         SYMBOL        byte
-  C:1A65H         LINE#         89
-  C:1A65H         LINE#         90
-  C:1A65H         LINE#         91
-  C:1A68H         LINE#         92
-  C:1A6AH         LINE#         93
-  C:1A6EH         LINE#         94
-  C:1A71H         LINE#         95
-  C:1A73H         LINE#         96
-  C:1A74H         LINE#         97
-  C:1A76H         LINE#         98
+  B:0022H.0       SYMBOL        rs
+  D:0000H         SYMBOL        byte
+  C:1BDAH         LINE#         89
+  C:1BDAH         LINE#         90
+  C:1BDAH         LINE#         91
+  C:1BDDH         LINE#         92
+  C:1BDFH         LINE#         93
+  C:1BE3H         LINE#         94
+  C:1BE6H         LINE#         95
+  C:1BE8H         LINE#         96
+  C:1BE9H         LINE#         97
+  C:1BEBH         LINE#         98
   -------         ENDPROC       LCD1602_WRITEBYTE
   -------         ENDMOD        LCD1602
 
   -------         MODULE        DS18B20
   C:0000H         SYMBOL        _ICE_DUMMY_
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 27
-
-
-  C:1940H         PUBLIC        DS18B20_InitCheck
+  C:1AB5H         PUBLIC        DS18B20_InitCheck
   D:0090H         PUBLIC        P1
   D:00B0H         PUBLIC        P3
   D:00A8H         PUBLIC        IE
   B:0090H.5       PUBLIC        DQ
-  C:1A3BH         PUBLIC        DS18B20_Save
+  C:1BB0H         PUBLIC        DS18B20_Save
   D:00B8H         PUBLIC        IP
-  C:185EH         PUBLIC        DS18B20_ReadByte
-  C:199EH         PUBLIC        DS18B20_ReadTemp
-  C:16CEH         PUBLIC        _DS18B20_Get
-  C:19BCH         PUBLIC        _DS18B20_WriteByte
-  C:1828H         PUBLIC        _DS18B20_Set
+  C:19D3H         PUBLIC        DS18B20_ReadByte
+  C:1B13H         PUBLIC        DS18B20_ReadTemp
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 25
+
+
+  C:1839H         PUBLIC        _DS18B20_Get
+  C:1B31H         PUBLIC        _DS18B20_WriteByte
+  C:199DH         PUBLIC        _DS18B20_Set
   D:0098H         PUBLIC        SCON
   D:0088H         PUBLIC        TCON
   C:000EH         PUBLIC        _DS18B20_Delay10us
   D:00C8H         PUBLIC        T2CON
-  C:1A77H         PUBLIC        DS18B20_Convert
+  C:1BECH         PUBLIC        DS18B20_Convert
   D:00D0H         PUBLIC        PSW
   -------         PROC          _DS18B20_DELAY10US
   D:0007H         SYMBOL        t
@@ -1599,19 +1470,19 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   -------         DO            
   D:0005H         SYMBOL        x
   -------         ENDDO         
-  C:1940H         LINE#         53
-  C:1940H         LINE#         54
-  C:1940H         LINE#         55
-  C:1942H         LINE#         56
-  C:1944H         LINE#         57
-  C:1946H         LINE#         58
-  C:194BH         LINE#         59
-  C:194DH         LINE#         60
-  C:1952H         LINE#         61
-  C:1957H         LINE#         62
-  C:1959H         LINE#         63
-  C:195EH         LINE#         64
-  C:1960H         LINE#         65
+  C:1AB5H         LINE#         53
+  C:1AB5H         LINE#         54
+  C:1AB5H         LINE#         55
+  C:1AB7H         LINE#         56
+  C:1AB9H         LINE#         57
+  C:1ABBH         LINE#         58
+  C:1AC0H         LINE#         59
+  C:1AC2H         LINE#         60
+  C:1AC7H         LINE#         61
+  C:1ACCH         LINE#         62
+  C:1ACEH         LINE#         63
+  C:1AD3H         LINE#         64
+  C:1AD5H         LINE#         65
   -------         ENDPROC       DS18B20_INITCHECK
   -------         PROC          L?0029
   -------         ENDPROC       L?0029
@@ -1619,50 +1490,50 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   -------         DO            
   D:0005H         SYMBOL        i
   D:0004H         SYMBOL        dat
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 28
-
-
   -------         ENDDO         
-  C:185EH         LINE#         67
-  C:185EH         LINE#         68
-  C:185EH         LINE#         69
-  C:1862H         LINE#         71
-  C:1862H         LINE#         72
-  C:1864H         LINE#         73
-  C:1869H         LINE#         74
-  C:186BH         LINE#         75
-  C:186FH         LINE#         76
-  C:1872H         LINE#         77
-  C:1875H         LINE#         78
-  C:187AH         LINE#         79
-  C:187CH         LINE#         80
-  C:187EH         LINE#         81
+  C:19D3H         LINE#         67
+  C:19D3H         LINE#         68
+  C:19D3H         LINE#         69
+  C:19D7H         LINE#         71
+  C:19D7H         LINE#         72
+  C:19D9H         LINE#         73
+  C:19DEH         LINE#         74
+  C:19E0H         LINE#         75
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 26
+
+
+  C:19E4H         LINE#         76
+  C:19E7H         LINE#         77
+  C:19EAH         LINE#         78
+  C:19EFH         LINE#         79
+  C:19F1H         LINE#         80
+  C:19F3H         LINE#         81
   -------         ENDPROC       DS18B20_READBYTE
   -------         PROC          _DS18B20_WRITEBYTE
   D:0005H         SYMBOL        dat
   -------         DO            
   D:0003H         SYMBOL        i
   -------         ENDDO         
-  C:19BCH         LINE#         83
-  C:19BEH         LINE#         84
-  C:19BEH         LINE#         85
-  C:19C0H         LINE#         87
-  C:19C0H         LINE#         88
-  C:19C2H         LINE#         89
-  C:19C7H         LINE#         90
-  C:19CBH         LINE#         91
-  C:19D0H         LINE#         92
-  C:19D2H         LINE#         93
-  C:19D6H         LINE#         94
-  C:19D8H         LINE#         95
+  C:1B31H         LINE#         83
+  C:1B33H         LINE#         84
+  C:1B33H         LINE#         85
+  C:1B35H         LINE#         87
+  C:1B35H         LINE#         88
+  C:1B37H         LINE#         89
+  C:1B3CH         LINE#         90
+  C:1B40H         LINE#         91
+  C:1B45H         LINE#         92
+  C:1B47H         LINE#         93
+  C:1B4BH         LINE#         94
+  C:1B4DH         LINE#         95
   -------         ENDPROC       _DS18B20_WRITEBYTE
   -------         PROC          DS18B20_CONVERT
-  C:1A77H         LINE#         99
-  C:1A77H         LINE#         100
-  C:1A77H         LINE#         101
-  C:1A7DH         LINE#         103
-  C:1A82H         LINE#         104
-  C:1A87H         LINE#         105
+  C:1BECH         LINE#         99
+  C:1BECH         LINE#         100
+  C:1BECH         LINE#         101
+  C:1BF2H         LINE#         103
+  C:1BF7H         LINE#         104
+  C:1BFCH         LINE#         105
   -------         ENDPROC       DS18B20_CONVERT
   -------         PROC          DS18B20_READTEMP
   -------         DO            
@@ -1670,62 +1541,62 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   D:0004H         SYMBOL        high
   D:0002H         SYMBOL        temp
   -------         ENDDO         
-  C:199EH         LINE#         107
-  C:199EH         LINE#         108
-  C:199EH         LINE#         109
-  C:19A1H         LINE#         110
-  C:19A3H         LINE#         111
-  C:19A9H         LINE#         112
-  C:19ADH         LINE#         113
-  C:19ADH         LINE#         114
-  C:19ADH         LINE#         115
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 29
-
-
-  C:19B2H         LINE#         116
-  C:19B5H         LINE#         117
-  C:19B8H         LINE#         118
-  C:19BBH         LINE#         119
+  C:1B13H         LINE#         107
+  C:1B13H         LINE#         108
+  C:1B13H         LINE#         109
+  C:1B16H         LINE#         110
+  C:1B18H         LINE#         111
+  C:1B1EH         LINE#         112
+  C:1B22H         LINE#         113
+  C:1B22H         LINE#         114
+  C:1B22H         LINE#         115
+  C:1B27H         LINE#         116
+  C:1B2AH         LINE#         117
+  C:1B2DH         LINE#         118
+  C:1B30H         LINE#         119
   -------         ENDPROC       DS18B20_READTEMP
   -------         PROC          _DS18B20_SET
   D:0004H         SYMBOL        upperLimit
   D:0001H         SYMBOL        lowerLimit
   D:0002H         SYMBOL        resolution
-  C:1828H         LINE#         123
-  C:182EH         LINE#         124
-  C:182EH         LINE#         125
-  C:1834H         LINE#         127
-  C:1839H         LINE#         128
-  C:183EH         LINE#         129
-  C:1843H         LINE#         130
-  C:1848H         LINE#         131
-  C:1853H         LINE#         132
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 27
+
+
+  C:199DH         LINE#         123
+  C:19A3H         LINE#         124
+  C:19A3H         LINE#         125
+  C:19A9H         LINE#         127
+  C:19AEH         LINE#         128
+  C:19B3H         LINE#         129
+  C:19B8H         LINE#         130
+  C:19BDH         LINE#         131
+  C:19C8H         LINE#         132
   -------         ENDPROC       _DS18B20_SET
   -------         PROC          _DS18B20_GET
-  D:0008H         SYMBOL        upperLimit
-  D:000BH         SYMBOL        lowerLimit
-  D:000EH         SYMBOL        resolution
-  C:16CEH         LINE#         134
-  C:16D4H         LINE#         135
-  C:16D4H         LINE#         136
-  C:16DAH         LINE#         138
-  C:16DAH         LINE#         139
-  C:16DAH         LINE#         140
-  C:16DDH         LINE#         141
-  C:16E0H         LINE#         142
-  C:16EDH         LINE#         143
-  C:16FAH         LINE#         144
-  C:1707H         LINE#         145
-  C:1717H         LINE#         146
+  D:004FH         SYMBOL        upperLimit
+  D:0052H         SYMBOL        lowerLimit
+  D:0055H         SYMBOL        resolution
+  C:1839H         LINE#         134
+  C:183FH         LINE#         135
+  C:183FH         LINE#         136
+  C:1845H         LINE#         138
+  C:1845H         LINE#         139
+  C:1845H         LINE#         140
+  C:1848H         LINE#         141
+  C:184BH         LINE#         142
+  C:1858H         LINE#         143
+  C:1865H         LINE#         144
+  C:1872H         LINE#         145
+  C:1882H         LINE#         146
   -------         ENDPROC       _DS18B20_GET
   -------         PROC          DS18B20_SAVE
-  C:1A3BH         LINE#         148
-  C:1A3BH         LINE#         149
-  C:1A3BH         LINE#         150
-  C:1A41H         LINE#         152
-  C:1A46H         LINE#         153
-  C:1A4BH         LINE#         154
-  C:1A50H         LINE#         156
+  C:1BB0H         LINE#         148
+  C:1BB0H         LINE#         149
+  C:1BB0H         LINE#         150
+  C:1BB6H         LINE#         152
+  C:1BBBH         LINE#         153
+  C:1BC0H         LINE#         154
+  C:1BC5H         LINE#         156
   -------         ENDPROC       DS18B20_SAVE
   -------         ENDMOD        DS18B20
 
@@ -1734,290 +1605,290 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   D:0090H         PUBLIC        P1
   D:00B0H         PUBLIC        P3
   D:00A8H         PUBLIC        IE
-  C:1AB5H         PUBLIC        I2C_CheckAck
+  C:1C2AH         PUBLIC        I2C_CheckAck
   D:00B8H         PUBLIC        IP
-  C:1AA7H         PUBLIC        I2C_Ack
-  C:1A88H         PUBLIC        I2C_Start
+  C:1C1CH         PUBLIC        I2C_Ack
+  C:1BFDH         PUBLIC        I2C_Start
   D:0098H         PUBLIC        SCON
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 30
-
-
-  C:1ACFH         PUBLIC        I2C_Init
+  C:1C44H         PUBLIC        I2C_Init
   D:0088H         PUBLIC        TCON
-  C:1B04H         PUBLIC        I2C_Wait
-  C:1A0CH         PUBLIC        _I2C_SendByte
-  C:1A99H         PUBLIC        I2C_Stop
-  C:19D9H         PUBLIC        I2C_RecByte
+  C:1C79H         PUBLIC        I2C_Wait
+  C:1B81H         PUBLIC        _I2C_SendByte
+  C:1C0EH         PUBLIC        I2C_Stop
+  C:1B4EH         PUBLIC        I2C_RecByte
   B:0090H.7       PUBLIC        SDA
   B:0090H.6       PUBLIC        SCL
   D:00C8H         PUBLIC        T2CON
-  C:1ADBH         PUBLIC        I2C_NoAck
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 28
+
+
+  C:1C50H         PUBLIC        I2C_NoAck
   D:00D0H         PUBLIC        PSW
-  C:1AFFH         SYMBOL        L?0017
+  C:1C74H         SYMBOL        L?0017
   -------         PROC          L?0016
   -------         ENDPROC       L?0016
-  C:1AFFH         SYMBOL        L?0017
+  C:1C74H         SYMBOL        L?0017
   -------         PROC          I2C_WAIT
-  C:1B04H         LINE#         28
-  C:1B04H         LINE#         29
-  C:1B04H         LINE#         30
+  C:1C79H         LINE#         28
+  C:1C79H         LINE#         29
+  C:1C79H         LINE#         30
   -------         ENDPROC       I2C_WAIT
   -------         PROC          I2C_CHECKACK
   -------         DO            
   B:0021H.2       SYMBOL        flg
   -------         ENDDO         
-  C:1AB5H         LINE#         32
-  C:1AB5H         LINE#         33
-  C:1AB5H         LINE#         35
-  C:1AB5H         LINE#         36
-  C:1AB5H         LINE#         37
-  C:1AB5H         LINE#         38
-  C:1AB8H         LINE#         39
-  C:1ABCH         LINE#         40
-  C:1ABEH         LINE#         41
-  C:1AC1H         LINE#         42
+  C:1C2AH         LINE#         32
+  C:1C2AH         LINE#         33
+  C:1C2AH         LINE#         35
+  C:1C2AH         LINE#         36
+  C:1C2AH         LINE#         37
+  C:1C2AH         LINE#         38
+  C:1C2DH         LINE#         39
+  C:1C31H         LINE#         40
+  C:1C33H         LINE#         41
+  C:1C36H         LINE#         42
   -------         ENDPROC       I2C_CHECKACK
   -------         PROC          I2C_START
-  C:1A88H         LINE#         44
-  C:1A88H         LINE#         45
-  C:1A88H         LINE#         46
-  C:1A8AH         LINE#         47
-  C:1A8CH         LINE#         48
-  C:1A8DH         LINE#         49
-  C:1A90H         LINE#         50
-  C:1A92H         LINE#         51
-  C:1A93H         LINE#         52
-  C:1A96H         LINE#         53
-  C:1A98H         LINE#         54
+  C:1BFDH         LINE#         44
+  C:1BFDH         LINE#         45
+  C:1BFDH         LINE#         46
+  C:1BFFH         LINE#         47
+  C:1C01H         LINE#         48
+  C:1C02H         LINE#         49
+  C:1C05H         LINE#         50
+  C:1C07H         LINE#         51
+  C:1C08H         LINE#         52
+  C:1C0BH         LINE#         53
+  C:1C0DH         LINE#         54
   -------         ENDPROC       I2C_START
   -------         PROC          I2C_STOP
-  C:1A99H         LINE#         56
-  C:1A99H         LINE#         57
-  C:1A99H         LINE#         58
-  C:1A9BH         LINE#         59
-  C:1A9DH         LINE#         60
-  C:1A9EH         LINE#         61
-  C:1AA1H         LINE#         62
-  C:1AA3H         LINE#         63
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 31
-
-
-  C:1AA4H         LINE#         64
+  C:1C0EH         LINE#         56
+  C:1C0EH         LINE#         57
+  C:1C0EH         LINE#         58
+  C:1C10H         LINE#         59
+  C:1C12H         LINE#         60
+  C:1C13H         LINE#         61
+  C:1C16H         LINE#         62
+  C:1C18H         LINE#         63
+  C:1C19H         LINE#         64
   -------         ENDPROC       I2C_STOP
   -------         PROC          I2C_INIT
-  C:1ACFH         LINE#         67
-  C:1ACFH         LINE#         68
-  C:1ACFH         LINE#         69
-  C:1AD1H         LINE#         70
-  C:1AD2H         LINE#         71
-  C:1AD4H         LINE#         72
-  C:1AD5H         LINE#         73
-  C:1AD8H         LINE#         74
+  C:1C44H         LINE#         67
+  C:1C44H         LINE#         68
+  C:1C44H         LINE#         69
+  C:1C46H         LINE#         70
+  C:1C47H         LINE#         71
+  C:1C49H         LINE#         72
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 29
+
+
+  C:1C4AH         LINE#         73
+  C:1C4DH         LINE#         74
   -------         ENDPROC       I2C_INIT
   -------         PROC          I2C_ACK
-  C:1AA7H         LINE#         77
-  C:1AA7H         LINE#         78
-  C:1AA7H         LINE#         79
-  C:1AA9H         LINE#         80
-  C:1AA9H         LINE#         81
-  C:1AA9H         LINE#         82
-  C:1AACH         LINE#         83
-  C:1AAEH         LINE#         84
-  C:1AB1H         LINE#         85
-  C:1AB3H         LINE#         86
-  C:1AB4H         LINE#         87
+  C:1C1CH         LINE#         77
+  C:1C1CH         LINE#         78
+  C:1C1CH         LINE#         79
+  C:1C1EH         LINE#         80
+  C:1C1EH         LINE#         81
+  C:1C1EH         LINE#         82
+  C:1C21H         LINE#         83
+  C:1C23H         LINE#         84
+  C:1C26H         LINE#         85
+  C:1C28H         LINE#         86
+  C:1C29H         LINE#         87
   -------         ENDPROC       I2C_ACK
   -------         PROC          I2C_NOACK
-  C:1ADBH         LINE#         89
-  C:1ADBH         LINE#         90
-  C:1ADBH         LINE#         91
-  C:1ADBH         LINE#         92
-  C:1ADBH         LINE#         93
-  C:1ADBH         LINE#         94
-  C:1ADEH         LINE#         95
-  C:1AE0H         LINE#         96
-  C:1AE3H         LINE#         97
-  C:1AE5H         LINE#         98
-  C:1AE6H         LINE#         99
+  C:1C50H         LINE#         89
+  C:1C50H         LINE#         90
+  C:1C50H         LINE#         91
+  C:1C50H         LINE#         92
+  C:1C50H         LINE#         93
+  C:1C50H         LINE#         94
+  C:1C53H         LINE#         95
+  C:1C55H         LINE#         96
+  C:1C58H         LINE#         97
+  C:1C5AH         LINE#         98
+  C:1C5BH         LINE#         99
   -------         ENDPROC       I2C_NOACK
   -------         PROC          _I2C_SENDBYTE
   D:0007H         SYMBOL        dat
   -------         DO            
   D:0006H         SYMBOL        i
   -------         ENDDO         
-  C:1A0CH         LINE#         101
-  C:1A0CH         LINE#         102
-  C:1A0CH         LINE#         104
-  C:1A0EH         LINE#         105
-  C:1A10H         LINE#         106
-  C:1A10H         LINE#         107
-  C:1A14H         LINE#         108
-  C:1A16H         LINE#         109
-  C:1A19H         LINE#         110
-  C:1A1BH         LINE#         111
-  C:1A1FH         LINE#         112
-  C:1A21H         LINE#         113
-  C:1A23H         LINE#         114
+  C:1B81H         LINE#         101
+  C:1B81H         LINE#         102
+  C:1B81H         LINE#         104
+  C:1B83H         LINE#         105
+  C:1B85H         LINE#         106
+  C:1B85H         LINE#         107
+  C:1B89H         LINE#         108
+  C:1B8BH         LINE#         109
+  C:1B8EH         LINE#         110
+  C:1B90H         LINE#         111
+  C:1B94H         LINE#         112
+  C:1B96H         LINE#         113
+  C:1B98H         LINE#         114
   -------         ENDPROC       _I2C_SENDBYTE
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 32
-
-
   -------         PROC          I2C_RECBYTE
   -------         DO            
   D:0006H         SYMBOL        i
   D:0007H         SYMBOL        dat
   -------         ENDDO         
-  C:19D9H         LINE#         116
-  C:19D9H         LINE#         117
-  C:19D9H         LINE#         119
-  C:19DBH         LINE#         120
-  C:19DDH         LINE#         121
-  C:19DDH         LINE#         122
-  C:19E1H         LINE#         123
-  C:19E3H         LINE#         124
-  C:19E3H         LINE#         125
-  C:19E3H         LINE#         126
-  C:19E6H         LINE#         127
-  C:19ECH         LINE#         128
-  C:19EEH         LINE#         129
-  C:19F0H         LINE#         130
+  C:1B4EH         LINE#         116
+  C:1B4EH         LINE#         117
+  C:1B4EH         LINE#         119
+  C:1B50H         LINE#         120
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 30
+
+
+  C:1B52H         LINE#         121
+  C:1B52H         LINE#         122
+  C:1B56H         LINE#         123
+  C:1B58H         LINE#         124
+  C:1B58H         LINE#         125
+  C:1B58H         LINE#         126
+  C:1B5BH         LINE#         127
+  C:1B61H         LINE#         128
+  C:1B63H         LINE#         129
+  C:1B65H         LINE#         130
   -------         ENDPROC       I2C_RECBYTE
   -------         ENDMOD        I2C
 
   -------         MODULE        AT24C02
   C:0000H         SYMBOL        _ICE_DUMMY_
-  C:191DH         PUBLIC        _At24c02_Check
-  C:1341H         PUBLIC        _At24c02_ReadData
-  C:151DH         PUBLIC        _At24c02_WriteData
-  C:1AC2H         PUBLIC        At24c02_Wait
-  C:1579H         PUBLIC        _At24c02_WriteByte
+  C:1A92H         PUBLIC        _At24c02_Check
+  C:1437H         PUBLIC        _At24c02_ReadData
+  C:1687H         PUBLIC        _At24c02_WriteData
+  C:1C37H         PUBLIC        At24c02_Wait
+  C:16E3H         PUBLIC        _At24c02_WriteByte
   -------         PROC          _AT24C02_READDATA
-  D:0008H         SYMBOL        sla
-  D:0009H         SYMBOL        suba
-  D:000AH         SYMBOL        dat
-  D:000DH         SYMBOL        num
+  D:0058H         SYMBOL        sla
+  D:0059H         SYMBOL        suba
+  D:005AH         SYMBOL        dat
+  D:005DH         SYMBOL        num
   -------         DO            
   B:0021H.1       SYMBOL        flg
-  D:000EH         SYMBOL        i
+  D:005EH         SYMBOL        i
   -------         ENDDO         
-  C:1341H         LINE#         17
-  C:134BH         LINE#         18
-  C:134BH         LINE#         21
-  C:134FH         LINE#         22
-  C:1351H         LINE#         23
-  C:1354H         LINE#         24
-  C:1359H         LINE#         25
-  C:1360H         LINE#         26
-  C:1360H         LINE#         27
-  C:1365H         LINE#         28
-  C:136CH         LINE#         29
-  C:136CH         LINE#         30
-  C:136FH         LINE#         31
-  C:1376H         LINE#         32
-  C:137DH         LINE#         33
-  C:137DH         LINE#         34
-  C:1386H         LINE#         35
-  C:1386H         LINE#         36
-  C:1393H         LINE#         37
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 33
+  C:1437H         LINE#         17
+  C:1441H         LINE#         18
+  C:1441H         LINE#         21
+  C:1445H         LINE#         22
+  C:1447H         LINE#         23
+  C:144AH         LINE#         24
+  C:144FH         LINE#         25
+  C:1456H         LINE#         26
+  C:1456H         LINE#         27
+  C:145BH         LINE#         28
+  C:1462H         LINE#         29
+  C:1462H         LINE#         30
+  C:1465H         LINE#         31
+  C:146CH         LINE#         32
+  C:1473H         LINE#         33
+  C:1473H         LINE#         34
+  C:147CH         LINE#         35
+  C:147CH         LINE#         36
+  C:1489H         LINE#         37
+  C:148CH         LINE#         38
+  C:1497H         LINE#         39
+  C:149BH         LINE#         40
+  C:14A8H         LINE#         41
+  C:14ABH         LINE#         42
+  C:14ABH         LINE#         43
+  C:14ABH         LINE#         44
+  C:14ABH         LINE#         45
+  C:14AEH         LINE#         46
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 31
 
 
-  C:1396H         LINE#         38
-  C:13A1H         LINE#         39
-  C:13A5H         LINE#         40
-  C:13B2H         LINE#         41
-  C:13B5H         LINE#         42
-  C:13B5H         LINE#         43
-  C:13B5H         LINE#         44
-  C:13B5H         LINE#         45
-  C:13B8H         LINE#         46
-  C:13BAH         LINE#         47
+  C:14B0H         LINE#         47
   -------         ENDPROC       _AT24C02_READDATA
   -------         PROC          _AT24C02_WRITEBYTE
-  D:0008H         SYMBOL        sla
-  D:0009H         SYMBOL        suba
-  D:000AH         SYMBOL        dat
-  D:000DH         SYMBOL        num
+  D:0060H         SYMBOL        sla
+  D:0061H         SYMBOL        suba
+  D:0062H         SYMBOL        dat
+  D:0065H         SYMBOL        num
   -------         DO            
-  B:0021H.1       SYMBOL        flg
-  D:000EH         SYMBOL        i
+  B:0022H.1       SYMBOL        flg
+  D:0066H         SYMBOL        i
   -------         ENDDO         
-  C:1579H         LINE#         50
-  C:1583H         LINE#         51
-  C:1583H         LINE#         54
-  C:1587H         LINE#         55
-  C:1589H         LINE#         56
-  C:158CH         LINE#         57
-  C:1591H         LINE#         58
-  C:1598H         LINE#         59
-  C:1598H         LINE#         60
-  C:159DH         LINE#         61
-  C:15A4H         LINE#         62
-  C:15A4H         LINE#         63
-  C:15ABH         LINE#         64
-  C:15ABH         LINE#         65
-  C:15B8H         LINE#         66
-  C:15BFH         LINE#         67
-  C:15BFH         LINE#         68
-  C:15CAH         LINE#         69
-  C:15CEH         LINE#         70
-  C:15CEH         LINE#         71
-  C:15CEH         LINE#         72
-  C:15D1H         LINE#         73
-  C:15D3H         LINE#         74
+  C:16E3H         LINE#         50
+  C:16EDH         LINE#         51
+  C:16EDH         LINE#         54
+  C:16F1H         LINE#         55
+  C:16F3H         LINE#         56
+  C:16F6H         LINE#         57
+  C:16FBH         LINE#         58
+  C:1702H         LINE#         59
+  C:1702H         LINE#         60
+  C:1707H         LINE#         61
+  C:170EH         LINE#         62
+  C:170EH         LINE#         63
+  C:1715H         LINE#         64
+  C:1715H         LINE#         65
+  C:1722H         LINE#         66
+  C:1729H         LINE#         67
+  C:1729H         LINE#         68
+  C:1734H         LINE#         69
+  C:1738H         LINE#         70
+  C:1738H         LINE#         71
+  C:1738H         LINE#         72
+  C:173BH         LINE#         73
+  C:173DH         LINE#         74
   -------         ENDPROC       _AT24C02_WRITEBYTE
   -------         PROC          AT24C02_WAIT
   -------         DO            
   D:0007H         SYMBOL        t
   -------         ENDDO         
-  C:1AC2H         LINE#         76
-  C:1AC2H         LINE#         77
-  C:1AC2H         LINE#         78
-  C:1AC4H         LINE#         79
-  C:1ACAH         LINE#         81
-  C:1ACEH         LINE#         83
+  C:1C37H         LINE#         76
+  C:1C37H         LINE#         77
+  C:1C37H         LINE#         78
+  C:1C39H         LINE#         79
+  C:1C3FH         LINE#         81
+  C:1C43H         LINE#         83
   -------         ENDPROC       AT24C02_WAIT
   -------         PROC          _AT24C02_CHECK
-  D:0078H         SYMBOL        sla
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 34
-
-
+  D:007EH         SYMBOL        sla
   -------         DO            
-  D:0079H         SYMBOL        i
+  D:007FH         SYMBOL        i
   -------         ENDDO         
-  C:191DH         LINE#         85
-  C:191FH         LINE#         86
-  C:191FH         LINE#         87
-  C:1922H         LINE#         89
-  C:1922H         LINE#         90
-  C:1925H         LINE#         91
-  C:1928H         LINE#         92
-  C:192DH         LINE#         93
-  C:1935H         LINE#         94
-  C:1938H         LINE#         95
-  C:193FH         LINE#         96
+  C:1A92H         LINE#         85
+  C:1A94H         LINE#         86
+  C:1A94H         LINE#         87
+  C:1A97H         LINE#         89
+  C:1A97H         LINE#         90
+  C:1A9AH         LINE#         91
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 32
+
+
+  C:1A9DH         LINE#         92
+  C:1AA2H         LINE#         93
+  C:1AAAH         LINE#         94
+  C:1AADH         LINE#         95
+  C:1AB4H         LINE#         96
   -------         ENDPROC       _AT24C02_CHECK
   -------         PROC          _AT24C02_WRITEDATA
-  D:0072H         SYMBOL        sla
-  D:0073H         SYMBOL        suba
-  D:0074H         SYMBOL        dat
-  D:0077H         SYMBOL        num
-  C:151DH         LINE#         99
-  C:1527H         LINE#         100
-  C:1527H         LINE#         101
-  C:152EH         LINE#         102
-  C:152EH         LINE#         103
-  C:1540H         LINE#         104
-  C:1541H         LINE#         105
-  C:1547H         LINE#         106
-  C:1552H         LINE#         107
-  C:1558H         LINE#         108
-  C:155FH         LINE#         109
-  C:1560H         LINE#         110
-  C:1560H         LINE#         111
-  C:1572H         LINE#         112
-  C:1577H         LINE#         114
-  C:1578H         LINE#         115
+  D:006DH         SYMBOL        sla
+  D:006EH         SYMBOL        suba
+  D:006FH         SYMBOL        dat
+  D:0072H         SYMBOL        num
+  C:1687H         LINE#         99
+  C:1691H         LINE#         100
+  C:1691H         LINE#         101
+  C:1698H         LINE#         102
+  C:1698H         LINE#         103
+  C:16AAH         LINE#         104
+  C:16ABH         LINE#         105
+  C:16B1H         LINE#         106
+  C:16BCH         LINE#         107
+  C:16C2H         LINE#         108
+  C:16C9H         LINE#         109
+  C:16CAH         LINE#         110
+  C:16CAH         LINE#         111
+  C:16DCH         LINE#         112
+  C:16E1H         LINE#         114
+  C:16E2H         LINE#         115
   -------         ENDPROC       _AT24C02_WRITEDATA
   -------         ENDMOD        AT24C02
 
@@ -2025,59 +1896,73 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   C:0000H         SYMBOL        _ICE_DUMMY_
   D:0090H         PUBLIC        P1
   D:00B0H         PUBLIC        P3
-  C:1680H         PUBLIC        Music
+  C:1883H         PUBLIC        Music_score
+  C:1250H         PUBLIC        Music
   B:00A8H.7       PUBLIC        EA
   D:00A8H         PUBLIC        IE
   D:00B8H         PUBLIC        IP
+  I:0000H         PUBLIC        Music_arry
   D:0098H         PUBLIC        SCON
   D:0089H         PUBLIC        TMOD
   D:0088H         PUBLIC        TCON
   B:00A8H.1       PUBLIC        ET0
   B:0088H.5       PUBLIC        TF0
-  C:1A24H         PUBLIC        Timer0Init
+  C:1B99H         PUBLIC        Timer0Init
   D:008CH         PUBLIC        TH0
   D:008AH         PUBLIC        TL0
   B:00B8H.1       PUBLIC        PT0
   B:0088H.4       PUBLIC        TR0
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 35
-
-
   D:00C8H         PUBLIC        T2CON
-  D:0022H         PUBLIC        MusicSelect
-  D:0024H         PUBLIC        Speed
-  D:0026H         PUBLIC        FreqSelect
-  C:1961H         PUBLIC        _Delay_music
+  D:0073H         PUBLIC        MusicSelect
+  D:0075H         PUBLIC        Speed
+  D:0077H         PUBLIC        FreqSelect
+  C:1AD6H         PUBLIC        _Delay_music
   D:00D0H         PUBLIC        PSW
-  D:0028H         PUBLIC        FreqTable
+  C:1206H         PUBLIC        FreqTable
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 33
+
+
   -------         PROC          TIMER0INIT
-  C:1A24H         LINE#         4
-  C:1A24H         LINE#         5
-  C:1A24H         LINE#         6
-  C:1A27H         LINE#         7
-  C:1A2AH         LINE#         8
-  C:1A2DH         LINE#         9
-  C:1A30H         LINE#         10
-  C:1A32H         LINE#         11
-  C:1A34H         LINE#         12
-  C:1A36H         LINE#         13
-  C:1A38H         LINE#         14
-  C:1A3AH         LINE#         15
+  C:1B99H         LINE#         4
+  C:1B99H         LINE#         5
+  C:1B99H         LINE#         6
+  C:1B9CH         LINE#         7
+  C:1B9FH         LINE#         8
+  C:1BA2H         LINE#         9
+  C:1BA5H         LINE#         10
+  C:1BA7H         LINE#         11
+  C:1BA9H         LINE#         12
+  C:1BABH         LINE#         13
+  C:1BADH         LINE#         14
+  C:1BAFH         LINE#         15
   -------         ENDPROC       TIMER0INIT
   -------         PROC          _DELAY_MUSIC
   D:0006H         SYMBOL        t
   -------         DO            
   D:0004H         SYMBOL        j
   -------         ENDDO         
-  C:1961H         LINE#         17
-  C:1961H         LINE#         18
-  C:1961H         LINE#         20
-  C:196BH         LINE#         21
-  C:196BH         LINE#         23
-  C:1978H         LINE#         24
-  C:1978H         LINE#         25
-  C:197FH         LINE#         26
-  C:197FH         LINE#         27
+  C:1AD6H         LINE#         17
+  C:1AD6H         LINE#         18
+  C:1AD6H         LINE#         20
+  C:1AE0H         LINE#         21
+  C:1AE0H         LINE#         23
+  C:1AEDH         LINE#         24
+  C:1AEDH         LINE#         25
+  C:1AF4H         LINE#         26
+  C:1AF4H         LINE#         27
   -------         ENDPROC       _DELAY_MUSIC
+  -------         PROC          MUSIC_SCORE
+  -------         DO            
+  D:0004H         SYMBOL        i
+  -------         ENDDO         
+  C:1883H         LINE#         29
+  C:1883H         LINE#         30
+  C:1883H         LINE#         34
+  C:188AH         LINE#         35
+  C:188AH         LINE#         36
+  C:18A7H         LINE#         37
+  C:18BAH         LINE#         39
+  -------         ENDPROC       MUSIC_SCORE
   -------         ENDMOD        MUSIC
 
   -------         MODULE        ?C?FPADD
@@ -2094,14 +1979,14 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   -------         ENDMOD        ?C?FPDIV
 
   -------         MODULE        ?C?FPCMP
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 34
+
+
   C:02BEH         PUBLIC        ?C?FPCMP
   C:02BCH         PUBLIC        ?C?FPCMP3
   -------         ENDMOD        ?C?FPCMP
 
   -------         MODULE        ?C?FCAST
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 36
-
-
   C:033FH         PUBLIC        ?C?FCASTC
   C:033AH         PUBLIC        ?C?FCASTI
   C:0335H         PUBLIC        ?C?FCASTL
@@ -2131,1818 +2016,253 @@ SYMBOL TABLE OF MODULE:  .\Objects\Ultimate (?C_STARTUP)
   C:0537H         PUBLIC        ?C?CSTOPTR
   -------         ENDMOD        ?C?CSTOPTR
 
+  -------         MODULE        ?C?IMUL
+  C:0559H         PUBLIC        ?C?IMUL
+  -------         ENDMOD        ?C?IMUL
+
   -------         MODULE        ?C?UIDIV
-  C:0559H         PUBLIC        ?C?UIDIV
+  C:056BH         PUBLIC        ?C?UIDIV
   -------         ENDMOD        ?C?UIDIV
 
   -------         MODULE        ?C?LNEG
-  C:05AEH         PUBLIC        ?C?LNEG
+  C:05C0H         PUBLIC        ?C?LNEG
   -------         ENDMOD        ?C?LNEG
 
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_AT24C02_WRITEDATA?AT24C02
+*** ERROR L104: MULTIPLE PUBLIC DEFINITIONS
+    SYMBOL:  FREQSELECT
+    MODULE:  .\Objects\music.obj (MUSIC)
+
+*** ERROR L104: MULTIPLE PUBLIC DEFINITIONS
+    SYMBOL:  SPEED
+    MODULE:  .\Objects\music.obj (MUSIC)
+
+*** ERROR L104: MULTIPLE PUBLIC DEFINITIONS
+    SYMBOL:  MUSICSELECT
+    MODULE:  .\Objects\music.obj (MUSIC)
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 35
+
+
+
+*** ERROR L104: MULTIPLE PUBLIC DEFINITIONS
+    SYMBOL:  MUSIC_ARRY
+    MODULE:  .\Objects\music.obj (MUSIC)
+
+*** ERROR L104: MULTIPLE PUBLIC DEFINITIONS
+    SYMBOL:  MUSIC
+    MODULE:  .\Objects\music.obj (MUSIC)
+
+*** ERROR L104: MULTIPLE PUBLIC DEFINITIONS
+    SYMBOL:  FREQTABLE
+    MODULE:  .\Objects\music.obj (MUSIC)
 
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?TIMER0INIT?MUSIC
+    SEGMENT: ?PR?INIT_DATA?MAIN
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?INIT_PROGRAM?MAIN
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UPDATEVIEWPAGESHOW?MAIN
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?KEYSSYSTEM_1?ULTIMATE
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?KEYSSYSTEM_2?ULTIMATE
 
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_DELAY_MUSIC?MUSIC
 
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?CO?MUSIC
+    SEGMENT: ?PR?MUSIC_SCORE?MUSIC
 
 *** ERROR L107: ADDRESS SPACE OVERFLOW
     SPACE:   DATA    
-    SEGMENT: ?DT?GLOBAL
-    LENGTH:  002CH
+    SEGMENT: ?DT?_INT8TOSTRING?UTILITY
+    LENGTH:  0005H
 
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  CHANGECOUNT
-    SEGMENT: ?DT?GLOBAL
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 37
+*** ERROR L107: ADDRESS SPACE OVERFLOW
+    SPACE:   DATA    
+    SEGMENT: ?DT?_LCD1602_SHOWSTRING?ULTIMATE
+    LENGTH:  0003H
 
+*** ERROR L107: ADDRESS SPACE OVERFLOW
+    SPACE:   DATA    
+    SEGMENT: ?DT?CHANGESETTING?ULTIMATE
+    LENGTH:  0003H
 
+*** ERROR L107: ADDRESS SPACE OVERFLOW
+    SPACE:   DATA    
+    SEGMENT: ?DT?LCD1602_ACTION?ULTIMATE
+    LENGTH:  0001H
 
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  HIGHEST
-    SEGMENT: ?DT?GLOBAL
+*** ERROR L107: ADDRESS SPACE OVERFLOW
+    SPACE:   DATA    
+    SEGMENT: ?DT?SHOWVIEWPAGE_4?ULTIMATE
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 36
 
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  LS
-    SEGMENT: ?DT?GLOBAL
 
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  HS
-    SEGMENT: ?DT?GLOBAL
+    LENGTH:  0001H
 
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  PRESSKEY
-    SEGMENT: ?DT?GLOBAL
+*** ERROR L107: ADDRESS SPACE OVERFLOW
+    SPACE:   DATA    
+    SEGMENT: ?DT?KEYSSYSTEM_2?ULTIMATE
+    LENGTH:  0001H
 
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  LM
-    SEGMENT: ?DT?GLOBAL
+*** ERROR L107: ADDRESS SPACE OVERFLOW
+    SPACE:   DATA    
+    SEGMENT: ?DT?LCD1602_WRITEBYTE?LCD1602
+    LENGTH:  0001H
 
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  SHOW_WAIT
-    SEGMENT: ?DT?GLOBAL
+*** ERROR L107: ADDRESS SPACE OVERFLOW
+    SPACE:   IDATA   
+    SEGMENT: ?ID?MUSIC
+    LENGTH:  0080H
 
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  FANGEARSTEP
-    SEGMENT: ?DT?GLOBAL
+*** ERROR L107: ADDRESS SPACE OVERFLOW
+    SPACE:   IDATA   
+    SEGMENT: ?STACK
+    LENGTH:  0001H
 
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  HM
-    SEGMENT: ?DT?GLOBAL
+*** ERROR L107: ADDRESS SPACE OVERFLOW
+    SPACE:   IDATA   
+    SEGMENT: ?STACK
+    LENGTH:  0001H
 
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  LUS
-    SEGMENT: ?DT?GLOBAL
+*** ERROR L119: REFERENCE MADE TO ERRONEOUS SEGMENT
+    SEGMENT: ?C_C51STARTUP
+    MODULE:  .\Objects\STARTUP.obj (?C_STARTUP)
+    ADDRESS: 1336H
 
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  HUS
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  LMS
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  DSR
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  KEY
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  HMS
-    SEGMENT: ?DT?GLOBAL
-
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 38
-
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  DCMCOUNT
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  FANGEAR
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  TEMPERATURE
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  UPPERLIMIT
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  LOWERLIMIT
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  LOWEST
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  PAGE
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  RINGTONENUM
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  OPTION
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  AUDIO
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  CONVERTCOUNT
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
-    SYMBOL:  NUMSTR
-    SEGMENT: ?DT?GLOBAL
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DSR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D46H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CONVERTCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D53H
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 39
-
-
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CONVERTCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D55H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CONVERTCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D59H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CONVERTCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D63H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CONVERTCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D67H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CONVERTCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D6AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DCMCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D72H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DCMCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D74H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DCMCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D78H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DCMCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D7DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DCMCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D83H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DCMCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D87H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 40
-
-
-    SYMBOL:  DCMCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D8DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DCMCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D91H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DCMCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D97H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DCMCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D9AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEAR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D9FH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEAR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0DAEH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEAR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0DBDH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DSR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1085H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWERLIMIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1087H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  UPPERLIMIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1089H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  RINGTONENUM
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1095H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEARSTEP
-    MODULE:  .\Objects\main.obj (MAIN)
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 41
-
-
-    ADDRESS: 109DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  AUDIO
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 10A4H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CONVERTCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 10ADH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CONVERTCOUNT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 10B0H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 10B7H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWERLIMIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1641H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWERLIMIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1644H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DSR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1649H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DSR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 164CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  UPPERLIMIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 164FH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  UPPERLIMIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1651H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  AUDIO
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 166FH
-
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 42
-
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  RINGTONENUM
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1677H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEARSTEP
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 167EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1808H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 180BH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1817H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1819H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C0EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C10H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C12H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C14H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C21H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 43
-
-
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C23H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C25H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C27H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C33H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C35H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C37H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C39H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C3BH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C3DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C3FH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C41H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C43H
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 44
-
-
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C45H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C47H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C49H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C52H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C53H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C55H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C56H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C58H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C59H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C5BH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C5CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 45
-
-
-    SYMBOL:  LOWEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C5EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C60H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C62H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C64H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C66H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C68H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C6AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C6CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C73H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C74H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C76H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWEST
-    MODULE:  .\Objects\main.obj (MAIN)
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 46
-
-
-    ADDRESS: 0C77H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C79H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C7AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C7CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWEST
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C7DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  UPPERLIMIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C7FH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C85H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C87H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C89H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C8BH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  UPPERLIMIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0C98H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0CA6H
-
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 47
-
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0CA8H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0CAAH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0CACH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEARSTEP
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0CB9H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEAR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0CDFH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEAR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0CE1H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEAR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0CE8H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEAR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0CFBH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWERLIMIT
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0CFDH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D03H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D05H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 48
-
-
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D07H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 0D09H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PAGE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 10E3H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1108H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 110AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  SETTINGSSAVE
     MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 110CH
 
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  MUSIC_STORE
     MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 110EH
 
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _DELAY
     MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1112H
 
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  MUSIC_STORE
     MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1114H
+    ADDRESS: 15A1H
 
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _DELAY
     MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1121H
+    ADDRESS: 15F4H
 
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _DELAY
     MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1123H
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 37
 
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 112FH
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 49
 
+    ADDRESS: 1605H
 
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  SETTINGSSAVE
     MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1131H
+    ADDRESS: 0FDAH
 
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEAR
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  SETTINGSSAVE
     MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 1136H
+    ADDRESS: 17C5H
 
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  SETTINGSSAVE
     MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 113DH
+    ADDRESS: 17C7H
 
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  SETTINGSSAVE
     MODULE:  .\Objects\main.obj (MAIN)
-    ADDRESS: 113FH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1981H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1986H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 179AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 179CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 17C0H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 17C2H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 14CDH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 50
-
-
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 14D0H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1509H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 150BH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1519H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  SHOW_WAIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 151BH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 119AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 119CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  UPPERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 11A1H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 11BDH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 11BFH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 11C4H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 51
-
-
-    ADDRESS: 11E3H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 11E5H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 11E7H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  TEMPERATURE
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 11E9H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 11EDH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 11EFH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1211H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1213H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEAR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1218H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 121FH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1221H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DSR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 15E8H
-
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 52
-
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEARSTEP
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 15F9H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  AUDIO
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 161EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0ACDH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0AD4H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0B0CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0B0EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  UPPERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0B13H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0B34H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0B36H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0B3BH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DSR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0B5CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEARSTEP
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 53
-
-
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0B72H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  RINGTONENUM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0B84H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  AUDIO
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0B9AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0BFEH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0869H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 088DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0891H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  UPPERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0895H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 08A1H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 08BFH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 08C1H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 08CDH
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 54
-
-
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 08CFH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 08E9H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 08EEH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  UPPERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 08F3H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 08F5H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0906H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 090AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  UPPERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 090EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0912H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0914H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 091EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 55
-
-
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0920H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0931H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0953H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  UPPERLIMIT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 096BH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0979H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  AUDIO
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0985H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0988H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  RINGTONENUM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 098DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0990H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEARSTEP
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0995H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0998H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DSR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 56
-
-
-    ADDRESS: 099DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 09A0H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 09A9H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 09B4H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 09FAH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  AUDIO
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A00H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A04H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  RINGTONENUM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A0BH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  RINGTONENUM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A12H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A16H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEARSTEP
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A1CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A20H
-
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 57
-
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DSR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A26H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A28H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  AUDIO
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A2DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A31H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  RINGTONENUM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A36H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A3AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  FANGEARSTEP
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A3FH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  DSR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A43H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A54H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A7DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 0A83H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 58
-
-
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 19F4H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 19FDH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1A02H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1A04H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 171CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1721H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1723H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PAGE
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1739H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 173BH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1744H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1745H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1748H
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 59
-
-
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1754H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PAGE
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1755H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1757H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 13BFH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 13C4H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 13C6H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 13E1H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 13E2H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 13E5H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 13EFH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1403H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 60
-
-
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1409H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 140FH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1419H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  OPTION
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1422H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1431H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1229H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 122EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1238H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 124EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1250H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CHANGECOUNT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1254H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CHANGECOUNT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 61
-
-
-    ADDRESS: 1258H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 125AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CHANGECOUNT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1265H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CHANGECOUNT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1267H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CHANGECOUNT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 126EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1274H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CHANGECOUNT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 127FH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CHANGECOUNT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1284H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  CHANGECOUNT
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 128BH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  KEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 128DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 128EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1292H
-
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 62
-
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 129AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 12A4H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 12AAH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  PRESSKEY
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 12B0H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HUS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1880H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HUS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1882H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HUS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1888H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HMS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 188AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HMS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 188CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HMS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1892H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1894H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HS
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 63
-
-
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1896H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 189CH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 189EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18A0H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18A6H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LUS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18A9H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LUS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18ABH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LUS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18B1H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LMS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18B3H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LMS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18B5H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LMS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18BBH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18BDH
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 64
-
-
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18BFH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18C5H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18C7H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18C9H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 18CFH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1437H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1439H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1441H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1448H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 144AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 144FH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 65
-
-
-    SYMBOL:  LM
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1456H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 145DH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 145FH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1464H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1477H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1479H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HMS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 148AH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LMS
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 148EH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1495H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 1497H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 17CDH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  15:23:21  PAGE 66
-
-
-    ADDRESS: 17CFH
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 17D1H
-
-*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  HIGHEST
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
     ADDRESS: 17D3H
 
 *** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWEST
-    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 17D7H
+    SYMBOL:  ?_INT8TOSTRING?BYTE
+    MODULE:  .\Objects\main.obj (MAIN)
+    ADDRESS: 107CH
 
 *** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWEST
+    SYMBOL:  ?_INT8TOSTRING?BYTE
     MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 17D9H
+    ADDRESS: 10E7H
 
 *** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWEST
+    SYMBOL:  ?_INT8TOSTRING?BYTE
     MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 17DBH
+    ADDRESS: 110AH
 
 *** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  LOWEST
+    SYMBOL:  ?_INT8TOSTRING?BYTE
     MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 17DDH
+    ADDRESS: 115EH
 
 *** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
+    SYMBOL:  ?_INT8TOSTRING?BYTE
     MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 17E1H
+    ADDRESS: 0B22H
 
 *** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
-    SYMBOL:  NUMSTR
+    SYMBOL:  ?_INT8TOSTRING?BYTE
     MODULE:  .\Objects\ultimate.obj (ULTIMATE)
-    ADDRESS: 17E3H
+    ADDRESS: 0B4AH
 
-Program Size: data=294.3 xdata=0 code=6920
-LINK/LOCATE RUN COMPLETE.  4 WARNING(S),  346 ERROR(S)
+*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
+    SYMBOL:  ?_INT8TOSTRING?BYTE
+    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
+    ADDRESS: 08D5H
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/05/2023  16:17:06  PAGE 38
+
+
+*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
+    SYMBOL:  ?_INT8TOSTRING?BYTE
+    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
+    ADDRESS: 0928H
+
+*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
+    SYMBOL:  ?_INT8TOSTRING?BYTE
+    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
+    ADDRESS: 1534H
+
+*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
+    SYMBOL:  ?_INT8TOSTRING?BYTE
+    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
+    ADDRESS: 1542H
+
+*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
+    SYMBOL:  ?_INT8TOSTRING?BYTE
+    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
+    ADDRESS: 1549H
+
+*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
+    SYMBOL:  ?_INT8TOSTRING?BYTE
+    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
+    ADDRESS: 1557H
+
+*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
+    SYMBOL:  ?_INT8TOSTRING?BYTE
+    MODULE:  .\Objects\ultimate.obj (ULTIMATE)
+    ADDRESS: 158FH
+
+*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
+    SYMBOL:  ?_INT8TOSTRING?BYTE
+    SEGMENT: ?DT?_INT8TOSTRING?UTILITY
+
+*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
+    SYMBOL:  ?LCD1602_WRITEBYTE?BYTE
+    SEGMENT: ?DT?LCD1602_WRITEBYTE?LCD1602
+
+*** ERROR L105: PUBLIC REFERS TO IGNORED SEGMENT
+    SYMBOL:  MUSIC_ARRY
+    SEGMENT: ?ID?MUSIC
+
+Program Size: data=399.2 xdata=0 code=7292
+LINK/LOCATE RUN COMPLETE.  17 WARNING(S),  33 ERROR(S)

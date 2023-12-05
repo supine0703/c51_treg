@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   GLOBAL                                                            12/05/2023 14:57:22 PAGE 1   
+C51 COMPILER V9.60.7.0   GLOBAL                                                            12/05/2023 16:17:06 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE GLOBAL
@@ -62,7 +62,7 @@ line level    source
   52          float lowest = 127;  // 开机后最低温
   53          
   54          // 视图模式 温度过界计时视图
-C51 COMPILER V9.60.7.0   GLOBAL                                                            12/05/2023 14:57:22 PAGE 2   
+C51 COMPILER V9.60.7.0   GLOBAL                                                            12/05/2023 16:17:06 PAGE 2   
 
   55          uchar hus = 0, hms = 0, hs = 0, hm = 0; // 开机后 超过温度上限 时间
   56          uchar lus = 0, lms = 0, ls = 0, lm = 0; // 开机后 低于温度下限 时间
@@ -98,8 +98,8 @@ line level    source
   86          uchar pressKey = 0xff;
   87          
   88          // 用与同I2C进行交互的变量
-  89          uchar idata settingsSave = 0x00;
-  90          uchar idata ringtone[127];
+  89          // uchar idata settingsSave = 0x00;
+  90          // uchar idata ringtone[127];
   91          
   92          // ==================== ===== ====================
 
@@ -110,7 +110,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =     44    ----
-   IDATA SIZE       =    128    ----
+   IDATA SIZE       =   ----    ----
    BIT SIZE         =      9    ----
 END OF MODULE INFORMATION.
 

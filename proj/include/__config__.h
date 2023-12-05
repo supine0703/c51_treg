@@ -64,5 +64,6 @@
 #define KEYS P3 // 按键
 #define DEFINE_DCM P2 ^ 7
 #define DEFINE_RELAY P2 ^ 3
+#define DEFINE_BUZZRT P1 ^ 4
 
 #endif // __CONFIG___H

@@ -1,0 +1,1 @@
+"..\src\at24c02.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\include) DEBUG OBJECTEXTEND PRINT(.\Listings\at24c02.lst) TABS (2) OBJECT(.\Objects\at24c02.obj)

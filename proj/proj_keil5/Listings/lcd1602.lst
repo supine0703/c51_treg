@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   LCD1602                                                           12/05/2023 14:57:23 PAGE 1   
+C51 COMPILER V9.60.7.0   LCD1602                                                           12/05/2023 16:16:01 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD1602
@@ -62,7 +62,7 @@ line level    source
   51   2              busy = DT;
   52   2          } while (busy & 0x80);
   53   1          EN = 0;
-C51 COMPILER V9.60.7.0   LCD1602                                                           12/05/2023 14:57:23 PAGE 2   
+C51 COMPILER V9.60.7.0   LCD1602                                                           12/05/2023 16:16:01 PAGE 2   
 
   54   1      }
   55          

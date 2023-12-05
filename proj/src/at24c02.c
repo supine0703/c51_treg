@@ -11,7 +11,7 @@
 #define uchar unsigned char
 #endif
 
-#define PAGE_BYTE 0x10 // 也缓冲器字节数
+// #define PAGE_BYTE 0x08 // 也缓冲器字节数
 
 // 连续读时序
 bit At24c02_ReadData(uchar sla, uchar suba, uchar* dat, uchar num)
@@ -96,23 +96,23 @@ bit At24c02_Check(uchar sla) // 检查是否写入完成
 }
 
 // 连续页写入 带延迟(确保写入完成)
-bit At24c02_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
-{
-    while (num > PAGE_BYTE) // 按页写入数据 并且等待写入成功开始下一页写入
-    {
-        if (!At24c02_WriteByte(sla, suba, dat, PAGE_BYTE))
-            return 0;
-        suba += PAGE_BYTE;
-        dat += PAGE_BYTE;
-        num -= PAGE_BYTE;
-        if (!At24c02_Check(sla))
-            return 0;
-    }
-    if (At24c02_WriteByte(sla, suba, dat, num))
-        return At24c02_Check(sla);
-    else
-        return 0;
-}
+// bit At24c02_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
+// {
+//     while (num > PAGE_BYTE) // 按页写入数据 并且等待写入成功开始下一页写入
+//     {
+//         if (!At24c02_WriteByte(sla, suba, dat, PAGE_BYTE))
+//             return 0;
+//         suba += PAGE_BYTE;
+//         dat += PAGE_BYTE;
+//         num -= PAGE_BYTE;
+//         if (!At24c02_Check(sla))
+//             return 0;
+//     }
+//     if (At24c02_WriteByte(sla, suba, dat, num))
+//         return At24c02_Check(sla);
+//     else
+//         return 0;
+// }
 
 /**
  * 2023/12/04
@@ -123,9 +123,7 @@ bit At24c02_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
 实现方法很有参考价值
  * 故此保留 参见24c02的数据手册可知 需要页写入时因为受限于 页写缓冲器的大小
 
-#define PAGE_BYTE 0x10
-#define PAGE_BIT 4
-#define PAGE_END 0x0f
+
 
 bit I2C_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
 {
@@ -153,34 +151,39 @@ bit I2C_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
     return flg;
 }
 
-void At24c02_Write(uchar sla, uchar suba, uchar* dat, uchar num)
+*/
+
+#define PAGE_BYTE 0x10
+#define PAGE_BIT 4
+#define PAGE_END 0x0f
+
+bit At24c02_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
 {
     uchar begin, end, i;
     if (!num)
-        return;
+        return 1;
     begin = suba >> PAGE_BIT;
     end = (suba + (num - 1)) >> PAGE_BIT;
     if (begin != end)
     {
         i = PAGE_END - (suba & PAGE_END) + 1;
-        I2C_WriteData(sla, suba, dat, i);
+        At24c02_WriteByte(sla, suba, dat, i);
         suba += i;
         dat += i;
         ++begin;
-        At24c02_Wait();
+        At24c02_Check(sla);
     }
     while ((begin != end) && begin < PAGE_END)
     {
-        I2C_WriteData(sla, suba, dat, PAGE_BYTE);
+        At24c02_WriteByte(sla, suba, dat, PAGE_BYTE);
         suba += PAGE_BYTE;
         dat += PAGE_BYTE;
         ++begin;
-        At24c02_Wait();
+        At24c02_Check(sla);
     }
-    I2C_WriteData(
+    At24c02_WriteByte(
         sla, suba, dat, (begin == end ? (num - i) & PAGE_END : PAGE_END)
     );
-    At24c02_Wait();
+    At24c02_Check(sla);
+    return 1;
 }
-
-*/

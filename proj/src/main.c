@@ -13,6 +13,7 @@
 #include "lcd1602.h"
 #include "ultimate.h"
 #include "utility.h"
+#include "music.h"
 
 #define uint unsigned int
 #define uchar unsigned char
@@ -42,6 +43,7 @@ extern uint SHOW_WAIT;
 
 sbit RELAY = DEFINE_RELAY; // 继电器
 sbit DCM = DEFINE_DCM;     // 直流电机
+sbit Buzzer = DEFINE_BUZZRT;
 
 void init_data(void);          // 初始化数据
 void init_program(void);       // 初始化程序
@@ -117,6 +119,7 @@ void main(void)
             KeysSystem_1();       // 第一套按键事件响应系统
         }
     }
+    
 }
 
 /**
@@ -230,9 +233,17 @@ void int_X0() interrupt 0
     settings_mode = !settings_mode;
 }
 
+
 void int_T1() interrupt 3
 {
     // ... audio 音频变量
+    if(FreqTable[FreqSelect])	//如果是休止符(0)，那么不播放声音，只进行延时
+	{
+		//取对应频率值的重装载值到定时器(确认音高)FreqSelect=Music[MusicSelect]
+		TL0 = FreqTable[FreqSelect]%256;		//设置低位定时初值
+		TH0 = FreqTable[FreqSelect]/256;		//设置高位定时初值
+		Buzzer=!Buzzer;	//翻转蜂鸣器IO口(注意这里的重装值是周期的一半，故仅进行一次蜂鸣器的翻转)
+	}
 }
 
 void init_data(void)

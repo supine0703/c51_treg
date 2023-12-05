@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MUSIC                                                             12/05/2023 15:23:21 PAGE 1   
+C51 COMPILER V9.60.7.0   MUSIC                                                             12/05/2023 16:13:37 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MUSIC
@@ -8,8 +8,8 @@ COMPILER INVOKED BY: D:\install\Keil_v5\C51\BIN\C51.EXE music.c OPTIMIZE(8,SPEED
 
 line level    source
 
-   1          #include <music.h>
-   2          
+   1          #include "music.h"
+   2          #include "at24c02.h"
    3          
    4          void Timer0Init(void)
    5          {
@@ -35,15 +35,38 @@ line level    source
   25   3          }
   26   2        }
   27   1      }
+  28          
+  29          void Music_score()
+  30          {
+  31   1        unsigned int i;
+  32   1        
+  33   1        
+  34   1        for (MusicSelect = 0, i = 0; i < 39; MusicSelect++, i++)
+  35   1        {
+  36   2          Music_arry[i] = Music[MusicSelect]; 
+  37   2        }
+  38   1        // rtemp[i] = 0xff;
+  39   1          At24c02_WriteData(0xa0,0x02,Music_arry,39);
+  40   1      
+  41   1      
+  42   1      //     for (i = 0; i < 126; MusicSelect++, i++)
+  43   1      //  {
+  44   1      //    Music_arry[i] = Music[MusicSelect]; 
+  45   1      //  }
+  46   1      //    At24c02_WriteData(0xa0,0x82,Music_arry,126);
+  47   1      }
+  48          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     54    ----
-   CONSTANT SIZE    =     78    ----
+   CODE SIZE        =    125    ----
+   CONSTANT SIZE    =    152    ----
    XDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.7.0   MUSIC                                                             12/05/2023 16:13:37 PAGE 2   
+
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     80    ----
-   IDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =    128    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 

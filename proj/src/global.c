@@ -86,7 +86,7 @@ uchar key = 0xf;
 uchar pressKey = 0xff;
 
 // 用与同I2C进行交互的变量
-uchar idata settingsSave = 0x00;
-uchar idata ringtone[127];
+// uchar idata settingsSave = 0x00;
+// uchar idata ringtone[127];
 
 // ==================== ===== ====================

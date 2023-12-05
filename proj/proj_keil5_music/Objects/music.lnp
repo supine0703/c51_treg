@@ -1,0 +1,7 @@
+".\Objects\STARTUP.obj",
+".\Objects\music.obj",
+".\Objects\main.obj",
+".\Objects\at24c02.obj",
+".\Objects\i2c.obj" 
+TO ".\Objects\music" 
+PRINT(".\Listings\music.m51") RAMSIZE(256) 
