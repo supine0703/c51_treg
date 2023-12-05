@@ -431,6 +431,11 @@
               <FileType>5</FileType>
               <FilePath>..\include\at24c02.h</FilePath>
             </File>
+            <File>
+              <FileName>music.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\music.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -465,6 +470,11 @@
               <FileName>at24c02.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\at24c02.c</FilePath>
+            </File>
+            <File>
+              <FileName>music.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\music.c</FilePath>
             </File>
           </Files>
         </Group>

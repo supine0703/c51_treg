@@ -3,10 +3,10 @@
         {
             "name": "Target_1",
             "includePath": [
-                "e:\\Project\\.Github\\c51Lib\\proj\\include",
-                "e:\\Keil C51\\C51\\INC",
-                "e:\\Project\\.Github\\c51Lib\\proj\\proj_keil5",
-                "e:\\Project\\.Github\\c51Lib\\proj\\src"
+                "d:\\GitHub_project\\c51Lib\\proj\\include",
+                "d:\\GitHub_project\\c51Lib\\proj\\proj_keil5",
+                "d:\\GitHub_project\\c51Lib\\proj\\src",
+                "D:\\install\\Keil_v5\\C51\\INC"
             ],
             "defines": [
                 "__C51__",

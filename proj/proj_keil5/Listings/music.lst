@@ -1,0 +1,51 @@
+C51 COMPILER V9.60.7.0   MUSIC                                                             12/05/2023 15:23:21 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MUSIC
+OBJECT MODULE PLACED IN .\Objects\music.obj
+COMPILER INVOKED BY: D:\install\Keil_v5\C51\BIN\C51.EXE music.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include) DEBUG OBJECT
+                    -EXTEND PRINT(.\Listings\music.lst) TABS(2) OBJECT(.\Objects\music.obj)
+
+line level    source
+
+   1          #include <music.h>
+   2          
+   3          
+   4          void Timer0Init(void)
+   5          {
+   6   1        TMOD &= 0xF0; // 设置定时器模式
+   7   1        TMOD |= 0x01; // 设置定时器模式
+   8   1        TL0 = 0x18;   // 设置定时初值
+   9   1        TH0 = 0xFC;   // 设置定时初值
+  10   1        TF0 = 0;    // 清除TF0标志
+  11   1        TR0 = 1;    // 定时器0开始计时
+  12   1        ET0 = 1;
+  13   1        EA = 1;
+  14   1        PT0 = 0;
+  15   1      }
+  16          
+  17          void Delay_music(unsigned int t)
+  18          {
+  19   1        unsigned int j;
+  20   1        while (t--)
+  21   1        {
+  22   2      
+  23   2          for (j = 125; j > 0; --j)
+  24   2          {
+  25   3          }
+  26   2        }
+  27   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     54    ----
+   CONSTANT SIZE    =     78    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     80    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,1 @@
+"music.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\include) DEBUG OBJECTEXTEND PRINT(.\Listings\music.lst) TABS (2) OBJECT(.\Objects\music.obj)

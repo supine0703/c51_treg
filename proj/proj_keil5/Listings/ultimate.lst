@@ -1,10 +1,10 @@
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 1   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 14:57:23 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE ULTIMATE
 OBJECT MODULE PLACED IN .\Objects\ultimate.obj
-COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\ultimate.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include) DEBUG OBJ
-                    -ECTEXTEND PRINT(.\Listings\ultimate.lst) OBJECT(.\Objects\ultimate.obj)
+COMPILER INVOKED BY: D:\install\Keil_v5\C51\BIN\C51.EXE ..\src\ultimate.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include) DE
+                    -BUG OBJECTEXTEND PRINT(.\Listings\ultimate.lst) TABS(2) OBJECT(.\Objects\ultimate.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   52   2              LCD1602_WriteData(*s++);
   53   2              Delay1ms(SHOW_WAIT);
   54   2          }
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 2   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 14:57:23 PAGE 2   
 
   55   1      }
   56          
@@ -126,7 +126,7 @@ line level    source
  114   1      }
  115          
  116          void ShowViewPage_2(void)
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 3   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 14:57:23 PAGE 3   
 
  117          {
  118   1          // 第一行 自开机后的最高温
@@ -190,7 +190,7 @@ line level    source
  176   2              {
  177   3              case 0: {
  178   4                  // 0 温度上限
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 4   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 14:57:23 PAGE 4   
 
  179   4                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(1));
  180   4                  LCD1602_ShowString("H Limit: ");
@@ -224,7 +224,7 @@ line level    source
  208   4                  // 5 音量
  209   4                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(4));
  210   4                  LCD1602_ShowString("Audio: ");
- 211   4                  LCD1602_WriteData('0' + ringtoneNum);
+ 211   4                  LCD1602_WriteData('0' + audio);
  212   4                  break;
  213   4              }
  214   3              }
@@ -254,7 +254,7 @@ line level    source
  238   2          case 1: { // 这一段逻辑复杂，只用知道是增加/减少上限下限的
  239   3              i = option ? lowerLimit : upperLimit;
  240   3              while (1)
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 5   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 14:57:23 PAGE 5   
 
  241   3              {
  242   4                  if (!--cunt)
@@ -318,7 +318,7 @@ line level    source
  300   3              while (1)
  301   3              {
  302   4                  if (!--cunt)
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 6   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 14:57:23 PAGE 6   
 
  303   4                  {
  304   5                      cunt = 24;
@@ -382,7 +382,7 @@ line level    source
  362   1      }
  363          
  364          void KeysSystem_1(void)
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 7   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 14:57:23 PAGE 7   
 
  365          {
  366   1          KEYS = 0xff;
@@ -446,7 +446,7 @@ line level    source
  424   4              }
  425   3              case 0xdf: { // P35 上一条
  426   4                  if (!option)
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 8   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 14:57:23 PAGE 8   
 
  427   4                      opt = SETTING_NUM - 1;
  428   4                  else
@@ -510,7 +510,7 @@ line level    source
  486   3              case 0xef: { // P34 确定
  487   4                  pressKey = 0xff;
  488   4                  return 2;
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 9   
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 14:57:23 PAGE 9   
 
  489   4              }
  490   3              }
@@ -574,7 +574,7 @@ line level    source
  548   2          }
  549   1          LCD1602_ShowString(numStr);
  550   1          LCD1602_ShowString("m");
-C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 03:26:13 PAGE 10  
+C51 COMPILER V9.60.7.0   ULTIMATE                                                          12/05/2023 14:57:23 PAGE 10  
 
  551   1          LCD1602_ShowString(numStr + 3);
  552   1          LCD1602_ShowString(".");

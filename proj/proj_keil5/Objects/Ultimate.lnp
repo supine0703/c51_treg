@@ -6,6 +6,7 @@
 ".\Objects\lcd1602.obj",
 ".\Objects\ds18b20.obj",
 ".\Objects\i2c.obj",
-".\Objects\at24c02.obj" 
+".\Objects\at24c02.obj",
+".\Objects\music.obj" 
 TO ".\Objects\Ultimate" 
 PRINT(".\Listings\Ultimate.m51") RAMSIZE(256) 
