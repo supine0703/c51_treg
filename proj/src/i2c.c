@@ -64,15 +64,15 @@ void I2C_Stop(void)
     I2C_Wait(); // 5us
 }
 
-void I2C_Init(void)
-{
-    SCL = 1;
-    _nop_();
-    SDA = 1;
-    _nop_();
-    I2C_Wait();
-    I2C_Stop();
-}
+// void I2C_Init(void)
+// {
+//     SCL = 1;
+//     _nop_();
+//     SDA = 1;
+//     _nop_();
+//     I2C_Wait();
+//     I2C_Stop();
+// }
 
 void I2C_Ack(void)
 {

@@ -39,7 +39,7 @@ void main()
     unsigned char music_num, startAddr, musicLen;
     Music_score();
 	
-    music_num = 0;
+    music_num = 1;
     At24c02_ReadData(0xa0, music_num + 0x03, &startAddr, 1);
     At24c02_ReadData(0xa0, music_num + 0x04, &musicLen, 1);
     musicLen -= startAddr;

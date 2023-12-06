@@ -1,10 +1,10 @@
-C51 COMPILER V9.60.7.0   DS18B20                                                           12/06/2023 08:29:00 PAGE 1   
+C51 COMPILER V9.60.7.0   DS18B20                                                           12/06/2023 11:46:54 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DS18B20
 OBJECT MODULE PLACED IN .\Objects\ds18b20.obj
-COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\ds18b20.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include) DEBUG OBJE
-                    -CTEXTEND PRINT(.\Listings\ds18b20.lst) OBJECT(.\Objects\ds18b20.obj)
+COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\ds18b20.c ROM(COMPACT) OPTIMIZE(8,SPEED) BROWSE INCDIR(..\includ
+                    -e) DEBUG OBJECTEXTEND PRINT(.\Listings\ds18b20.lst) OBJECT(.\Objects\ds18b20.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   52          
   53          uchar DS18B20_InitCheck(void)
   54          {
-C51 COMPILER V9.60.7.0   DS18B20                                                           12/06/2023 08:29:00 PAGE 2   
+C51 COMPILER V9.60.7.0   DS18B20                                                           12/06/2023 11:46:54 PAGE 2   
 
   55   1          uchar x = 0;
   56   1          DQ = 1; // 复位DQ
@@ -126,7 +126,7 @@ line level    source
  114   1          DS18B20_WriteByte(0xbe);
  115   1          low = DS18B20_ReadByte();
  116   1          high = DS18B20_ReadByte();
-C51 COMPILER V9.60.7.0   DS18B20                                                           12/06/2023 08:29:00 PAGE 3   
+C51 COMPILER V9.60.7.0   DS18B20                                                           12/06/2023 11:46:54 PAGE 3   
 
  117   1          temp = (high << 8) | low;
  118   1          return temp;
@@ -190,7 +190,7 @@ line level    source
  176          //     DQ = 0; // 拉低
  177          //     DS18B20_Delay10us(1);
  178          //     DQ = 1; // 15μs内拉高释放总线
-C51 COMPILER V9.60.7.0   DS18B20                                                           12/06/2023 08:29:00 PAGE 4   
+C51 COMPILER V9.60.7.0   DS18B20                                                           12/06/2023 11:46:54 PAGE 4   
 
  179          //     if (DQ)
  180          //         dat = 1;

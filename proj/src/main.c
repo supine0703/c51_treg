@@ -143,7 +143,7 @@ void init_data(void)
     // DS18B20_Update();
     DS18B20_Get(&upperLimit, &lowerLimit, &dsr);
     // 从 24c02 读取 风扇档位步长 开机音乐序号 音频(分为0-7)
-    I2C_Init();
+    // I2C_Init();
     At24c02_ReadData(0xa0, 0x00, &settingsSave, 1);
     ringRate = settingsSave & 0x07;
     ringtoneNum = (settingsSave >> 3) & 0x03;
@@ -234,6 +234,7 @@ void UpdateTemperature(void)
     }
     else // 温度正常
     {
+        BUZZER = 1;
         RELAY = 0;             // 断开继电器
         dc_motor_working = 0;  // 直流电机停止工作
         fanGear = 0;           // 直流电机档位置0

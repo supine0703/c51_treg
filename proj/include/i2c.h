@@ -11,7 +11,7 @@
 
 extern void          I2C_Start    (void);
 extern void          I2C_Stop     (void);
-extern void          I2C_Init     (void); // 可有可无
+// extern void          I2C_Init     (void); // 可有可无
 extern void          I2C_Ack      (void);
 extern void          I2C_NoAck    (void);
 extern void          I2C_SendByte (unsigned char dat);

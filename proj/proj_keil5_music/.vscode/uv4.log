@@ -6,12 +6,9 @@ compiling at24c02.c...
 compiling i2c.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?MUSIC_SCORE?MUSIC
-
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?I2C_INIT?I2C
 
-Program Size: data=190.4 xdata=0 code=1532
+Program Size: data=181.3 xdata=0 code=1468
 creating hex file from ".\Objects\music"...
-".\Objects\music" - 0 Error(s), 2 Warning(s).
-Build Time Elapsed:  00:00:00
+".\Objects\music" - 0 Error(s), 1 Warning(s).
+Build Time Elapsed:  00:00:01

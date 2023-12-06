@@ -1,10 +1,10 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:29:00 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN .\Objects\main.obj
-COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include) DEBUG OBJECTE
-                    -XTEND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE ..\src\main.c ROM(COMPACT) OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include) 
+                    -DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   52          void init_data(void);          // 初始化数据
   53          void init_program(void);       // 初始化程序
   54          void UpdateTemperature(void);  // 更新温度信息
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:29:00 PAGE 2   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 2   
 
   55          void UpdateViewPageShow(void); // 刷新视图显示
   56          
@@ -126,7 +126,7 @@ line level    source
  114   4                  }
  115   3                  UpdateViewPageShow(); // 刷新视图显示
  116   3                  KeysSystem_1();       // 第一套按键事件响应系统
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:29:00 PAGE 3   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 3   
 
  117   3              }
  118   2          }
@@ -157,7 +157,7 @@ line level    source
  143   1          // DS18B20_Update();
  144   1          DS18B20_Get(&upperLimit, &lowerLimit, &dsr);
  145   1          // 从 24c02 读取 风扇档位步长 开机音乐序号 音频(分为0-7)
- 146   1          I2C_Init();
+ 146   1          // I2C_Init();
  147   1          At24c02_ReadData(0xa0, 0x00, &settingsSave, 1);
  148   1          ringRate = settingsSave & 0x07;
  149   1          ringtoneNum = (settingsSave >> 3) & 0x03;
@@ -190,7 +190,7 @@ line level    source
  176          void init_music(void)
  177          {
  178   1          play_music = 1;
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:29:00 PAGE 4   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 4   
 
  179   1          PT0 = 0;
  180   1          TF1 = 0;    // 清除TF1标志
@@ -250,291 +250,292 @@ line level    source
  234   2          }
  235   1          else // 温度正常
  236   1          {
- 237   2              RELAY = 0;             // 断开继电器
- 238   2              dc_motor_working = 0;  // 直流电机停止工作
- 239   2              fanGear = 0;           // 直流电机档位置0
- 240   2              below_lower_limit = 0; // 下越界标志位清0
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:29:00 PAGE 5   
+ 237   2              BUZZER = 1;
+ 238   2              RELAY = 0;             // 断开继电器
+ 239   2              dc_motor_working = 0;  // 直流电机停止工作
+ 240   2              fanGear = 0;           // 直流电机档位置0
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 5   
 
- 241   2              above_upper_limit = 0; // 上越界标志位清0
- 242   2              PT0 = 1;
- 243   2              TR1 = 0;
- 244   2              play_music = 0;
- 245   2          }
- 246   1      }
- 247          
- 248          void UpdateViewPageShow(void)
- 249          {
- 250   1          switch (page) // 判断当前处于哪一个视图
- 251   1          {
- 252   2          case 0x7f: // 主视图 (温度信息查询视图)
- 253   2              if (page_change)
- 254   2              { // 如果视图改变 刷新整个屏幕内容显示
- 255   3                  ShowViewPage_1();
- 256   3                  page_change = 0;
- 257   3              }
- 258   2              // 刷新温度值显示
- 259   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(2));
- 260   2              FloatToString(temperature, numStr, 5, 1);
- 261   2              LCD1602_ShowString(numStr);
- 262   2              // 刷新风扇档位显示
- 263   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
- 264   2              Int8ToString(fanGear, numStr, 1);
- 265   2              LCD1602_ShowString(numStr);
- 266   2              break;
- 267   2          case 0xbf: // 最高/最低温(温度极值)查询视图
- 268   2              if (page_change)
- 269   2              { // 如果视图改变 刷新整个屏幕内容显示
- 270   3                  ShowViewPage_2();
- 271   3                  page_change = 0;
- 272   3              }
- 273   2              // 刷新显示温度的极值
- 274   2              LCD1602_WriteCmd(Move_Cursor_Row1_Col(9));
- 275   2              UpdateExtremes(1);
- 276   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(9));
- 277   2              UpdateExtremes(0);
- 278   2              break;
- 279   2          case 0xdf: // 温度越界计时视图
- 280   2              if (page_change)
- 281   2              { // 如果视图改变 刷新整个屏幕内容显示
- 282   3                  ShowViewPage_3();
- 283   3                  page_change = 0;
- 284   3              }
- 285   2              // 如果温度高于上限 刷新显示上越界计时
- 286   2              if (above_upper_limit)
- 287   2              {
- 288   3                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(8));
- 289   3                  UpdateOverLimitTimer(1);
- 290   3              }
- 291   2              // 如果温度低于下限 刷新显示下越界计时
- 292   2              else if (below_lower_limit)
- 293   2              {
- 294   3                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(8));
- 295   3                  UpdateOverLimitTimer(0);
- 296   3              }
- 297   2      
- 298   2          case 0xef: // 设置查询视图
- 299   2              if (page_change)
- 300   2              { // 如果视图改变 刷新整个屏幕内容显示
- 301   3                  ShowViewPage_4();
- 302   3                  page_change = 0;
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:29:00 PAGE 6   
+ 241   2              below_lower_limit = 0; // 下越界标志位清0
+ 242   2              above_upper_limit = 0; // 上越界标志位清0
+ 243   2              PT0 = 1;
+ 244   2              TR1 = 0;
+ 245   2              play_music = 0;
+ 246   2          }
+ 247   1      }
+ 248          
+ 249          void UpdateViewPageShow(void)
+ 250          {
+ 251   1          switch (page) // 判断当前处于哪一个视图
+ 252   1          {
+ 253   2          case 0x7f: // 主视图 (温度信息查询视图)
+ 254   2              if (page_change)
+ 255   2              { // 如果视图改变 刷新整个屏幕内容显示
+ 256   3                  ShowViewPage_1();
+ 257   3                  page_change = 0;
+ 258   3              }
+ 259   2              // 刷新温度值显示
+ 260   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(2));
+ 261   2              FloatToString(temperature, numStr, 5, 1);
+ 262   2              LCD1602_ShowString(numStr);
+ 263   2              // 刷新风扇档位显示
+ 264   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
+ 265   2              Int8ToString(fanGear, numStr, 1);
+ 266   2              LCD1602_ShowString(numStr);
+ 267   2              break;
+ 268   2          case 0xbf: // 最高/最低温(温度极值)查询视图
+ 269   2              if (page_change)
+ 270   2              { // 如果视图改变 刷新整个屏幕内容显示
+ 271   3                  ShowViewPage_2();
+ 272   3                  page_change = 0;
+ 273   3              }
+ 274   2              // 刷新显示温度的极值
+ 275   2              LCD1602_WriteCmd(Move_Cursor_Row1_Col(9));
+ 276   2              UpdateExtremes(1);
+ 277   2              LCD1602_WriteCmd(Move_Cursor_Row2_Col(9));
+ 278   2              UpdateExtremes(0);
+ 279   2              break;
+ 280   2          case 0xdf: // 温度越界计时视图
+ 281   2              if (page_change)
+ 282   2              { // 如果视图改变 刷新整个屏幕内容显示
+ 283   3                  ShowViewPage_3();
+ 284   3                  page_change = 0;
+ 285   3              }
+ 286   2              // 如果温度高于上限 刷新显示上越界计时
+ 287   2              if (above_upper_limit)
+ 288   2              {
+ 289   3                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(8));
+ 290   3                  UpdateOverLimitTimer(1);
+ 291   3              }
+ 292   2              // 如果温度低于下限 刷新显示下越界计时
+ 293   2              else if (below_lower_limit)
+ 294   2              {
+ 295   3                  LCD1602_WriteCmd(Move_Cursor_Row2_Col(8));
+ 296   3                  UpdateOverLimitTimer(0);
+ 297   3              }
+ 298   2      
+ 299   2          case 0xef: // 设置查询视图
+ 300   2              if (page_change)
+ 301   2              { // 如果视图改变 刷新整个屏幕内容显示
+ 302   3                  ShowViewPage_4();
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 6   
 
- 303   3              }
- 304   2              // 没有需要刷新的可变量
- 305   2              break;
- 306   2          }
- 307   1      }
- 308          
- 309          void UpdateAboutTimer(void)
- 310          {
- 311   1          // 根据分辨率调整温度转换需要的时间
- 312   1          if (!convert_finished && ++convertCount >= cttcn[dsr])
- 313   1          {
- 314   2              convertCount = 0;
- 315   2              convert_finished = 1;
- 316   2          }
- 317   1          // 将直流电机的方波分成 3段 根据档位决定某一段 电平高低
- 318   1          if (dc_motor_working)
- 319   1          {
- 320   2              if (++dcmCount >= 1440)       // 0.4s
- 321   2                  if (dcmCount >= 2520)     // 0.7s
- 322   2                      if (dcmCount >= 3600) // 1.0s
- 323   2                          dcmCount = 0;
- 324   2                      else // 0.7s - 1.0s
- 325   2                          DCM = fanGear >= 0x03;
- 326   2                  else // 0.4s - 0.7s
- 327   2                      DCM = fanGear >= 0x02;
- 328   2              else // 0.0s - 0.4s
- 329   2                  DCM = fanGear >= 0x01;
- 330   2          }
- 331   1          else
- 332   1              DCM = 0;
- 333   1          // 过界定时 需要 32个机器周期
- 334   1          if (above_upper_limit)
- 335   1              AboveLimitClock();
- 336   1          else if (below_lower_limit)
- 337   1              BelowLimitClock();
- 338   1      
- 339   1          if (play_music)
- 340   1              if (--freqDelay == 96)
- 341   1                  TR1 = 0;
- 342   1              else if (!freqDelay)
- 343   1              {
- 344   2                  TR1 = 1;
- 345   2                  if (musicArr[freqSelect] == 0xff)
- 346   2                      freqSelect = 0;
- 347   2                  freqH = FreqTable[musicArr[freqSelect]] >> 8;
- 348   2                  freqL = FreqTable[musicArr[freqSelect]] & 0xff;
- 349   2                  ++freqSelect;
- 350   2                  freqDelay = freqSize * musicArr[freqSelect]; // 选择音符对应的时长
- 351   2                  ++freqSelect;
- 352   2              }
- 353   1      }
- 354          
- 355          /**
- 356           * X0 中断函数
- 357           * 设定:
- 358           *     外部中断0 为低优先级 可以被定时器中断 给中断
- 359           *     否则 外部中断会破坏 T0 产生的时序
- 360           *     设置模式下会关闭定时器 因为没有继续定时的必要
- 361           * 思路:
- 362           *     外部中断通过软件延迟 每0.05s判断一次是否仍然处于 按下且仅按下 INT0
- 363           状态
- 364           *     当按下持续时间超过给定阈值将会 切换设置/视图模式 并执行必要的
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:29:00 PAGE 7   
+ 303   3                  page_change = 0;
+ 304   3              }
+ 305   2              // 没有需要刷新的可变量
+ 306   2              break;
+ 307   2          }
+ 308   1      }
+ 309          
+ 310          void UpdateAboutTimer(void)
+ 311          {
+ 312   1          // 根据分辨率调整温度转换需要的时间
+ 313   1          if (!convert_finished && ++convertCount >= cttcn[dsr])
+ 314   1          {
+ 315   2              convertCount = 0;
+ 316   2              convert_finished = 1;
+ 317   2          }
+ 318   1          // 将直流电机的方波分成 3段 根据档位决定某一段 电平高低
+ 319   1          if (dc_motor_working)
+ 320   1          {
+ 321   2              if (++dcmCount >= 1440)       // 0.4s
+ 322   2                  if (dcmCount >= 2520)     // 0.7s
+ 323   2                      if (dcmCount >= 3600) // 1.0s
+ 324   2                          dcmCount = 0;
+ 325   2                      else // 0.7s - 1.0s
+ 326   2                          DCM = fanGear >= 0x03;
+ 327   2                  else // 0.4s - 0.7s
+ 328   2                      DCM = fanGear >= 0x02;
+ 329   2              else // 0.0s - 0.4s
+ 330   2                  DCM = fanGear >= 0x01;
+ 331   2          }
+ 332   1          else
+ 333   1              DCM = 0;
+ 334   1          // 过界定时 需要 32个机器周期
+ 335   1          if (above_upper_limit)
+ 336   1              AboveLimitClock();
+ 337   1          else if (below_lower_limit)
+ 338   1              BelowLimitClock();
+ 339   1      
+ 340   1          if (play_music)
+ 341   1              if (--freqDelay == 96)
+ 342   1                  TR1 = 0;
+ 343   1              else if (!freqDelay)
+ 344   1              {
+ 345   2                  TR1 = 1;
+ 346   2                  if (musicArr[freqSelect] == 0xff)
+ 347   2                      freqSelect = 0;
+ 348   2                  freqH = FreqTable[musicArr[freqSelect]] >> 8;
+ 349   2                  freqL = FreqTable[musicArr[freqSelect]] & 0xff;
+ 350   2                  ++freqSelect;
+ 351   2                  freqDelay = freqSize * musicArr[freqSelect]; // 选择音符对应的时长
+ 352   2                  ++freqSelect;
+ 353   2              }
+ 354   1      }
+ 355          
+ 356          /**
+ 357           * X0 中断函数
+ 358           * 设定:
+ 359           *     外部中断0 为低优先级 可以被定时器中断 给中断
+ 360           *     否则 外部中断会破坏 T0 产生的时序
+ 361           *     设置模式下会关闭定时器 因为没有继续定时的必要
+ 362           * 思路:
+ 363           *     外部中断通过软件延迟 每0.05s判断一次是否仍然处于 按下且仅按下 INT0
+ 364           状态
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 7   
 
- 365           初始化/收尾
- 366           * 工作
- 367           */
- 368          void int_X0() interrupt 0
- 369          {
- 370   1          uchar ky; // 临时用来接收按键操作
- 371   1          uchar i = 20;
- 372   1          KEYS = 0xff;
- 373   1          do
- 374   1          {
- 375   2              ky = 0x03;
- 376   2              ky |= KEYS;
- 377   2              if (ky != 0xfb)
- 378   2              {
- 379   3                  Delay1ms(10);
- 380   3                  ky = 0x03;
- 381   3                  ky |= KEYS;
- 382   3                  if (ky != 0xfb)
- 383   3                      return;
- 384   3              }
- 385   2              Delay1ms(50);
- 386   2          } while (--i);
- 387   1          if (settings_mode) // 退出设置模式
- 388   1          {
- 389   2              // 将设置的内容存储至 DS18B20
- 390   2              DS18B20_Set(upperLimit, lowerLimit, dsr);
- 391   2              DS18B20_Save();
- 392   2              // 将设置的内容存储至 24lc02
- 393   2              settingsSave = 0xff;
- 394   2              settingsSave &= (fanGearStep << 5) | (ringtoneNum << 3) | (ringRate);
- 395   2              if (ringtone_change)
- 396   2                  ReadMusic();
- 397   2              /**
- 398   2               * @bug 不知道为什么 只要在此放下
- 399   2               * AT24C02_WriteData(0xa0,0x00,&settingsSave,1) / Byte(...)
- 400   2               * 就会在触发外部中断时导致死循环/崩溃，哪怕 if(0)
- 401   2               * 没有调用此函数 仅仅是存在就会导致如此 因此作为妥协
- 402   2               只好设置一个标志位
- 403   2               * 在主循环中进行存储
- 404   2               */
- 405   2              save_in_24c02 = 1;
- 406   2              // ... ...
- 407   2              DS18B20_Convert();
- 408   2              convertCount = 0;
- 409   2              convert_finished = 0; // 重新打开温度转换
- 410   2              TR0 = 1;              // 重启定时器开始测温
- 411   2              freqSize = 2144 - 256 * ringRate;
- 412   2              option = 0xff;        // 设置模式 不选择
- 413   2              page_change = 1;      // 需要刷新整个视图显示
- 414   2          }
- 415   1          else // 进入设置模式
- 416   1          {
- 417   2              RELAY = 0; // 断开继电器
- 418   2              DCM = 0;   // 关闭直流电机
- 419   2              TR0 = 0;   // 关闭定时计器T0
- 420   2              TR1 = 0;   // 关闭定时计器T1
- 421   2              play_music = 0; // 关闭音乐
- 422   2              // 得从主函数中调用 否则可能会发生形参被出错 产生不可预料问题
- 423   2              // 可以设定一个标志 让主函数调用一次 ready_settings
- 424   2              ready_settings = 1; // 进入设置模式 刷新设置模式显示
- 425   2          }
- 426   1          settings_mode = !settings_mode;
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:29:00 PAGE 8   
+ 365           *     当按下持续时间超过给定阈值将会 切换设置/视图模式 并执行必要的
+ 366           初始化/收尾
+ 367           * 工作
+ 368           */
+ 369          void int_X0() interrupt 0
+ 370          {
+ 371   1          uchar ky; // 临时用来接收按键操作
+ 372   1          uchar i = 20;
+ 373   1          KEYS = 0xff;
+ 374   1          do
+ 375   1          {
+ 376   2              ky = 0x03;
+ 377   2              ky |= KEYS;
+ 378   2              if (ky != 0xfb)
+ 379   2              {
+ 380   3                  Delay1ms(10);
+ 381   3                  ky = 0x03;
+ 382   3                  ky |= KEYS;
+ 383   3                  if (ky != 0xfb)
+ 384   3                      return;
+ 385   3              }
+ 386   2              Delay1ms(50);
+ 387   2          } while (--i);
+ 388   1          if (settings_mode) // 退出设置模式
+ 389   1          {
+ 390   2              // 将设置的内容存储至 DS18B20
+ 391   2              DS18B20_Set(upperLimit, lowerLimit, dsr);
+ 392   2              DS18B20_Save();
+ 393   2              // 将设置的内容存储至 24lc02
+ 394   2              settingsSave = 0xff;
+ 395   2              settingsSave &= (fanGearStep << 5) | (ringtoneNum << 3) | (ringRate);
+ 396   2              if (ringtone_change)
+ 397   2                  ReadMusic();
+ 398   2              /**
+ 399   2               * @bug 不知道为什么 只要在此放下
+ 400   2               * AT24C02_WriteData(0xa0,0x00,&settingsSave,1) / Byte(...)
+ 401   2               * 就会在触发外部中断时导致死循环/崩溃，哪怕 if(0)
+ 402   2               * 没有调用此函数 仅仅是存在就会导致如此 因此作为妥协
+ 403   2               只好设置一个标志位
+ 404   2               * 在主循环中进行存储
+ 405   2               */
+ 406   2              save_in_24c02 = 1;
+ 407   2              // ... ...
+ 408   2              DS18B20_Convert();
+ 409   2              convertCount = 0;
+ 410   2              convert_finished = 0; // 重新打开温度转换
+ 411   2              TR0 = 1;              // 重启定时器开始测温
+ 412   2              freqSize = 2144 - 256 * ringRate;
+ 413   2              option = 0xff;        // 设置模式 不选择
+ 414   2              page_change = 1;      // 需要刷新整个视图显示
+ 415   2          }
+ 416   1          else // 进入设置模式
+ 417   1          {
+ 418   2              RELAY = 0; // 断开继电器
+ 419   2              DCM = 0;   // 关闭直流电机
+ 420   2              TR0 = 0;   // 关闭定时计器T0
+ 421   2              TR1 = 0;   // 关闭定时计器T1
+ 422   2              play_music = 0; // 关闭音乐
+ 423   2              // 得从主函数中调用 否则可能会发生形参被出错 产生不可预料问题
+ 424   2              // 可以设定一个标志 让主函数调用一次 ready_settings
+ 425   2              ready_settings = 1; // 进入设置模式 刷新设置模式显示
+ 426   2          }
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 8   
 
- 427   1      }
- 428          
- 429          /**
- 430           * T0 中断函数
- 431           * 设定:
- 432           *     定时器 T0 方式2 初值 0 计数256溢出一次
- 433           *     所以 定时器中断内 指令周期总和需要少于 250 个机器周期
- 434           *     在 定时器中断函数内 获取温度等复杂函数 会严重破坏 T0 产生的时序
- 435           * 思路:
- 436           *     在中断函数内通过设置标志位 让复杂的函数逻辑在主循环中执行
- 437           * 理念:
- 438           *     在 11.0592MHz下  每 1/3.6 ms 溢出一次 即中断36次为 10ms
- 439           *     所以 T0 可以作为 1/3.6 ms 的时序产生器
- 440           *     通过 计数变量 count 即可实现不同周期的定时
- 441           */
- 442          void int_T0() interrupt 1 using 1 // 指定寄存器组提高程序效率 减少误差
- 443          {
- 444   1          UpdateAboutTimer();
- 445   1      }
- 446          
- 447          void int_T1() interrupt 3 using 2 // 指定寄存器组提高程序效率 减少误差
- 448          {
- 449   1          if (freqH || freqL) // 如果是休止符(0)，那么不播放声音，只进行延时
- 450   1          {
- 451   2              // 取对应频率值的重装载值到定时器(确认音高) musicArr[musicSelect]
- 452   2              TH1 = freqH; // 设置高位定时初值
- 453   2              TL1 = freqL; // 设置低位定时初值
- 454   2              // 翻转蜂鸣器IO口(注意这里的重装值是周期的一半，故仅进行一次蜂鸣器�
+ 427   1          settings_mode = !settings_mode;
+ 428   1      }
+ 429          
+ 430          /**
+ 431           * T0 中断函数
+ 432           * 设定:
+ 433           *     定时器 T0 方式2 初值 0 计数256溢出一次
+ 434           *     所以 定时器中断内 指令周期总和需要少于 250 个机器周期
+ 435           *     在 定时器中断函数内 获取温度等复杂函数 会严重破坏 T0 产生的时序
+ 436           * 思路:
+ 437           *     在中断函数内通过设置标志位 让复杂的函数逻辑在主循环中执行
+ 438           * 理念:
+ 439           *     在 11.0592MHz下  每 1/3.6 ms 溢出一次 即中断36次为 10ms
+ 440           *     所以 T0 可以作为 1/3.6 ms 的时序产生器
+ 441           *     通过 计数变量 count 即可实现不同周期的定时
+ 442           */
+ 443          void int_T0() interrupt 1 using 1 // 指定寄存器组提高程序效率 减少误差
+ 444          {
+ 445   1          UpdateAboutTimer();
+ 446   1      }
+ 447          
+ 448          void int_T1() interrupt 3 using 2 // 指定寄存器组提高程序效率 减少误差
+ 449          {
+ 450   1          if (freqH || freqL) // 如果是休止符(0)，那么不播放声音，只进行延时
+ 451   1          {
+ 452   2              // 取对应频率值的重装载值到定时器(确认音高) musicArr[musicSelect]
+ 453   2              TH1 = freqH; // 设置高位定时初值
+ 454   2              TL1 = freqL; // 设置低位定时初值
+ 455   2              // 翻转蜂鸣器IO口(注意这里的重装值是周期的一半，故仅进行一次蜂鸣器�
              -�翻转)
- 455   2              BUZZER = !BUZZER;
- 456   2          }
- 457   1          if (TF0)
- 458   1          {
- 459   2              TF0 = 0;
- 460   2              UpdateAboutTimer();
- 461   2          }
- 462   1      }
- 463          
- 464          /*
- 465           * 为了测时I2C 24C02
- 466          extern void _nop_(void);
- 467          uchar code aa[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
- 468          uchar idata bb[] = "                                                        ";
- 469          extern void Delay1ms(uint t);
- 470          extern uint SHOW_WAIT;
- 471          
- 472          void main(void)
- 473          {
- 474              uchar i, j;
- 475              LCD1602_WriteCmd(Set_8bit_2line_5x7); // 命令6
- 476              LCD1602_WriteCmd(Show_CursorOn);      // 命令4
- 477              LCD1602_WriteCmd(Mode_CursorRightMove);
- 478              LCD1602_WriteCmd(Clear_Screen); // 命令1
- 479              // I2C_WriteData(0xa0, 0x00, aa, 26);
- 480              I2C_Init();
- 481              // I2C_WriteData(0xa0, 0x80, aa, 53);
- 482              // At24c02_WriteByte(0xa0, 0x00, aa, 8);
- 483              At24c02_WriteData(0xa0, 0xb0, aa, 53);
- 484              SHOW_WAIT = 100;
- 485          
- 486              // LCD1602_ShowString(aa);
- 487              At24c02_ReadData(0xa0, 0xb0, bb, 53);
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:29:00 PAGE 9   
+ 456   2              BUZZER = !BUZZER;
+ 457   2          }
+ 458   1          if (TF0)
+ 459   1          {
+ 460   2              TF0 = 0;
+ 461   2              UpdateAboutTimer();
+ 462   2          }
+ 463   1      }
+ 464          
+ 465          /*
+ 466           * 为了测时I2C 24C02
+ 467          extern void _nop_(void);
+ 468          uchar code aa[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+ 469          uchar idata bb[] = "                                                        ";
+ 470          extern void Delay1ms(uint t);
+ 471          extern uint SHOW_WAIT;
+ 472          
+ 473          void main(void)
+ 474          {
+ 475              uchar i, j;
+ 476              LCD1602_WriteCmd(Set_8bit_2line_5x7); // 命令6
+ 477              LCD1602_WriteCmd(Show_CursorOn);      // 命令4
+ 478              LCD1602_WriteCmd(Mode_CursorRightMove);
+ 479              LCD1602_WriteCmd(Clear_Screen); // 命令1
+ 480              // I2C_WriteData(0xa0, 0x00, aa, 26);
+ 481              I2C_Init();
+ 482              // I2C_WriteData(0xa0, 0x80, aa, 53);
+ 483              // At24c02_WriteByte(0xa0, 0x00, aa, 8);
+ 484              At24c02_WriteData(0xa0, 0xb0, aa, 53);
+ 485              SHOW_WAIT = 100;
+ 486          
+ 487              // LCD1602_ShowString(aa);
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 9   
 
- 488              i = 53;
- 489              while (1)
- 490              {
- 491                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(0));
- 492                  for (j = 16; j && i; --j)
- 493                  {
- 494                      LCD1602_WriteData(bb[--i]);
- 495                      Delay1ms(100);
- 496                  }
- 497                  if (!i)
- 498                      break;
- 499              }
- 500              // // LCD1602_WriteCmd(Return_Cursor);
- 501              // // LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
- 502              // // LCD1602_ShowString(bb);
- 503              while (1)
- 504                  ;
- 505          }
- 506          */
+ 488              At24c02_ReadData(0xa0, 0xb0, bb, 53);
+ 489              i = 53;
+ 490              while (1)
+ 491              {
+ 492                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(0));
+ 493                  for (j = 16; j && i; --j)
+ 494                  {
+ 495                      LCD1602_WriteData(bb[--i]);
+ 496                      Delay1ms(100);
+ 497                  }
+ 498                  if (!i)
+ 499                      break;
+ 500              }
+ 501              // // LCD1602_WriteCmd(Return_Cursor);
+ 502              // // LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
+ 503              // // LCD1602_ShowString(bb);
+ 504              while (1)
+ 505                  ;
+ 506          }
+ 507          */
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1282    ----
+   CODE SIZE        =   1279    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

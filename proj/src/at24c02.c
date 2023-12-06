@@ -7,6 +7,8 @@
  */
 #include "i2c.h"
 
+#define AT24C02_NO_MULTI_PAGE_WRITE
+
 #ifndef uchar
 #define uchar unsigned char
 #endif
@@ -76,6 +78,8 @@ bit At24c02_WriteByte(uchar sla, uchar suba, uchar* dat, uchar num)
     return flg;
 }
 
+#ifndef AT24C02_NO_MULTI_PAGE_WRITE
+
 void At24c02_Wait(void) // 12MHz 1000us
 {
     uchar t = 164;
@@ -135,6 +139,8 @@ bit At24c02_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
     else
         return 0;
 }
+
+#endif
 
 /**
  * 2023/12/04

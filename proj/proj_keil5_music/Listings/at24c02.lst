@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 08:15:01 PAGE 1   
+C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 10:21:19 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE AT24C02
@@ -62,7 +62,7 @@ line level    source
   52          // 页写入时序 最多为 页写缓冲器的大小 字节 超出会被循环覆盖 且此函数不带�
              -�迟
   53          bit At24c02_WriteByte(uchar sla, uchar suba, uchar* dat, uchar num)
-C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 08:15:01 PAGE 2   
+C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 10:21:19 PAGE 2   
 
   54          {
   55   1          bit flg;
@@ -126,7 +126,7 @@ line level    source
  113   2              suba += i;
  114   2              dat += i;
  115   2              ++begin;
-C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 08:15:01 PAGE 3   
+C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 10:21:19 PAGE 3   
 
  116   2              if (!At24c02_Check(sla))
  117   2                  return 0;
@@ -190,7 +190,7 @@ line level    source
  173          */
 
 
-C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 08:15:01 PAGE 4   
+C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 10:21:19 PAGE 4   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    448    ----

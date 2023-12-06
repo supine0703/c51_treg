@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MUSIC                                                             12/06/2023 08:15:01 PAGE 1   
+C51 COMPILER V9.60.7.0   MUSIC                                                             12/06/2023 10:21:19 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MUSIC
@@ -62,7 +62,7 @@ line level    source
   52              // 2
   53              M6,4, M6,4, M5,8, 
   54              // 3 
-C51 COMPILER V9.60.7.0   MUSIC                                                             12/06/2023 08:15:01 PAGE 2   
+C51 COMPILER V9.60.7.0   MUSIC                                                             12/06/2023 10:21:19 PAGE 2   
 
   55              M4,4, M4,4, M3,4, M3,4,
   56              // 4
@@ -126,7 +126,7 @@ line level    source
  114          };
  115          
  116          // void Delay_music(unsigned int t)
-C51 COMPILER V9.60.7.0   MUSIC                                                             12/06/2023 08:15:01 PAGE 3   
+C51 COMPILER V9.60.7.0   MUSIC                                                             12/06/2023 10:21:19 PAGE 3   
 
  117          // {
  118          //     unsigned int j;
