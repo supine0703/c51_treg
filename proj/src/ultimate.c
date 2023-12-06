@@ -5,6 +5,7 @@
  * ----------------------------------------------
  */
 #include "__config__.h"
+#include "at24c02.h"
 #include "lcd1602.h"
 #include "utility.h"
 
@@ -25,9 +26,10 @@ extern uchar fanGear, fanGearStep;
 extern uchar hus, hms, hs, hm; // 开机后 超过温度上限 时间
 extern uchar lus, lms, ls, lm; // 开机后 低于温度下限 时间
 extern uchar key, pressKey, page, option;
-extern uchar dsr, ringtoneNum, audio, changeCount;
-extern uchar code DC[];
+extern uchar dsr, ringtoneNum, ringRate, changeCount;
 extern uchar numStr[];
+extern uchar code DC[];
+extern uchar idata musicArr[];
 
 void Delay1ms(uint t) // 12MHz
 {                     // 软件延迟 参数用uchar 比uint 精准
@@ -150,13 +152,11 @@ void ShowViewPage_4(void)
     LCD1602_ShowString("   FGS: ");
     LCD1602_WriteData('0' + fanGearStep);
     LCD1602_ShowString(DC);
-    // LCD1602_ShowString("  M:");
-    // LCD1602_ShowString();
-    // 第二行 音量
+    // 第二行 ring速度
     LCD1602_WriteCmd(Move_Cursor_Row2_Col(0));
-    LCD1602_ShowString("audio: ");
+    LCD1602_ShowString("ringRate:");
     i = 0;
-    while (i < audio)
+    while (i < ringRate)
     {
         LCD1602_WriteData(0xff);
         ++i;
@@ -206,9 +206,9 @@ void ShowSettings(uchar opt)
             LCD1602_ShowString("ringtone:  ");
             LCD1602_WriteData('0' + ringtoneNum);
             // 5 音量
-            LCD1602_WriteCmd(Move_Cursor_Row2_Col(4));
-            LCD1602_ShowString("Audio: ");
-            LCD1602_WriteData('0' + audio);
+            LCD1602_WriteCmd(Move_Cursor_Row2_Col(2));
+            LCD1602_ShowString("ring Rate: ");
+            LCD1602_WriteData('0' + ringRate);
             break;
         }
         }
@@ -280,7 +280,7 @@ void ChangeSetting(void)
         }
     }
     case 5: {
-        i = audio; // 0 - 7
+        i = ringRate; // 0 - 7
     }
     case 4: {
         if (option == 4)
@@ -295,7 +295,7 @@ void ChangeSetting(void)
             i = dsr; // 0 - 3
         LCD1602_WriteCmd(
             (option & 1 ? 0xc0 : 0x80) |
-            (option == 5 ? 12 : (option == 4 ? 14 : 15))
+            ((option == 5 || option == 4) ? 14 : 15)
         );
         while (1)
         {
@@ -314,7 +314,7 @@ void ChangeSetting(void)
             {
             case 2: {
                 if (option == 5)
-                    audio = i;
+                    ringRate = i;
                 else if (option == 4 && ringtoneNum != i)
                 {
                     ringtone_change = 1;
@@ -327,7 +327,7 @@ void ChangeSetting(void)
             }
             case -2: {
                 j = option == 5
-                        ? audio
+                        ? ringRate
                         : (option == 4 ? ringtoneNum
                                        : (option == 3 ? fanGearStep : dsr));
                 LCD1602_WriteCmd(Shift_CursorLeft);
@@ -335,7 +335,7 @@ void ChangeSetting(void)
                 return;
             }
             case -1: {
-                if (i > 0 + (option == 4))
+                if (i > 0)
                     --i;
                 break;
             }
@@ -563,4 +563,13 @@ void UpdateExtremes(bit which) // 1: Highest  0: Lowest
     FloatToString(which ? highest : lowest, numStr, 5, 1);
     LCD1602_ShowString(numStr);
     LCD1602_ShowString(DC);
+}
+
+void ReadMusic(void)
+{
+    uchar startAddr, musicLen;
+    At24c02_ReadData(0xa0, ringtoneNum + 0x03, &startAddr, 1);
+    At24c02_ReadData(0xa0, ringtoneNum + 0x04, &musicLen, 1);
+    musicLen -= startAddr;
+    At24c02_ReadData(0xa0, startAddr, musicArr, musicLen);
 }

@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "music.h": "c",
+        "at24c02.h": "c",
+        "reg52.h": "c",
+        "__config__.h": "c"
+    }
+}

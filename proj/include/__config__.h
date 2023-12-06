@@ -61,8 +61,9 @@
 
 // ---------------------------------
 
-#define KEYS P3 // 按键
-#define DEFINE_DCM P2 ^ 7
-#define DEFINE_RELAY P2 ^ 3
+#define KEYS P3              // 按键
+#define DEFINE_DCM P2 ^ 7    // 直流电机
+#define DEFINE_RELAY P2 ^ 3  // 继电器
+#define DEFINE_BUZZER P1 ^ 4 // 蜂鸣器
 
 #endif // __CONFIG___H

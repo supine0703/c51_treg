@@ -148,7 +148,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>src\MAIN.C</Filename>
+          <Filename>E:\Project\.Github\c51Lib\proj\proj_keil5\src\MAIN.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>

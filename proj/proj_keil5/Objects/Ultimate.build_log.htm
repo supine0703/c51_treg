@@ -19,7 +19,7 @@ CPU DLL:         S8051.DLL V3.125.1.0
 Dialog DLL:      DP51.DLL V2.69.0.0 
 <h2>Project:</h2>
 e:\Project\.Github\c51Lib\proj\proj_keil5\Ultimate.uvproj
-Project File Date:  12/04/2023
+Project File Date:  12/06/2023
 
 <h2>Output:</h2>
 Rebuild target 'Target_1'
@@ -35,9 +35,21 @@ compiling at24c02.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_AT24C02_WRITEDATA?AT24C02
-Program Size: data=214.3 xdata=0 code=6703
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?READMUSIC?ULTIMATE
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?INT_X0?MAIN
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_AT24C02_READDATA?AT24C02
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?INT_X0?MAIN
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?I2C_CHECKACK?I2C
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?INT_X0?MAIN
+Program Size: data=219.6 xdata=0 code=7197
 creating hex file from ".\Objects\Ultimate"...
-".\Objects\Ultimate" - 0 Error(s), 1 Warning(s).
+".\Objects\Ultimate" - 0 Error(s), 4 Warning(s).
 Build Time Elapsed:  00:00:00
 </pre>
 </body>

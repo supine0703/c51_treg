@@ -1,0 +1,178 @@
+C51 COMPILER V9.60.7.0   MUSIC                                                             12/06/2023 08:15:01 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MUSIC
+OBJECT MODULE PLACED IN .\Objects\music.obj
+COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE music.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include;..\src) DEBUG OBJECT
+                    -EXTEND PRINT(.\Listings\music.lst) OBJECT(.\Objects\music.obj)
+
+line level    source
+
+   1          #include "music.h"
+   2          #include "at24c02.h"
+   3          
+   4          unsigned int Speed = 600;
+   5          unsigned int FreqSelect, MusicSelect;
+   6          unsigned char idata Music_arry[128];
+   7          
+   8          // 乐谱
+   9          unsigned char code Music[] =
+  10          {
+  11              // 乐谱较长加上关键字code将其储存在ROM(flash)
+  12              // 音符,时值,
+  13          
+  14              // 孤勇者
+  15              // 1
+  16              H1,1, H2,1, M7,1, H1,1, H1,2, H1,1, M7,1, H1,1, H2,1, M7,1, H1,1, H1,2, H1,1, H2,1,
+  17          
+  18              // 2
+  19              H3,1, H2,1, H3,1, H2,1, H3,2, H3,1, H2,1, H3,2, H5,2, H3,2, M6,1, M7,1,
+  20          
+  21              // 3
+  22              H1,1, H2,1, M7,1, H1,1, H1,2, H1,1, M7,1, H1,1, H2,1, M7,1, H1,1, H1,2, H1,1, M7,1,
+  23          
+  24              0xff,
+  25          
+  26              // 天空之城
+  27              // 1
+  28              M6,2, M7,2,
+  29              // 2
+  30              H1,6, M7,2, H1,4, H3,4,
+  31              // 3
+  32              M7,12, M3,2, M3,2,
+  33              // 4
+  34              M6,6, M5,2, M6,4, H1,4,
+  35              // 5
+  36              M5,12, M3,4,
+  37              // 7
+  38              M4,6, M3,2, M4,4, H1,4,
+  39              // 8
+  40              M3,8, P,2, H1,2, H1,2, H1,2,
+  41              // 9 
+  42              M7,6, M4,2, M4,4, M7,4, 
+  43              // 10
+  44              M7,8, P,4,
+  45                  // M6,2, M7,2,
+  46          
+  47              0xff,
+  48          
+  49              // 小星星
+  50              // 1
+  51              M1,4, M1,4, M5,4, M5,4,
+  52              // 2
+  53              M6,4, M6,4, M5,8, 
+  54              // 3 
+C51 COMPILER V9.60.7.0   MUSIC                                                             12/06/2023 08:15:01 PAGE 2   
+
+  55              M4,4, M4,4, M3,4, M3,4,
+  56              // 4
+  57              M2,4, M2,4, M1,8, 
+  58              // 5
+  59              M5,4, M5,4, M4,4, M4,4,
+  60              // 6
+  61              M3,4, M3,4, M2,8,
+  62              // 7
+  63              M5,4, M5,4, M4,4, M4,4,
+  64              // 8
+  65              M3,4, M3,4, M2,8,
+  66          
+  67              0xff,
+  68          
+  69              0xfe // 终止标志
+  70          };
+  71          
+  72          
+  73          
+  74          // 索引与频率对照表
+  75          unsigned int code FreqTable[] =
+  76          {
+  77              0,     // 0
+  78              63628, // 1
+  79              63731, // 2
+  80              63835, // 3
+  81              63928, // 4
+  82              64021, // 5
+  83              64103, // 6
+  84              64185, // 7
+  85              64260, // 8
+  86              64331, // 9
+  87              64400, // 10
+  88              64463, // 11
+  89              64528, // 12
+  90              64580, // 13
+  91              64633, // 14
+  92              64684, // 15
+  93              64732, // 16
+  94              64777, // 17
+  95              64820, // 18
+  96              64860, // 19
+  97              64898, // 20
+  98              64934, // 21
+  99              64968, // 22
+ 100              65000, // 23
+ 101              65030, // 24
+ 102              65058, // 25
+ 103              65085, // 26
+ 104              65110, // 27
+ 105              65134, // 28
+ 106              65157, // 29
+ 107              65178, // 30
+ 108              65198, // 31
+ 109              65217, // 32
+ 110              65235, // 33
+ 111              65252, // 34
+ 112              65268, // 35
+ 113              65283, // 36
+ 114          };
+ 115          
+ 116          // void Delay_music(unsigned int t)
+C51 COMPILER V9.60.7.0   MUSIC                                                             12/06/2023 08:15:01 PAGE 3   
+
+ 117          // {
+ 118          //     unsigned int j;
+ 119          //     while (t--)
+ 120          //     {
+ 121          //         for (j = 125; j > 0; --j)
+ 122          //         {
+ 123          //         }
+ 124          //     }
+ 125          // }
+ 126          
+ 127          /**
+ 128           * 约定:
+ 129           * 0-2 前三字节空出来
+ 130           * 3-7 第4-8字节存储音乐的起止地址 (最多4首歌)
+ 131           * 8-255 留于存储音乐
+ 132          */
+ 133          void Music_score(void)
+ 134          {
+ 135   1          unsigned char addr, temp, i;
+ 136   1          addr = 0x03;
+ 137   1          temp = 0x08;
+ 138   1          At24c02_WriteData(0xa0, addr, &temp, 1);
+ 139   1          for (i = 0; Music[i] != ALL_END; i++)
+ 140   1          {
+ 141   2              if (Music[i] == MUSIC_END)
+ 142   2              {
+ 143   3                  temp = 0x09 + i;
+ 144   3                  At24c02_WriteData(0xa0, ++addr, &temp, 1);
+ 145   3              }
+ 146   2          }
+ 147   1          while (++addr < 0x08)
+ 148   1              At24c02_WriteData(0xa0, addr, &temp, 1);
+ 149   1          At24c02_WriteData(0xa0, 0x08, Music, i);
+ 150   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    111    ----
+   CONSTANT SIZE    =    274    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6       3
+   IDATA SIZE       =    128    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

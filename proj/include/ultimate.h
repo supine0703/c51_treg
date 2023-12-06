@@ -28,6 +28,8 @@ extern void BelowLimitClock(void); // 下越界计时
 extern void UpdateOverLimitTimer(bit which); // 更新越界的定时值
 extern void UpdateExtremes(bit which); // 更新最高/最低温度值(极值)
 
+extern void ReadMusic(void); // 读取音乐
+
 #endif // ULTIMATE_H
 /**
  * 三套按键系统

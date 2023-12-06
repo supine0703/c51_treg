@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   AT24C02                                                           12/05/2023 03:26:13 PAGE 1   
+C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 08:29:00 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE AT24C02
@@ -21,195 +21,183 @@ line level    source
   11          #define uchar unsigned char
   12          #endif
   13          
-  14          #define PAGE_BYTE 0x10 // 也缓冲器字节数
-  15          
-  16          // 连续读时序
-  17          bit At24c02_ReadData(uchar sla, uchar suba, uchar* dat, uchar num)
-  18          {
-  19   1          bit flg;
-  20   1          uchar i;
-  21   1          if (!num)
-  22   1              return 1;
-  23   1          I2C_Start();       // 启动I2C总线
-  24   1          I2C_SendByte(sla); // 发送器件地址码
-  25   1          if (flg = I2C_CheckAck())
-  26   1          {
-  27   2              I2C_SendByte(suba); // 发送期间单元地址
-  28   2              if (flg = I2C_CheckAck())
-  29   2              {
-  30   3                  I2C_Start();           // 重新启动I2C总线
-  31   3                  I2C_SendByte(sla + 1); // 发送写器件地址码信号
-  32   3                  if (flg = I2C_CheckAck())
-  33   3                  {
-  34   4                      for (i = num - 1; i; --i)
-  35   4                      {
-  36   5                          *dat = I2C_RecByte();
-  37   5                          I2C_Ack();
-  38   5                          ++dat;
-  39   5                      }
-  40   4                      *dat = I2C_RecByte();
-  41   4                      I2C_NoAck();
-  42   4                  }
-  43   3              }
-  44   2          }
-  45   1          I2C_Stop();
-  46   1          return flg;
-  47   1      }
-  48          
-  49          // 页写入时序 最多为 页写缓冲器的大小 字节 超出会被循环覆盖 且此函数不带�
+  14          #define PAGE_BIT 4
+  15          #define PAGE_END 0x0f
+  16          
+  17          #define PAGE_BYTE 0x10 // 也缓冲器字节数
+  18          
+  19          // 连续读时序
+  20          bit At24c02_ReadData(uchar sla, uchar suba, uchar* dat, uchar num)
+  21          {
+  22   1          bit flg;
+  23   1          uchar i;
+  24   1          if (!num)
+  25   1              return 1;
+  26   1          I2C_Start();       // 启动I2C总线
+  27   1          I2C_SendByte(sla); // 发送器件地址码
+  28   1          if (flg = I2C_CheckAck())
+  29   1          {
+  30   2              I2C_SendByte(suba); // 发送期间单元地址
+  31   2              if (flg = I2C_CheckAck())
+  32   2              {
+  33   3                  I2C_Start();           // 重新启动I2C总线
+  34   3                  I2C_SendByte(sla + 1); // 发送写器件地址码信号
+  35   3                  if (flg = I2C_CheckAck())
+  36   3                  {
+  37   4                      for (i = num - 1; i; --i)
+  38   4                      {
+  39   5                          *dat = I2C_RecByte();
+  40   5                          I2C_Ack();
+  41   5                          ++dat;
+  42   5                      }
+  43   4                      *dat = I2C_RecByte();
+  44   4                      I2C_NoAck();
+  45   4                  }
+  46   3              }
+  47   2          }
+  48   1          I2C_Stop();
+  49   1          return flg;
+  50   1      }
+  51          
+  52          // 页写入时序 最多为 页写缓冲器的大小 字节 超出会被循环覆盖 且此函数不带�
              -�迟
-  50          bit At24c02_WriteByte(uchar sla, uchar suba, uchar* dat, uchar num)
-  51          {
-  52   1          bit flg;
-  53   1          uchar i;
-C51 COMPILER V9.60.7.0   AT24C02                                                           12/05/2023 03:26:13 PAGE 2   
+  53          bit At24c02_WriteByte(uchar sla, uchar suba, uchar* dat, uchar num)
+C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 08:29:00 PAGE 2   
 
-  54   1          if (!num)
-  55   1              return 1;
-  56   1          I2C_Start();       // 启动I2C总线
-  57   1          I2C_SendByte(sla); // 发送器件地址码
-  58   1          if (flg = I2C_CheckAck())
-  59   1          {
-  60   2              I2C_SendByte(suba); // 发送期间单元地址
-  61   2              if (flg = I2C_CheckAck())
-  62   2              {
-  63   3                  for (i = num; i; --i)
-  64   3                  {
-  65   4                      I2C_SendByte(*dat);
-  66   4                      if (!(flg = I2C_CheckAck()))
-  67   4                          break; // 无应答
-  68   4                      ++dat;
-  69   4                  }
-  70   3              }
-  71   2          }
-  72   1          I2C_Stop(); // 发送结束信号
-  73   1          return flg;
-  74   1      }
-  75          
-  76          void At24c02_Wait(void) // 12MHz 1000us
-  77          {
-  78   1          uchar t = 164;
-  79   1          while (t--)
-  80   1              ;
-  81   1          for (t = 2; t; --t)
-  82   1              ;
-  83   1      }
-  84          
-  85          bit At24c02_Check(uchar sla) // 检查是否写入完成
-  86          {
-  87   1          uchar i = 16;
-  88   1          do // 每毫秒检测一次如果 16 次未应答则是为错误
-  89   1          {
-  90   2              At24c02_Wait();
-  91   2              I2C_Start();
-  92   2              I2C_SendByte(sla); // 发送器件地址码
-  93   2          } while (!I2C_CheckAck() && --i);
-  94   1          I2C_Stop();
-  95   1          return (i != 0);
-  96   1      }
-  97          
-  98          // 连续页写入 带延迟(确保写入完成)
-  99          bit At24c02_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
- 100          {
- 101   1          while (num > PAGE_BYTE) // 按页写入数据 并且等待写入成功开始下一页写入
- 102   1          {
- 103   2              if (!At24c02_WriteByte(sla, suba, dat, PAGE_BYTE))
- 104   2                  return 0;
- 105   2              suba += PAGE_BYTE;
- 106   2              dat += PAGE_BYTE;
- 107   2              num -= PAGE_BYTE;
- 108   2              if (!At24c02_Check(sla))
- 109   2                  return 0;
- 110   2          }
- 111   1          if (At24c02_WriteByte(sla, suba, dat, num))
- 112   1              return At24c02_Check(sla);
- 113   1          else
- 114   1              return 0;
- 115   1      }
-C51 COMPILER V9.60.7.0   AT24C02                                                           12/05/2023 03:26:13 PAGE 3   
+  54          {
+  55   1          bit flg;
+  56   1          uchar i;
+  57   1          if (!num)
+  58   1              return 1;
+  59   1          I2C_Start();       // 启动I2C总线
+  60   1          I2C_SendByte(sla); // 发送器件地址码
+  61   1          if (flg = I2C_CheckAck())
+  62   1          {
+  63   2              I2C_SendByte(suba); // 发送期间单元地址
+  64   2              if (flg = I2C_CheckAck())
+  65   2              {
+  66   3                  for (i = num; i; --i)
+  67   3                  {
+  68   4                      I2C_SendByte(*dat);
+  69   4                      if (!(flg = I2C_CheckAck()))
+  70   4                          break; // 无应答
+  71   4                      ++dat;
+  72   4                  }
+  73   3              }
+  74   2          }
+  75   1          I2C_Stop(); // 发送结束信号
+  76   1          return flg;
+  77   1      }
+  78          
+  79          void At24c02_Wait(void) // 12MHz 1000us
+  80          {
+  81   1          uchar t = 164;
+  82   1          while (t--)
+  83   1              ;
+  84   1          for (t = 2; t; --t)
+  85   1              ;
+  86   1      }
+  87          
+  88          bit At24c02_Check(uchar sla) // 检查是否写入完成
+  89          {
+  90   1          uchar i = 16;
+  91   1          do // 每毫秒检测一次如果 16 次未应答则是为错误
+  92   1          {
+  93   2              At24c02_Wait();
+  94   2              I2C_Start();
+  95   2              I2C_SendByte(sla); // 发送器件地址码
+  96   2          } while (!I2C_CheckAck() && --i);
+  97   1          I2C_Stop();
+  98   1          return (i != 0);
+  99   1      }
+ 100          
+ 101          // 连续页写入 带延迟(确保写入完成)
+ 102          bit At24c02_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
+ 103          {
+ 104   1          uchar begin, end, i;
+ 105   1          if (!num)
+ 106   1              return 1;
+ 107   1          begin = suba >> PAGE_BIT;
+ 108   1          end = (suba + (num - 1)) >> PAGE_BIT;
+ 109   1          if (begin != end)
+ 110   1          {
+ 111   2              i = PAGE_END - (suba & PAGE_END) + 1;
+ 112   2              At24c02_WriteByte(sla, suba, dat, i);
+ 113   2              suba += i;
+ 114   2              dat += i;
+ 115   2              ++begin;
+C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 08:29:00 PAGE 3   
 
- 116          
- 117          /**
- 118           * 2023/12/04
- 119           * 最开始学24c02我以为页写入操作是存储空间被例如 划分为了 每页16byte 共16page
- 120           * 我以为是只能以每页为单位进行存储 例如 0x03 开始存储到0x0f会自动返回到0x00
- 121           * 因为许多人使用 '不会自动翻页' 来形容页写入 甚至有人认为有 '页读取'
- 122           * 这是非常离谱的误会 下面有我实现的 '错误' 的连续页写入方式
- 123          实现方法很有参考价值
- 124           * 故此保留 参见24c02的数据手册可知 需要页写入时因为受限于 页写缓冲器的大�
+ 116   2              if (!At24c02_Check(sla))
+ 117   2                  return 0;
+ 118   2          }
+ 119   1          while ((begin != end) && begin < PAGE_END)
+ 120   1          {
+ 121   2              At24c02_WriteByte(sla, suba, dat, PAGE_BYTE);
+ 122   2              suba += PAGE_BYTE;
+ 123   2              dat += PAGE_BYTE;
+ 124   2              ++begin;
+ 125   2              if (!At24c02_Check(sla))
+ 126   2                  return 0;
+ 127   2          }
+ 128   1          if (At24c02_WriteByte(
+ 129   1                  sla,
+ 130   1                  suba,
+ 131   1                  dat,
+ 132   1                  ((begin == end) ? ((num - i) & PAGE_END) : (PAGE_END))
+ 133   1              ))
+ 134   1              return At24c02_Check(sla);
+ 135   1          else
+ 136   1              return 0;
+ 137   1      }
+ 138          
+ 139          /**
+ 140           * 2023/12/04
+ 141           * 最开始学24c02我以为页写入操作是存储空间被例如 划分为了 每页16byte 共16page
+ 142           * 我以为是只能以每页为单位进行存储 例如 0x03 开始存储到0x0f会自动返回到0x00
+ 143           * 实际上是一次最多连续写入16byte 下面有我实现的 '错误' 的连续页写入方式
+ 144          实现方法很有参考价值
+ 145           * 故此保留 参见24c02的数据手册可知 需要页写入时因为受限于 页写缓冲器的大�
              -�
- 125          
- 126          #define PAGE_BYTE 0x10
- 127          #define PAGE_BIT 4
- 128          #define PAGE_END 0x0f
- 129          
- 130          bit I2C_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
- 131          {
- 132              bit flg;
- 133              uchar i;
- 134              if (!num)
- 135                  return 1;
- 136              I2C_Start();       // 启动I2C总线
- 137              I2C_SendByte(sla); // 发送器件地址码
- 138              if (flg = I2C_CheckAck())
- 139              {
- 140                  I2C_SendByte(suba); // 发送期间单元地址
- 141                  if (flg = I2C_CheckAck())
- 142                  {
- 143                      for (i = num; i; --i)
- 144                      {
- 145                          I2C_SendByte(*dat);
- 146                          if (!(flg = I2C_CheckAck()))
- 147                              break; // 无应答
- 148                          ++dat;
- 149                      }
- 150                  }
- 151              }
- 152              I2C_Stop(); // 发送结束信号
- 153              return flg;
- 154          }
- 155          
- 156          void At24c02_Write(uchar sla, uchar suba, uchar* dat, uchar num)
- 157          {
- 158              uchar begin, end, i;
- 159              if (!num)
- 160                  return;
- 161              begin = suba >> PAGE_BIT;
- 162              end = (suba + (num - 1)) >> PAGE_BIT;
- 163              if (begin != end)
- 164              {
- 165                  i = PAGE_END - (suba & PAGE_END) + 1;
- 166                  I2C_WriteData(sla, suba, dat, i);
- 167                  suba += i;
- 168                  dat += i;
- 169                  ++begin;
- 170                  At24c02_Wait();
- 171              }
- 172              while ((begin != end) && begin < PAGE_END)
- 173              {
- 174                  I2C_WriteData(sla, suba, dat, PAGE_BYTE);
- 175                  suba += PAGE_BYTE;
- 176                  dat += PAGE_BYTE;
-C51 COMPILER V9.60.7.0   AT24C02                                                           12/05/2023 03:26:13 PAGE 4   
+ 146          
+ 147           * 2023/12/05
+ 148           * 之前又错了 我最开始的理解没错 24c02内存就是被分为了多页 每次写入无法自�
+             -�翻页
+ 149           * 我之前理解错误 参见24c02的数据手册:'内存地址低位加1 高位不变'
+ 150          就是我之前理解的
+ 151           * 所以我将重新启用之前的算法 将错误的算法放在下方以作参考
+ 152          
+ 153          
+ 154          
+ 155          bit At24c02_WriteData(uchar sla, uchar suba, uchar* dat, uchar num)
+ 156          {
+ 157              while (num > PAGE_BYTE) // 按页写入数据 并且等待写入成功开始下一页写入
+ 158              {
+ 159                  if (!At24c02_WriteByte(sla, suba, dat, PAGE_BYTE))
+ 160                      return 0;
+ 161                  suba += PAGE_BYTE;
+ 162                  dat += PAGE_BYTE;
+ 163                  num -= PAGE_BYTE;
+ 164                  if (!At24c02_Check(sla))
+ 165                      return 0;
+ 166              }
+ 167              if (At24c02_WriteByte(sla, suba, dat, num))
+ 168                  return At24c02_Check(sla);
+ 169              else
+ 170                  return 0;
+ 171          }
+ 172          
+ 173          */
 
- 177                  ++begin;
- 178                  At24c02_Wait();
- 179              }
- 180              I2C_WriteData(
- 181                  sla, suba, dat, (begin == end ? (num - i) & PAGE_END : PAGE_END)
- 182              );
- 183              At24c02_Wait();
- 184          }
- 185          
- 186          */
 
+C51 COMPILER V9.60.7.0   AT24C02                                                           12/06/2023 08:29:00 PAGE 4   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    353    ----
+   CODE SIZE        =    448    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----      22
+   DATA SIZE        =   ----      25
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----       2
 END OF MODULE INFORMATION.

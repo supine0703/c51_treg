@@ -1,0 +1,179 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:15:01 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: E:\Keil C51\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\include;..\src) DEBUG OBJECTE
+                    -XTEND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "at24c02.h"
+   2          #include "music.h"
+   3          
+   4          extern unsigned int Speed;
+   5          extern unsigned int MusicSelect, MusicSelect;
+   6          extern unsigned char idata Music_arry[128];
+   7          extern unsigned int code Music[];
+   8          extern unsigned int code FreqTable[];
+   9          
+  10          void TimerInit(void)
+  11          {
+  12   1          TMOD = 0x12; // 设置定时器模式
+  13   1      
+  14   1          TH0 = 0x00; // 自动装填
+  15   1          TL0 = 0x00; // 记 256 次
+  16   1      
+  17   1          TL1 = 0x18; // 设置定时初值
+  18   1          TH1 = 0xFC; // 设置定时初值
+  19   1      
+  20   1          PT0 = 0; // 高优先级
+  21   1          PT1 = 1;
+  22   1      
+  23   1          EA = 1;
+  24   1          ET0 = 1;
+  25   1          ET1 = 1;
+  26   1      
+  27   1          TF0 = 0;
+  28   1          TF1 = 0; // 清除TF1标志
+  29   1          TR0 = 1;
+  30   1          TR1 = 1; // 定时器0开始计时
+  31   1      }
+  32          
+  33          unsigned int delay = 0;
+  34          unsigned int space = 0;
+  35          unsigned char freqH, freqL;
+  36          
+  37          void main()
+  38          {
+  39   1          unsigned char music_num, startAddr, musicLen;
+  40   1          Music_score();
+  41   1              
+  42   1          music_num = 0;
+  43   1          At24c02_ReadData(0xa0, music_num + 0x03, &startAddr, 1);
+  44   1          At24c02_ReadData(0xa0, music_num + 0x04, &musicLen, 1);
+  45   1          musicLen -= startAddr;
+  46   1      
+  47   1          MusicSelect = 0;
+  48   1          At24c02_ReadData(0xa0, startAddr, Music_arry, musicLen);
+  49   1          TimerInit();
+  50   1          while (1)
+  51   1          {
+  52   2              // if (Music_arry[MusicSelect] == MUSIC_END)
+  53   2              //     MusicSelect = 0;
+  54   2              // MusicSelect = Music_arry[MusicSelect]; // 选择音符对应的频率
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:15:01 PAGE 2   
+
+  55   2              // MusicSelect++;
+  56   2      
+  57   2              // Delay_music((Speed >> 2) * Music_arry[MusicSelect]); //
+  58   2              // 选择音符对应的时长
+  59   2              // MusicSelect++;
+  60   2      
+  61   2              // TR1 = 0; // 不同音符间短暂停顿，利用延时开关定时器实现
+  62   2              // Delay_music(24);
+  63   2              // TR1 = 1;
+  64   2              // if (Music_arry[MusicSelect] != MUSIC_END) // 如果不是停止标志位
+  65   2              // {
+  66   2              //     MusicSelect = Music_arry[MusicSelect]; // 选择音符对应的频率
+  67   2              //     MusicSelect++;
+  68   2      
+  69   2              //     Delay_music(
+  70   2              //         Speed / 4 * Music_arry[MusicSelect]
+  71   2              //     ); // 选择音符对应的时长
+  72   2              //     MusicSelect++;
+  73   2      
+  74   2              //     TR1 = 0; // 不同音符间短暂停顿，利用延时开关定时器实现
+  75   2              //     Delay_music(24);
+  76   2              //     TR1 = 1;
+  77   2              // }
+  78   2              // else // 如果是停止标志位
+  79   2              // {
+  80   2              //     TR1 = 0; // 关闭定时器
+  81   2              //     MusicSelect = 0;
+  82   2              // }
+  83   2          }
+  84   1      }
+  85          bit play_music = 1;
+  86          unsigned int freqDelay = 25;
+  87          void int_T0() interrupt 1 using 1
+  88          {
+  89   1          if (play_music)
+  90   1              if (--freqDelay == 24)
+  91   1                  TR1 = 0;
+  92   1              else if (!freqDelay)
+  93   1              {
+  94   2                  TR1 = 1;
+  95   2                  if (Music_arry[MusicSelect] == 0xff)
+  96   2                      MusicSelect = 0;
+  97   2                  freqH = FreqTable[Music_arry[MusicSelect]] >> 8;
+  98   2                  freqL = FreqTable[Music_arry[MusicSelect]] & 0xff;
+  99   2                  ++MusicSelect;
+ 100   2                  freqDelay = Speed * Music_arry[MusicSelect]; // 选择音符对应的时长
+ 101   2                  ++MusicSelect;
+ 102   2              }
+ 103   1          // if (delay > 1)
+ 104   1          // {
+ 105   1          //     --delay;
+ 106   1          //     return;
+ 107   1          // }
+ 108   1          // else if (delay == 1)
+ 109   1          // {
+ 110   1          //     --delay;
+ 111   1          //     TR1 = 0;
+ 112   1          //     space = 24;
+ 113   1          //     return;
+ 114   1          // }
+ 115   1          // else if (space)
+ 116   1          // {
+C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 08:15:01 PAGE 3   
+
+ 117   1          //     --space;
+ 118   1          //     return;
+ 119   1          // }
+ 120   1      
+ 121   1          // if (!TR1) // 不同音符间短暂停顿，利用延时开关定时器实现
+ 122   1          // {
+ 123   1          //     TR1 = 1;
+ 124   1          //     return;
+ 125   1          // }
+ 126   1      
+ 127   1          // if (Music_arry[MusicSelect] == MUSIC_END)
+ 128   1          // {
+ 129   1          //     MusicSelect = 0;
+ 130   1          // }
+ 131   1          // // MusicSelect = Music_arry[MusicSelect]; // 选择音符对应的频率
+ 132   1          // freqH = FreqTable[Music_arry[MusicSelect]] >> 8;
+ 133   1          // freqL = FreqTable[Music_arry[MusicSelect]] & 0xff;
+ 134   1          // MusicSelect++;
+ 135   1      
+ 136   1          // delay = (Speed)*Music_arry[MusicSelect]; // 选择音符对应的时长
+ 137   1          // MusicSelect++;
+ 138   1      }
+ 139          
+ 140          void int_T1() interrupt 3 using 2
+ 141          {
+ 142   1          if (freqH || freqL) // 如果是休止符(0)，那么不播放声音，只进行延时
+ 143   1          {
+ 144   2              // 取对应频率值的重装载值到定时器(确认音高)MusicSelect=Music[MusicSelect]
+ 145   2              TL1 = freqL; // 设置低位定时初值
+ 146   2              TH1 = freqH;   // 设置高位定时初值
+ 147   2              // 翻转蜂鸣器IO口(注意这里的重装值是周期的一半，故仅进行一次蜂鸣器�
+             -�翻转)
+ 148   2              Buzzer = !Buzzer;
+ 149   2          }
+ 150   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    266    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
