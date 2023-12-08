@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/08/2023 08:30:10 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   52          void init_data(void);          // 初始化数据
   53          void init_program(void);       // 初始化程序
   54          void UpdateTemperature(void);  // 更新温度信息
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 2   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/08/2023 08:30:10 PAGE 2   
 
   55          void UpdateViewPageShow(void); // 刷新视图显示
   56          
@@ -126,7 +126,7 @@ line level    source
  114   4                  }
  115   3                  UpdateViewPageShow(); // 刷新视图显示
  116   3                  KeysSystem_1();       // 第一套按键事件响应系统
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 3   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/08/2023 08:30:10 PAGE 3   
 
  117   3              }
  118   2          }
@@ -190,7 +190,7 @@ line level    source
  176          void init_music(void)
  177          {
  178   1          play_music = 1;
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 4   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/08/2023 08:30:10 PAGE 4   
 
  179   1          PT0 = 0;
  180   1          TF1 = 0;    // 清除TF1标志
@@ -254,7 +254,7 @@ line level    source
  238   2              RELAY = 0;             // 断开继电器
  239   2              dc_motor_working = 0;  // 直流电机停止工作
  240   2              fanGear = 0;           // 直流电机档位置0
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 5   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/08/2023 08:30:10 PAGE 5   
 
  241   2              below_lower_limit = 0; // 下越界标志位清0
  242   2              above_upper_limit = 0; // 上越界标志位清0
@@ -318,7 +318,7 @@ line level    source
  300   2              if (page_change)
  301   2              { // 如果视图改变 刷新整个屏幕内容显示
  302   3                  ShowViewPage_4();
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 6   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/08/2023 08:30:10 PAGE 6   
 
  303   3                  page_change = 0;
  304   3              }
@@ -382,7 +382,7 @@ line level    source
  362           * 思路:
  363           *     外部中断通过软件延迟 每0.05s判断一次是否仍然处于 按下且仅按下 INT0
  364           状态
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 7   
+C51 COMPILER V9.60.7.0   MAIN                                                              12/08/2023 08:30:10 PAGE 7   
 
  365           *     当按下持续时间超过给定阈值将会 切换设置/视图模式 并执行必要的
  366           初始化/收尾
@@ -437,105 +437,106 @@ line level    source
  415   2          }
  416   1          else // 进入设置模式
  417   1          {
- 418   2              RELAY = 0; // 断开继电器
- 419   2              DCM = 0;   // 关闭直流电机
- 420   2              TR0 = 0;   // 关闭定时计器T0
- 421   2              TR1 = 0;   // 关闭定时计器T1
- 422   2              play_music = 0; // 关闭音乐
- 423   2              // 得从主函数中调用 否则可能会发生形参被出错 产生不可预料问题
- 424   2              // 可以设定一个标志 让主函数调用一次 ready_settings
- 425   2              ready_settings = 1; // 进入设置模式 刷新设置模式显示
- 426   2          }
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 8   
+ 418   2              BUZZER = 1;
+ 419   2              RELAY = 0; // 断开继电器
+ 420   2              DCM = 0;   // 关闭直流电机
+ 421   2              TR0 = 0;   // 关闭定时计器T0
+ 422   2              TR1 = 0;   // 关闭定时计器T1
+ 423   2              play_music = 0; // 关闭音乐
+ 424   2              // 得从主函数中调用 否则可能会发生形参被出错 产生不可预料问题
+ 425   2              // 可以设定一个标志 让主函数调用一次 ready_settings
+ 426   2              ready_settings = 1; // 进入设置模式 刷新设置模式显示
+C51 COMPILER V9.60.7.0   MAIN                                                              12/08/2023 08:30:10 PAGE 8   
 
- 427   1          settings_mode = !settings_mode;
- 428   1      }
- 429          
- 430          /**
- 431           * T0 中断函数
- 432           * 设定:
- 433           *     定时器 T0 方式2 初值 0 计数256溢出一次
- 434           *     所以 定时器中断内 指令周期总和需要少于 250 个机器周期
- 435           *     在 定时器中断函数内 获取温度等复杂函数 会严重破坏 T0 产生的时序
- 436           * 思路:
- 437           *     在中断函数内通过设置标志位 让复杂的函数逻辑在主循环中执行
- 438           * 理念:
- 439           *     在 11.0592MHz下  每 1/3.6 ms 溢出一次 即中断36次为 10ms
- 440           *     所以 T0 可以作为 1/3.6 ms 的时序产生器
- 441           *     通过 计数变量 count 即可实现不同周期的定时
- 442           */
- 443          void int_T0() interrupt 1 using 1 // 指定寄存器组提高程序效率 减少误差
- 444          {
- 445   1          UpdateAboutTimer();
- 446   1      }
- 447          
- 448          void int_T1() interrupt 3 using 2 // 指定寄存器组提高程序效率 减少误差
- 449          {
- 450   1          if (freqH || freqL) // 如果是休止符(0)，那么不播放声音，只进行延时
- 451   1          {
- 452   2              // 取对应频率值的重装载值到定时器(确认音高) musicArr[musicSelect]
- 453   2              TH1 = freqH; // 设置高位定时初值
- 454   2              TL1 = freqL; // 设置低位定时初值
- 455   2              // 翻转蜂鸣器IO口(注意这里的重装值是周期的一半，故仅进行一次蜂鸣器�
+ 427   2          }
+ 428   1          settings_mode = !settings_mode;
+ 429   1      }
+ 430          
+ 431          /**
+ 432           * T0 中断函数
+ 433           * 设定:
+ 434           *     定时器 T0 方式2 初值 0 计数256溢出一次
+ 435           *     所以 定时器中断内 指令周期总和需要少于 250 个机器周期
+ 436           *     在 定时器中断函数内 获取温度等复杂函数 会严重破坏 T0 产生的时序
+ 437           * 思路:
+ 438           *     在中断函数内通过设置标志位 让复杂的函数逻辑在主循环中执行
+ 439           * 理念:
+ 440           *     在 11.0592MHz下  每 1/3.6 ms 溢出一次 即中断36次为 10ms
+ 441           *     所以 T0 可以作为 1/3.6 ms 的时序产生器
+ 442           *     通过 计数变量 count 即可实现不同周期的定时
+ 443           */
+ 444          void int_T0() interrupt 1 using 1 // 指定寄存器组提高程序效率 减少误差
+ 445          {
+ 446   1          UpdateAboutTimer();
+ 447   1      }
+ 448          
+ 449          void int_T1() interrupt 3 using 2 // 指定寄存器组提高程序效率 减少误差
+ 450          {
+ 451   1          if (freqH || freqL) // 如果是休止符(0)，那么不播放声音，只进行延时
+ 452   1          {
+ 453   2              // 取对应频率值的重装载值到定时器(确认音高) musicArr[musicSelect]
+ 454   2              TH1 = freqH; // 设置高位定时初值
+ 455   2              TL1 = freqL; // 设置低位定时初值
+ 456   2              // 翻转蜂鸣器IO口(注意这里的重装值是周期的一半，故仅进行一次蜂鸣器�
              -�翻转)
- 456   2              BUZZER = !BUZZER;
- 457   2          }
- 458   1          if (TF0)
- 459   1          {
- 460   2              TF0 = 0;
- 461   2              UpdateAboutTimer();
- 462   2          }
- 463   1      }
- 464          
- 465          /*
- 466           * 为了测时I2C 24C02
- 467          extern void _nop_(void);
- 468          uchar code aa[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
- 469          uchar idata bb[] = "                                                        ";
- 470          extern void Delay1ms(uint t);
- 471          extern uint SHOW_WAIT;
- 472          
- 473          void main(void)
- 474          {
- 475              uchar i, j;
- 476              LCD1602_WriteCmd(Set_8bit_2line_5x7); // 命令6
- 477              LCD1602_WriteCmd(Show_CursorOn);      // 命令4
- 478              LCD1602_WriteCmd(Mode_CursorRightMove);
- 479              LCD1602_WriteCmd(Clear_Screen); // 命令1
- 480              // I2C_WriteData(0xa0, 0x00, aa, 26);
- 481              I2C_Init();
- 482              // I2C_WriteData(0xa0, 0x80, aa, 53);
- 483              // At24c02_WriteByte(0xa0, 0x00, aa, 8);
- 484              At24c02_WriteData(0xa0, 0xb0, aa, 53);
- 485              SHOW_WAIT = 100;
- 486          
- 487              // LCD1602_ShowString(aa);
-C51 COMPILER V9.60.7.0   MAIN                                                              12/06/2023 11:46:53 PAGE 9   
+ 457   2              BUZZER = !BUZZER;
+ 458   2          }
+ 459   1          if (TF0)
+ 460   1          {
+ 461   2              TF0 = 0;
+ 462   2              UpdateAboutTimer();
+ 463   2          }
+ 464   1      }
+ 465          
+ 466          /*
+ 467           * 为了测时I2C 24C02
+ 468          extern void _nop_(void);
+ 469          uchar code aa[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+ 470          uchar idata bb[] = "                                                        ";
+ 471          extern void Delay1ms(uint t);
+ 472          extern uint SHOW_WAIT;
+ 473          
+ 474          void main(void)
+ 475          {
+ 476              uchar i, j;
+ 477              LCD1602_WriteCmd(Set_8bit_2line_5x7); // 命令6
+ 478              LCD1602_WriteCmd(Show_CursorOn);      // 命令4
+ 479              LCD1602_WriteCmd(Mode_CursorRightMove);
+ 480              LCD1602_WriteCmd(Clear_Screen); // 命令1
+ 481              // I2C_WriteData(0xa0, 0x00, aa, 26);
+ 482              I2C_Init();
+ 483              // I2C_WriteData(0xa0, 0x80, aa, 53);
+ 484              // At24c02_WriteByte(0xa0, 0x00, aa, 8);
+ 485              At24c02_WriteData(0xa0, 0xb0, aa, 53);
+ 486              SHOW_WAIT = 100;
+ 487          
+C51 COMPILER V9.60.7.0   MAIN                                                              12/08/2023 08:30:10 PAGE 9   
 
- 488              At24c02_ReadData(0xa0, 0xb0, bb, 53);
- 489              i = 53;
- 490              while (1)
- 491              {
- 492                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(0));
- 493                  for (j = 16; j && i; --j)
- 494                  {
- 495                      LCD1602_WriteData(bb[--i]);
- 496                      Delay1ms(100);
- 497                  }
- 498                  if (!i)
- 499                      break;
- 500              }
- 501              // // LCD1602_WriteCmd(Return_Cursor);
- 502              // // LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
- 503              // // LCD1602_ShowString(bb);
- 504              while (1)
- 505                  ;
- 506          }
- 507          */
+ 488              // LCD1602_ShowString(aa);
+ 489              At24c02_ReadData(0xa0, 0xb0, bb, 53);
+ 490              i = 53;
+ 491              while (1)
+ 492              {
+ 493                  LCD1602_WriteCmd(Move_Cursor_Row1_Col(0));
+ 494                  for (j = 16; j && i; --j)
+ 495                  {
+ 496                      LCD1602_WriteData(bb[--i]);
+ 497                      Delay1ms(100);
+ 498                  }
+ 499                  if (!i)
+ 500                      break;
+ 501              }
+ 502              // // LCD1602_WriteCmd(Return_Cursor);
+ 503              // // LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
+ 504              // // LCD1602_ShowString(bb);
+ 505              while (1)
+ 506                  ;
+ 507          }
+ 508          */
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1279    ----
+   CODE SIZE        =   1281    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

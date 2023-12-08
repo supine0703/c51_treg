@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   GLOBAL                                                            12/06/2023 11:46:53 PAGE 1   
+C51 COMPILER V9.60.7.0   GLOBAL                                                            12/08/2023 08:30:10 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE GLOBAL
@@ -62,7 +62,7 @@ line level    source
   52          // 视图模式 温度极值查询视图
   53          float highest = -55; // 开机后最高温
   54          float lowest = 127;  // 开机后最低温
-C51 COMPILER V9.60.7.0   GLOBAL                                                            12/06/2023 11:46:53 PAGE 2   
+C51 COMPILER V9.60.7.0   GLOBAL                                                            12/08/2023 08:30:10 PAGE 2   
 
   55          
   56          // 视图模式 温度过界计时视图
@@ -126,7 +126,7 @@ line level    source
  114              64528, // 12
  115              64580, // 13
  116              64633, // 14
-C51 COMPILER V9.60.7.0   GLOBAL                                                            12/06/2023 11:46:53 PAGE 3   
+C51 COMPILER V9.60.7.0   GLOBAL                                                            12/08/2023 08:30:10 PAGE 3   
 
  117              64684, // 15
  118              64732, // 16

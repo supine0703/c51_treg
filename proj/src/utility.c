@@ -18,7 +18,7 @@
  * @param length 转换后数字可以存放的空间长度
  * @param decimal 小数占多少位
  */
-
+#include <stdio.h>
 void FloatToString(float num, uchar* str, uchar length, uchar decimal)
 {
     char i, mid;

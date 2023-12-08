@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   UTILITY                                                           12/06/2023 11:46:54 PAGE 1   
+C51 COMPILER V9.60.7.0   UTILITY                                                           12/08/2023 08:30:11 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE UTILITY
@@ -28,7 +28,7 @@ line level    source
   18           * @param length 转换后数字可以存放的空间长度
   19           * @param decimal 小数占多少位
   20           */
-  21          
+  21          #include <stdio.h>
   22          void FloatToString(float num, uchar* str, uchar length, uchar decimal)
   23          {
   24   1          char i, mid;
@@ -62,7 +62,7 @@ line level    source
   52   1      
   53   1          // 分离整数和小数部分
   54   1          if (num < 0)
-C51 COMPILER V9.60.7.0   UTILITY                                                           12/06/2023 11:46:54 PAGE 2   
+C51 COMPILER V9.60.7.0   UTILITY                                                           12/08/2023 08:30:11 PAGE 2   
 
   55   1          {
   56   2              num -= std;
@@ -126,7 +126,7 @@ line level    source
  114   2              if (!num)
  115   2                  break;
  116   2              str[--length] = num % 10 + '0';
-C51 COMPILER V9.60.7.0   UTILITY                                                           12/06/2023 11:46:54 PAGE 3   
+C51 COMPILER V9.60.7.0   UTILITY                                                           12/08/2023 08:30:11 PAGE 3   
 
  117   2          }
  118   1          if (neg)

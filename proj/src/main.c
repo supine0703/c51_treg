@@ -415,6 +415,7 @@ void int_X0() interrupt 0
     }
     else // 进入设置模式
     {
+        BUZZER = 1;
         RELAY = 0; // 断开继电器
         DCM = 0;   // 关闭直流电机
         TR0 = 0;   // 关闭定时计器T0
