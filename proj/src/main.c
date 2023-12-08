@@ -187,7 +187,12 @@ void UpdateTemperature(void)
 {
     uchar i;
     while (play_music && (freqDelay <= 24 || freqDelay >= 96))
+    {
         KeysSystem_1();
+        if (page_change)
+            UpdateViewPageShow();
+    }
+    TR0 = 0;
     EA = 0; // 获取温度转化得关闭中断 否则会破坏 DS18B20 的时序 造成错误
     temperature = DS18B20_ReadTemp(); // 获取温度计转换的温度
     DS18B20_Convert();
@@ -196,6 +201,7 @@ void UpdateTemperature(void)
     {
     } while (--i); // 85个机器周期 共约 2+1+5815+70 个机器周期
     EA = 1; // 假设触发定时中断 23 次 可能有一些误差 但非常小
+    TR0 = 1;
     if (play_music)
         freqDelay -= 23;
     temperature *= 0.0625; // 转化为可读温度
@@ -409,17 +415,19 @@ void int_X0() interrupt 0
         convertCount = 0;
         convert_finished = 0; // 重新打开温度转换
         TR0 = 1;              // 重启定时器开始测温
+        ET0 = 1;
         freqSize = 2144 - 256 * ringRate;
-        option = 0xff;        // 设置模式 不选择
-        page_change = 1;      // 需要刷新整个视图显示
+        option = 0xff;   // 设置模式 不选择
+        page_change = 1; // 需要刷新整个视图显示
     }
     else // 进入设置模式
     {
-        BUZZER = 1;
-        RELAY = 0; // 断开继电器
-        DCM = 0;   // 关闭直流电机
-        TR0 = 0;   // 关闭定时计器T0
-        TR1 = 0;   // 关闭定时计器T1
+        ET0 = 0;
+        TR0 = 0;        // 关闭定时计器T0
+        TR1 = 0;        // 关闭定时计器T1
+        BUZZER = 1;     // 关闭蜂鸣器
+        RELAY = 0;      // 断开继电器
+        DCM = 0;        // 关闭直流电机
         play_music = 0; // 关闭音乐
         // 得从主函数中调用 否则可能会发生形参被出错 产生不可预料问题
         // 可以设定一个标志 让主函数调用一次 ready_settings
@@ -463,46 +471,3 @@ void int_T1() interrupt 3 using 2 // 指定寄存器组提高程序效率 减少
     }
 }
 
-/*
- * 为了测时I2C 24C02
-extern void _nop_(void);
-uchar code aa[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-uchar idata bb[] = "                                                        ";
-extern void Delay1ms(uint t);
-extern uint SHOW_WAIT;
-
-void main(void)
-{
-    uchar i, j;
-    LCD1602_WriteCmd(Set_8bit_2line_5x7); // 命令6
-    LCD1602_WriteCmd(Show_CursorOn);      // 命令4
-    LCD1602_WriteCmd(Mode_CursorRightMove);
-    LCD1602_WriteCmd(Clear_Screen); // 命令1
-    // I2C_WriteData(0xa0, 0x00, aa, 26);
-    I2C_Init();
-    // I2C_WriteData(0xa0, 0x80, aa, 53);
-    // At24c02_WriteByte(0xa0, 0x00, aa, 8);
-    At24c02_WriteData(0xa0, 0xb0, aa, 53);
-    SHOW_WAIT = 100;
-
-    // LCD1602_ShowString(aa);
-    At24c02_ReadData(0xa0, 0xb0, bb, 53);
-    i = 53;
-    while (1)
-    {
-        LCD1602_WriteCmd(Move_Cursor_Row1_Col(0));
-        for (j = 16; j && i; --j)
-        {
-            LCD1602_WriteData(bb[--i]);
-            Delay1ms(100);
-        }
-        if (!i)
-            break;
-    }
-    // // LCD1602_WriteCmd(Return_Cursor);
-    // // LCD1602_WriteCmd(Move_Cursor_Row2_Col(15));
-    // // LCD1602_ShowString(bb);
-    while (1)
-        ;
-}
-*/
